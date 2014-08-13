@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">ASMedia</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="drawer_opened">Drawer_opened</string>
+    <string name="drawer_closed">Drawer_closed</string>
+    <string name="title_activity_page_slider">PageSlider</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="description_icon">Icons in drawer</string>
+    <string name="album_art">Album Art Icon</string>
+
+</resources>
