@@ -12,6 +12,10 @@
     <string name="album_art">Album Art Icon</string>
     <string name="title_activity_player_controls">PlayerControls</string>
     <string name="artist">Artist Name</string>
-	<string name="album">Album Name</string>
-	<string name="title">Track Name</string>
+    <string name="album">Album Name</string>
+    <string name="title">Track Name</string>
+    <string name="play_btn">Play</string>
+    <string name="next_btn">Next</string>
+    <string name="back_btn">Back</string>
+
 </resources>

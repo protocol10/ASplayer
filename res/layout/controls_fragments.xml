@@ -4,18 +4,6 @@
     android:layout_height="match_parent" >
 
     <TextView
-        android:id="@+id/artist_text_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginBottom="161dp"
-        android:maxLines="1"
-        android:text="@string/artist"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
-
-    <TextView
         android:id="@+id/album_name_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -23,6 +11,7 @@
         android:layout_alignParentRight="true"
         android:layout_alignTop="@+id/artist_text_view"
         android:layout_marginTop="26dp"
+        android:ellipsize="end"
         android:maxLines="1"
         android:text="@string/album"
         android:textAppearance="?android:attr/textAppearanceSmall" />
@@ -33,9 +22,47 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/album_name_text_view"
-        android:layout_marginTop="14dp"
+        android:layout_margin="1dp"
+        android:ellipsize="end"
         android:maxLines="1"
-        android:text="@string/title"
+        android:text="@string/title" />
+
+    <TextView
+        android:id="@+id/artist_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_marginBottom="186dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:text="@string/artist"
         android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <Button
+        android:id="@+id/back_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/song_title_text_view"
+        android:layout_below="@+id/song_title_text_view"
+        android:layout_marginTop="25dp"
+        android:text="@string/back_btn" />
+
+    <Button
+        android:id="@+id/play_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/back_button"
+        android:layout_centerHorizontal="true"
+        android:text="@string/play_btn" />
+
+    <Button
+        android:id="@+id/next_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/play_button"
+        android:layout_alignBottom="@+id/play_button"
+        android:layout_alignParentRight="true"
+        android:text="@string/next_btn" />
 
 </RelativeLayout>

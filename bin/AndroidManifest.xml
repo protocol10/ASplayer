@@ -29,6 +29,9 @@
             android:name=".PlayerControls"
             android:label="@string/title_activity_player_controls" >
         </activity>
+
+        <service android:name="com.akshay.protocol10.asplayer.service.MediaServiceContoller" >
+        </service>
     </application>
 
 </manifest>

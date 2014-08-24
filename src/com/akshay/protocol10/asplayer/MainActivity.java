@@ -7,6 +7,7 @@ import com.akshay.protocol10.asplayer.adapters.DrawerAdapter;
 import com.akshay.protocol10.asplayer.callbacks.onItemSelected;
 import com.akshay.protocol10.asplayer.fragments.ControlsFragments;
 import com.akshay.protocol10.asplayer.fragments.PageSlider;
+import com.akshay.protocol10.asplayer.service.MediaServiceContoller;
 import com.akshay.protocol10.asplayer.utils.ASUtils;
 
 import android.support.v4.app.ActionBarDrawerToggle;
@@ -15,6 +16,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.Menu;
@@ -36,6 +38,7 @@ public class MainActivity extends ActionBarActivity implements
 	DrawerAdapter drawerAdapter;
 	CharSequence title;
 	ArrayList<HashMap<String, Object>> track;
+	MediaServiceContoller serviceController;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +76,8 @@ public class MainActivity extends ActionBarActivity implements
 			}
 		};
 		drawer_layout.setDrawerListener(drawer_toggle);
+
+		serviceController = new MediaServiceContoller();
 
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		getSupportActionBar().setHomeButtonEnabled(true);
@@ -127,7 +132,8 @@ public class MainActivity extends ActionBarActivity implements
 	 */
 
 	@Override
-	public void updateView(String title, String artist, String album) {
+	public void updateView(String title, String artist, String album,
+			int position) {
 		// TODO Auto-generated method stub
 		Toast.makeText(getApplicationContext(),
 				"title =" + title + ":artist=" + artist + ":album=" + album,
@@ -138,6 +144,7 @@ public class MainActivity extends ActionBarActivity implements
 		args.putString("title", title);
 		args.putString("artist", artist);
 		args.putString("album", album);
+		args.putInt("position", position);
 		fragments.setArguments(args);
 
 		FragmentTransaction transaction = getSupportFragmentManager()
@@ -145,5 +152,41 @@ public class MainActivity extends ActionBarActivity implements
 
 		transaction.addToBackStack(null);
 		transaction.commit();
+	}
+
+	@Override
+	protected void onDestroy() {
+		// TODO Auto-generated method stub
+		super.onDestroy();
+		stopService(new Intent(this, MediaServiceContoller.class));
+	}
+
+	@Override
+	public void pausePlayBack() {
+		// TODO Auto-generated method stub
+		serviceController.pauseSong();
+	}
+
+	@Override
+	public void nextPlayBack() {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void previousPlayBack() {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void startPlayBack(int index) {
+		// TODO Auto-generated method stub
+		Intent intent = new Intent(this, MediaServiceContoller.class);
+
+		intent.putExtra("position", index);
+
+		startService(intent);
+
 	}
 }
