@@ -10,5 +10,8 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="description_icon">Icons in drawer</string>
     <string name="album_art">Album Art Icon</string>
-
+    <string name="title_activity_player_controls">PlayerControls</string>
+    <string name="artist">Artist Name</string>
+	<string name="album">Album Name</string>
+	<string name="title">Track Name</string>
 </resources>

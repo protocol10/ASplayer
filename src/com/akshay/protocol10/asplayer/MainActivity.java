@@ -4,13 +4,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import com.akshay.protocol10.asplayer.adapters.DrawerAdapter;
-import com.akshay.protocol10.asplayer.database.MediaManager;
+import com.akshay.protocol10.asplayer.callbacks.onItemSelected;
+import com.akshay.protocol10.asplayer.fragments.ControlsFragments;
 import com.akshay.protocol10.asplayer.fragments.PageSlider;
 import com.akshay.protocol10.asplayer.utils.ASUtils;
 
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.content.res.Configuration;
@@ -24,7 +26,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Toast;
 
 public class MainActivity extends ActionBarActivity implements
-		OnItemClickListener {
+		OnItemClickListener, onItemSelected {
 
 	String[] drawer_options = {};
 	DrawerLayout drawer_layout;
@@ -78,12 +80,6 @@ public class MainActivity extends ActionBarActivity implements
 		Fragment fragment = new PageSlider();
 		FragmentManager manager = getSupportFragmentManager();
 		manager.beginTransaction().replace(R.id.content, fragment).commit();
-		MediaManager mediamanager = new MediaManager();
-		track = (ArrayList<HashMap<String, Object>>) mediamanager
-				.retriveContent(this);
-		int i = track.size();
-		Toast.makeText(this, "Tracks Present" + i, Toast.LENGTH_SHORT).show();
-
 	}
 
 	@Override
@@ -123,5 +119,31 @@ public class MainActivity extends ActionBarActivity implements
 			long id) {
 		// TODO Auto-generated method stub
 		drawer_layout.closeDrawer(list_view);
+	}
+
+	/**
+	 * 
+	 * The callback for fragments-activity communication
+	 */
+
+	@Override
+	public void updateView(String title, String artist, String album) {
+		// TODO Auto-generated method stub
+		Toast.makeText(getApplicationContext(),
+				"title =" + title + ":artist=" + artist + ":album=" + album,
+				Toast.LENGTH_SHORT).show();
+		ControlsFragments fragments = new ControlsFragments();
+
+		Bundle args = new Bundle();
+		args.putString("title", title);
+		args.putString("artist", artist);
+		args.putString("album", album);
+		fragments.setArguments(args);
+
+		FragmentTransaction transaction = getSupportFragmentManager()
+				.beginTransaction().replace(R.id.content, fragments);
+
+		transaction.addToBackStack(null);
+		transaction.commit();
 	}
 }

@@ -1,5 +1,9 @@
 package com.akshay.protocol10.asplayer.database;
 
+/**
+ * @author akshay
+ */
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -10,31 +14,54 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.provider.MediaStore.Audio.Albums;
+import android.provider.MediaStore.Audio.Artists;
 import android.util.Log;
 import android.widget.Toast;
 
 public class MediaManager {
 
 	List<HashMap<String, Object>> tracks_list;
+
 	Uri INTERNAL;
 	Uri EXTERNAL;
-	String selection = MediaStore.Audio.Media.IS_MUSIC + " != 0";
+	String selection = null;
+	String[] selectionArgs = null;
+
+	// String selection = MediaStore.Audio.Media.IS_MUSIC + " != 0";
+
 	private final String ID_KEY = "id";
 	private final String TITLE_KEY = "title";
 	private final String PATH_KEY = "src";
 	private final String ARTIST_KEY = "artist";
 	private final String ALBUM_KEY = "album";
 	private final String DURATION_KEY = "duration";
+
+	private static final String UNABLE_TAG = "Unable to fetch media";
+	private static final String NOMEDIA_TAG = "No media on device";
+
 	ContentResolver resolver;
 	Cursor cursor;
+
 	/**
-	 * Columns to be returned for each row
+	 * PROJECTION - Retrieves the value for Tracks from MediaStore DataBase in
+	 * android Only used for MediaProjection for general tracks
+	 * 
 	 */
 
-	private String[] projection = { MediaStore.Audio.Media._ID,
+	private static final String[] PROJECTION = { MediaStore.Audio.Media._ID,
 			MediaStore.Audio.Media.DATA, MediaStore.Audio.Media.DISPLAY_NAME,
 			MediaStore.Audio.Media.ARTIST, MediaStore.Audio.Media.ALBUM,
 			MediaStore.Audio.Media.DURATION };
+	/**
+	 * ALBUM_COLUMNS - Used for projection no of Albums available for available
+	 * tracks on the device
+	 */
+
+	private static final String[] ALBUM_COLUMNS = { Albums.ALBUM, Albums._ID,
+			Albums.ARTIST, Albums.ALBUM_ART };
+
+	private static final String[] ARTIST_COLUMNS = { Artists._ID,
+			Artists.ARTIST, Artists.NUMBER_OF_ALBUMS };
 
 	public MediaManager() {
 		// TODO Auto-generated constructor stub
@@ -43,18 +70,25 @@ public class MediaManager {
 		EXTERNAL = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
 	}
 
+	/**
+	 * Used for retrieving all the media tracks from the device
+	 * 
+	 * @param Context
+	 *            context
+	 * @return list
+	 * 
+	 */
+
 	public List<HashMap<String, Object>> retriveContent(Context context) {
 
 		resolver = context.getContentResolver();
-		cursor = resolver.query(EXTERNAL, projection, null, null,
+		cursor = resolver.query(EXTERNAL, PROJECTION, selection, selectionArgs,
 				MediaStore.Audio.Media.DISPLAY_NAME);
 
 		if (cursor == null)
-			Toast.makeText(context, "Unable to Fetch Data", Toast.LENGTH_SHORT)
-					.show();
+			Toast.makeText(context, UNABLE_TAG, Toast.LENGTH_SHORT).show();
 		else if (!cursor.moveToFirst()) {
-			Toast.makeText(context, "No Media on Device", Toast.LENGTH_SHORT)
-					.show();
+			Toast.makeText(context, NOMEDIA_TAG, Toast.LENGTH_SHORT).show();
 
 		} else {
 
@@ -81,6 +115,16 @@ public class MediaManager {
 		return (ArrayList<HashMap<String, Object>>) tracks_list;
 	}
 
+	/**
+	 * Used for retrieving Unique names of albums for the available the media
+	 * tracks from the device
+	 * 
+	 * @param Context
+	 *            context
+	 * @return list
+	 * 
+	 */
+
 	public List<HashMap<String, Object>> retriveAlbum(Context context) {
 
 		HashMap<String, Object> album;
@@ -88,25 +132,23 @@ public class MediaManager {
 
 		resolver = context.getContentResolver();
 
-		String[] columns = { Albums.ALBUM, Albums._ID, Albums.ARTIST,
-				Albums.ALBUM_ART };
-		String selection = null;
-		String[] selectionArgs = null;
-		cursor = resolver.query(Albums.EXTERNAL_CONTENT_URI, columns,
+		// String selection = null;
+		// String[] selectionArgs = null;
+		cursor = resolver.query(Albums.EXTERNAL_CONTENT_URI, ALBUM_COLUMNS,
 				selection, selectionArgs, null);
 
 		if (cursor == null) {
-
+			Toast.makeText(context, UNABLE_TAG, Toast.LENGTH_SHORT).show();
 		} else if (!cursor.moveToFirst()) {
-			Toast.makeText(context, "No Media on Device", Toast.LENGTH_SHORT)
-					.show();
+			Toast.makeText(context, NOMEDIA_TAG, Toast.LENGTH_SHORT).show();
+
 		} else {
 
 			do {
-				String album_name = cursor.getString(0);
-				String id = cursor.getString(1);
-				String artist = cursor.getString(2);
-				String album_art = cursor.getString(3);
+				String album_name = cursor.getString(0); // album
+				String id = cursor.getString(1); // id
+				String artist = cursor.getString(2); // artist
+				String album_art = cursor.getString(3); // album-art
 				// Log.i("art", album_art);
 				Log.i("artist", artist);
 				album = new HashMap<String, Object>();
@@ -121,4 +163,38 @@ public class MediaManager {
 		return album_list;
 	}
 
+	public List<HashMap<String, Object>> retriveArtist(Context context) {
+
+		HashMap<String, Object> artist_map;
+		List<HashMap<String, Object>> artist_list = new ArrayList<HashMap<String, Object>>();
+
+		// String selection = null;
+		// String[] selectionArgs = null;
+
+		cursor = resolver.query(Artists.EXTERNAL_CONTENT_URI, ARTIST_COLUMNS,
+				selection, selectionArgs, null);
+
+		if (cursor == null) {
+			Toast.makeText(context, UNABLE_TAG, Toast.LENGTH_SHORT).show();
+
+		} else if (!cursor.moveToFirst()) {
+			Toast.makeText(context, NOMEDIA_TAG, Toast.LENGTH_SHORT).show();
+		} else {
+
+			do {
+				String artist_id = cursor.getString(0); // ARTIST._ID
+				String artist = cursor.getString(1); // Artist.ARTIST
+				String album_count = cursor.getString(2);// Artist.NUMBER_OF_ALBUMS
+
+				artist_map = new HashMap<String, Object>();
+				artist_map.put("artist_id", artist_id);
+				artist_map.put("artist", artist);
+				artist_map.put("artist_count", album_count);
+				artist_list.add(artist_map);
+
+			} while (cursor.moveToNext());
+		}
+
+		return null;
+	}
 }

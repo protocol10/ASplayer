@@ -1,33 +1,47 @@
 package com.akshay.protocol10.asplayer.fragments;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import com.akshay.protocol10.asplayer.R;
 import com.akshay.protocol10.asplayer.adapters.TrackAdapters;
+import com.akshay.protocol10.asplayer.callbacks.onItemSelected;
 import com.akshay.protocol10.asplayer.database.MediaManager;
 
 import android.app.Activity;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
-public class TracksFragment extends Fragment {
+public class TracksFragment extends Fragment implements OnItemClickListener {
+
+	private final String PATH_KEY = "src";
+	private final String TITLE_KEY = "title";
+	private final String ARTIST_KEY = "artist";
+	private final String ALBUM_KEY = "album";
+	private final String DURATION_KEY = "duration";
 
 	ListView tracks_list_view;
 	View view;
 	MediaManager mediaManager;
 	List<HashMap<String, Object>> tracks_list_data;
 	TrackAdapters adapters;
+	MediaPlayer mp;
+	onItemSelected mcallback;
 
 	// Empty constructor good practice
 	public TracksFragment() {
 		// TODO Auto-generated constructor stub
 		mediaManager = new MediaManager();
+		mp = new MediaPlayer();
 		tracks_list_data = new ArrayList<HashMap<String, Object>>();
 	}
 
@@ -48,6 +62,7 @@ public class TracksFragment extends Fragment {
 				R.id.title_text_view, tracks_list_data);
 		tracks_list_view.setAdapter(adapters);
 		tracks_list_view.setFastScrollEnabled(true);
+		tracks_list_view.setOnItemClickListener(this);
 		return view;
 	}
 
@@ -55,7 +70,32 @@ public class TracksFragment extends Fragment {
 	public void onAttach(Activity activity) {
 		// TODO Auto-generated method stub
 		super.onAttach(activity);
-		
+		mcallback = (onItemSelected) activity;
+
 	}
 
+	@Override
+	public void onItemClick(AdapterView<?> parent, View view, int position,
+			long id) {
+		// TODO Auto-generated method stub
+		
+		String path = tracks_list_data.get(position).get(PATH_KEY).toString();
+		String title = tracks_list_data.get(position).get(TITLE_KEY).toString();
+		String album = tracks_list_data.get(position).get(ALBUM_KEY).toString();
+		String artist = tracks_list_data.get(position).get(ARTIST_KEY).toString();
+		
+		try {
+			//mcallback.clicked();
+			mcallback.updateView(title, artist, album);
+			mp.reset();
+			mp.setDataSource(path);
+			mp.prepare();
+			mp.start();
+		} catch (IllegalArgumentException | SecurityException
+				| IllegalStateException | IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
 }
