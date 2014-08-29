@@ -13,7 +13,6 @@ import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.IBinder;
 import android.util.Log;
-import android.widget.Toast;
 
 public class MediaServiceContoller extends Service {
 
@@ -53,7 +52,7 @@ public class MediaServiceContoller extends Service {
 		int position = intent.getExtras().getInt("position");
 		Log.i("position", "" + position);
 		play(position);
-		return super.onStartCommand(intent, flags, startId);
+		return START_NOT_STICKY;
 	}
 
 	public void play(int index) {

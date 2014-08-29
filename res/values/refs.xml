@@ -9,6 +9,4 @@
     http://developer.android.com/training/multiscreen/screensizes.html#TaskUseAliasFilters
     -->
 
-    <item name="fragment_albums" type="layout">@layout/fragment_albums_list</item>
-
 </resources>

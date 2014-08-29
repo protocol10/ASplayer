@@ -17,5 +17,8 @@
     <string name="play_btn">Play</string>
     <string name="next_btn">Next</string>
     <string name="back_btn">Back</string>
+    <string name="artist_image">ic_artist</string>
+    <string name="artist_name">Name</string>
+    <string name="no_albums">No of albums</string>
 
 </resources>

@@ -25,7 +25,6 @@ public class TracksFragment extends Fragment implements OnItemClickListener {
 	private final String TITLE_KEY = "title";
 	private final String ARTIST_KEY = "artist";
 	private final String ALBUM_KEY = "album";
-	private final String DURATION_KEY = "duration";
 
 	ListView tracks_list_view;
 	View view;

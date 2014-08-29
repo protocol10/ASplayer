@@ -4,11 +4,10 @@
     android:layout_height="match_parent"
     tools:context="com.akshay.protocol10.asplayer.fragments.ArtistFragment" >
 
-    <!-- TODO: Update blank fragment layout -->
-
-    <TextView
+    <ListView
+        android:id="@+id/artist_list"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_height="wrap_content" >
+    </ListView>
 
 </FrameLayout>

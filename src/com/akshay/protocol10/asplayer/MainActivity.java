@@ -25,7 +25,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.Toast;
 
 public class MainActivity extends ActionBarActivity implements
 		OnItemClickListener, onItemSelected {
@@ -135,9 +134,6 @@ public class MainActivity extends ActionBarActivity implements
 	public void updateView(String title, String artist, String album,
 			int position) {
 		// TODO Auto-generated method stub
-		Toast.makeText(getApplicationContext(),
-				"title =" + title + ":artist=" + artist + ":album=" + album,
-				Toast.LENGTH_SHORT).show();
 		ControlsFragments fragments = new ControlsFragments();
 
 		Bundle args = new Bundle();

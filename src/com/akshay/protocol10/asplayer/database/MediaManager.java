@@ -38,6 +38,7 @@ public class MediaManager {
 
 	private static final String UNABLE_TAG = "Unable to fetch media";
 	private static final String NOMEDIA_TAG = "No media on device";
+	private static final String NO_OF_ALBUMS = "artist_count";
 
 	ContentResolver resolver;
 	Cursor cursor;
@@ -60,8 +61,16 @@ public class MediaManager {
 	private static final String[] ALBUM_COLUMNS = { Albums.ALBUM, Albums._ID,
 			Albums.ARTIST, Albums.ALBUM_ART };
 
+	/**
+	 * ARTIST_COLUMNS - Used for projection no of Artist's available for
+	 * available tracks on the device
+	 */
 	private static final String[] ARTIST_COLUMNS = { Artists._ID,
 			Artists.ARTIST, Artists.NUMBER_OF_ALBUMS };
+
+	/**
+	 * Constructor
+	 */
 
 	public MediaManager() {
 		// TODO Auto-generated constructor stub
@@ -74,7 +83,8 @@ public class MediaManager {
 	 * Used for retrieving all the media tracks from the device
 	 * 
 	 * @param Context
-	 *            context
+	 *            provide the reference for the ContentResolver from the
+	 *            Activity
 	 * @return list
 	 * 
 	 */
@@ -120,7 +130,8 @@ public class MediaManager {
 	 * tracks from the device
 	 * 
 	 * @param Context
-	 *            context
+	 *            provide the reference for the ContentResolver from the
+	 *            Activity
 	 * @return list
 	 * 
 	 */
@@ -132,8 +143,6 @@ public class MediaManager {
 
 		resolver = context.getContentResolver();
 
-		// String selection = null;
-		// String[] selectionArgs = null;
 		cursor = resolver.query(Albums.EXTERNAL_CONTENT_URI, ALBUM_COLUMNS,
 				selection, selectionArgs, null);
 
@@ -151,26 +160,33 @@ public class MediaManager {
 				String album_art = cursor.getString(3); // album-art
 				// Log.i("art", album_art);
 				Log.i("artist", artist);
+
 				album = new HashMap<String, Object>();
-				album.put("album", album_name);
-				album.put("albumID", id);
-				album.put("artist", artist);
+				album.put(ALBUM_KEY, album_name);
+				album.put(ID_KEY, id);
+				album.put(ARTIST_KEY, artist);
 				album.put("albumart", album_art);
 				album_list.add(album);
+
 			} while (cursor.moveToNext());
 		}
 
 		return album_list;
 	}
 
+	/**
+	 * 
+	 * @param context
+	 *            provide the reference for the ContentResolver from the
+	 *            Activity
+	 * @return list
+	 */
 	public List<HashMap<String, Object>> retriveArtist(Context context) {
 
 		HashMap<String, Object> artist_map;
 		List<HashMap<String, Object>> artist_list = new ArrayList<HashMap<String, Object>>();
 
-		// String selection = null;
-		// String[] selectionArgs = null;
-
+		resolver = context.getContentResolver();
 		cursor = resolver.query(Artists.EXTERNAL_CONTENT_URI, ARTIST_COLUMNS,
 				selection, selectionArgs, null);
 
@@ -187,14 +203,14 @@ public class MediaManager {
 				String album_count = cursor.getString(2);// Artist.NUMBER_OF_ALBUMS
 
 				artist_map = new HashMap<String, Object>();
-				artist_map.put("artist_id", artist_id);
-				artist_map.put("artist", artist);
-				artist_map.put("artist_count", album_count);
+				artist_map.put(ID_KEY, artist_id);
+				artist_map.put(ARTIST_KEY, artist);
+				artist_map.put(NO_OF_ALBUMS, album_count);
 				artist_list.add(artist_map);
 
 			} while (cursor.moveToNext());
 		}
 
-		return null;
+		return artist_list;
 	}
 }
