@@ -11,6 +11,7 @@ import android.app.Service;
 import android.content.Intent;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
 
@@ -27,10 +28,13 @@ public class MediaServiceContoller extends Service {
 	MediaManager manager;
 	List<HashMap<String, Object>> media_list;
 
+	// mBinder object which is responsible for interacting with client.
+	private final IBinder mbinder = new MediaBinder();
+
 	@Override
 	public IBinder onBind(Intent intent) {
 		// TODO Auto-generated method stubLO
-		return null;
+		return mbinder;
 	}
 
 	@Override
@@ -49,15 +53,16 @@ public class MediaServiceContoller extends Service {
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		// TODO Auto-generated method stub
-		int position = intent.getExtras().getInt("position");
-		Log.i("position", "" + position);
-		play(position);
-		return START_NOT_STICKY;
+		/**
+		 * We want this service to continue until it is explicitly stopped.
+		 */
+		return START_STICKY;
 	}
 
 	public void play(int index) {
-		mediaplayer.reset();
+
 		try {
+			mediaplayer.reset();
 			mediaplayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
 			mediaplayer.setDataSource(media_list.get(index).get(PATH_KEY)
 					.toString());
@@ -82,9 +87,26 @@ public class MediaServiceContoller extends Service {
 
 		if (mediaplayer != null) {
 			Log.i("mediaplayer", "Not Null");
+			if (mediaplayer.isPlaying()) {
+				mediaplayer.pause();
+			} else {
+				mediaplayer.start();
+			}
 		} else {
 			Log.i("MEDIAPLAYER", "NULL");
 		}
 	}
 
+	/**
+	 * 
+	 * @author akshay Class for the client to access. Because Service runs in
+	 *         the same process
+	 *
+	 */
+
+	public class MediaBinder extends Binder {
+		public MediaServiceContoller getService() {
+			return MediaServiceContoller.this;
+		}
+	}
 }

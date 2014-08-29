@@ -8,6 +8,7 @@ import com.akshay.protocol10.asplayer.callbacks.onItemSelected;
 import com.akshay.protocol10.asplayer.fragments.ControlsFragments;
 import com.akshay.protocol10.asplayer.fragments.PageSlider;
 import com.akshay.protocol10.asplayer.service.MediaServiceContoller;
+import com.akshay.protocol10.asplayer.service.MediaServiceContoller.MediaBinder;
 import com.akshay.protocol10.asplayer.utils.ASUtils;
 
 import android.support.v4.app.ActionBarDrawerToggle;
@@ -16,14 +17,18 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
+import android.content.ComponentName;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
 public class MainActivity extends ActionBarActivity implements
@@ -37,7 +42,10 @@ public class MainActivity extends ActionBarActivity implements
 	DrawerAdapter drawerAdapter;
 	CharSequence title;
 	ArrayList<HashMap<String, Object>> track;
+
+	boolean isBound = false;
 	MediaServiceContoller serviceController;
+	MediaBinder binder;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -154,7 +162,14 @@ public class MainActivity extends ActionBarActivity implements
 	protected void onDestroy() {
 		// TODO Auto-generated method stub
 		super.onDestroy();
-		stopService(new Intent(this, MediaServiceContoller.class));
+		doUnbindService();
+	}
+
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		doBindService();
 	}
 
 	@Override
@@ -178,11 +193,64 @@ public class MainActivity extends ActionBarActivity implements
 	@Override
 	public void startPlayBack(int index) {
 		// TODO Auto-generated method stub
-		Intent intent = new Intent(this, MediaServiceContoller.class);
 
-		intent.putExtra("position", index);
+		if (isBound == true) {
+			serviceController.play(index);
+		}
+	}
 
-		startService(intent);
+	/**
+	 * Establish a connection with the service. We use an explicit class name
+	 * because we want a specific service implementation that we know will be
+	 * running in our own process (and thus won't be supporting component
+	 * replacement by other applications).
+	 */
+
+	private void doBindService() {
+
+		Intent serviceIntent = new Intent(this, MediaServiceContoller.class);
+		bindService(serviceIntent, mConnection, BIND_AUTO_CREATE);
 
 	}
+
+	private void doUnbindService() {
+		// TODO Auto-generated method stub
+		// Detach our existing connection.
+
+		if (isBound) {
+			unbindService(mConnection);
+			isBound = false;
+		}
+	}
+
+	ServiceConnection mConnection = new ServiceConnection() {
+
+		@Override
+		public void onServiceDisconnected(ComponentName name) {
+			// TODO Auto-generated method stub
+			// This is called when the connection with the service has been
+			// unexpectedly disconnected -- that is, its process crashed.
+			// Because it is running in our same process, we should never
+			// see this happen.
+
+			serviceController = null;
+			isBound = false;
+		}
+
+		@Override
+		public void onServiceConnected(ComponentName name, IBinder service) {
+			// TODO Auto-generated method stub
+			// This is called when the connection with the service has been
+			// established, giving us the service object we can use to
+			// interact with the service. Because we have bound to a explicit
+			// service that we know is running in our own process, we can
+			// cast its IBinder to a concrete class and directly access it.
+
+			MediaServiceContoller.MediaBinder bind = (MediaBinder) service;
+			serviceController = bind.getService();
+			Toast.makeText(getApplicationContext(), "Service Connected",
+					Toast.LENGTH_SHORT).show();
+			isBound = true;
+		}
+	};
 }

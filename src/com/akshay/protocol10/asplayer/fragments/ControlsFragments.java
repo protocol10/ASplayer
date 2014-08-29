@@ -32,6 +32,7 @@ public class ControlsFragments extends Fragment implements OnClickListener {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
+		setRetainInstance(true);
 		view = inflater.inflate(R.layout.controls_fragments, container, false);
 		play_button = (Button) view.findViewById(R.id.play_button);
 		next_button = (Button) view.findViewById(R.id.next_button);
