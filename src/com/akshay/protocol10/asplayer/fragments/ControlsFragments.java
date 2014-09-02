@@ -104,9 +104,11 @@ public class ControlsFragments extends Fragment implements OnClickListener {
 			mCallBack.pausePlayBack();
 			break;
 		case R.id.next_button:
+			mCallBack.nextPlayBack();
 			Toast.makeText(getActivity(), "NEXT", Toast.LENGTH_SHORT).show();
 			break;
 		case R.id.back_button:
+			mCallBack.previousPlayBack();
 			Toast.makeText(getActivity(), "PREVIOUS", Toast.LENGTH_SHORT)
 					.show();
 			break;

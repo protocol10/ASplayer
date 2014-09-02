@@ -181,13 +181,13 @@ public class MainActivity extends ActionBarActivity implements
 	@Override
 	public void nextPlayBack() {
 		// TODO Auto-generated method stub
-
+		serviceController.nextSong();
 	}
 
 	@Override
 	public void previousPlayBack() {
 		// TODO Auto-generated method stub
-
+		serviceController.previousSong();
 	}
 
 	@Override

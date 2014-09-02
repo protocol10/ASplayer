@@ -27,6 +27,7 @@ public class MediaServiceContoller extends Service {
 	MediaPlayer mediaplayer;
 	MediaManager manager;
 	List<HashMap<String, Object>> media_list;
+	private int playBackIndex = 0;
 
 	// mBinder object which is responsible for interacting with client.
 	private final IBinder mbinder = new MediaBinder();
@@ -62,10 +63,11 @@ public class MediaServiceContoller extends Service {
 	public void play(int index) {
 
 		try {
+			playBackIndex = index;
 			mediaplayer.reset();
 			mediaplayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-			mediaplayer.setDataSource(media_list.get(index).get(PATH_KEY)
-					.toString());
+			mediaplayer.setDataSource(media_list.get(playBackIndex)
+					.get(PATH_KEY).toString());
 			mediaplayer.prepare();
 			mediaplayer.start();
 		} catch (IllegalArgumentException e) {
@@ -94,6 +96,26 @@ public class MediaServiceContoller extends Service {
 			}
 		} else {
 			Log.i("MEDIAPLAYER", "NULL");
+		}
+	}
+
+	public void nextSong() {
+		if (playBackIndex < (media_list.size() - 1)) {
+			playBackIndex += 1;
+			play(playBackIndex);
+		} else {
+			playBackIndex = 0;
+			play(playBackIndex);
+		}
+	}
+
+	public void previousSong() {
+		if (playBackIndex > 0) {
+			playBackIndex -= 1;
+			play(playBackIndex);
+		} else {
+			playBackIndex = 0;
+			play(playBackIndex);
 		}
 	}
 
