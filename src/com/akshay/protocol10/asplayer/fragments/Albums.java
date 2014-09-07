@@ -39,7 +39,7 @@ public class Albums extends Fragment implements OnItemClickListener {
 		super.onCreate(savedInstanceState);
 		manager = new MediaManager();
 		album_list = new ArrayList<HashMap<String, Object>>();
-
+		album_list = manager.retriveAlbum(getActivity());
 	}
 
 	@Override

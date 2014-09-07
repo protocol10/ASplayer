@@ -18,8 +18,11 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -35,6 +38,11 @@ import android.widget.AdapterView.OnItemClickListener;
 public class MainActivity extends ActionBarActivity implements
 		OnItemClickListener, onItemSelected {
 
+	private static final String TITLE_KEY = "title";
+
+	private static final String ARTIST_KEY = "artist";
+	private static final String ALBUM_KEY = "album";
+
 	String[] drawer_options = {};
 	DrawerLayout drawer_layout;
 	ListView list_view;
@@ -47,6 +55,8 @@ public class MainActivity extends ActionBarActivity implements
 	boolean isBound = false;
 	MediaServiceContoller serviceController;
 	MediaBinder binder;
+
+	IntentFilter filter;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -89,8 +99,10 @@ public class MainActivity extends ActionBarActivity implements
 
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		getSupportActionBar().setHomeButtonEnabled(true);
-		new AsyncLoader().execute();
 
+		new AsyncLoader().execute();
+		filter = new IntentFilter();
+		filter.addAction(MediaServiceContoller.BROADCAST_ACTION);
 	}
 
 	@Override
@@ -162,6 +174,7 @@ public class MainActivity extends ActionBarActivity implements
 		// TODO Auto-generated method stub
 		super.onDestroy();
 		doUnbindService();
+		unregisterReceiver(broadcastReceiver);
 	}
 
 	@Override
@@ -169,6 +182,7 @@ public class MainActivity extends ActionBarActivity implements
 		// TODO Auto-generated method stub
 		super.onResume();
 		doBindService();
+		registerReceiver(broadcastReceiver, filter);
 	}
 
 	@Override
@@ -279,4 +293,22 @@ public class MainActivity extends ActionBarActivity implements
 
 	}
 
+	private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			// TODO Auto-generated method stub
+
+			if (intent.getAction() == MediaServiceContoller.BROADCAST_ACTION) {
+				ControlsFragments fragments = (ControlsFragments) getSupportFragmentManager()
+						.findFragmentById(R.id.content);
+				fragments.updateView(intent.getStringExtra(TITLE_KEY));
+			}
+		}
+
+	};
+
+	public String name() {
+		return "akshay";
+	}
 }

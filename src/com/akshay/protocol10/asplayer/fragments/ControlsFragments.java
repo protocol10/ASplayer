@@ -1,11 +1,14 @@
 package com.akshay.protocol10.asplayer.fragments;
 
+import com.akshay.protocol10.asplayer.MainActivity;
 import com.akshay.protocol10.asplayer.R;
 import com.akshay.protocol10.asplayer.callbacks.onItemSelected;
+import com.akshay.protocol10.asplayer.service.MediaServiceContoller;
 
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -26,14 +29,22 @@ public class ControlsFragments extends Fragment implements OnClickListener {
 	public void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
+		Bundle bundle = getArguments();
+		if (bundle != null) {
+			Log.i("bundas", bundle.getString("title"));
+		} else {
+			Log.i("bundas", "NasdOOO");
+		}
 	}
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
-		setRetainInstance(true);
+
 		view = inflater.inflate(R.layout.controls_fragments, container, false);
+		String title = getArguments().getString("title");
+		Log.i("tag", title);
 		play_button = (Button) view.findViewById(R.id.play_button);
 		next_button = (Button) view.findViewById(R.id.next_button);
 		back_button = (Button) view.findViewById(R.id.back_button);
@@ -50,16 +61,23 @@ public class ControlsFragments extends Fragment implements OnClickListener {
 
 		Bundle bundle = getArguments();
 		if (bundle != null) {
-			String title_text = bundle.getString("title");
+			Log.i("BUNDLE", "YES");
+			String title_text = bundle
+					.getString(MediaServiceContoller.TITLE_KEY);
 			String album_text = bundle.getString("album");
 			String artist_text = bundle.getString("artist");
 			int position = bundle.getInt("position");
-
+			Log.i("TITLE", title_text);
+			Toast.makeText(getActivity(), title_text, Toast.LENGTH_SHORT)
+					.show();
 			title_view.setText(title_text.toString());
 			artist_view.setText(artist_text.toString());
 			album_view.setText(album_text.toString());
 
 			mCallBack.startPlayBack(position);
+		} else {
+			Log.i("BUNDLE", "NO");
+
 		}
 	}
 
@@ -86,12 +104,16 @@ public class ControlsFragments extends Fragment implements OnClickListener {
 		// TODO Auto-generated method stub
 		super.onAttach(activity);
 		mCallBack = (onItemSelected) activity;
+
 	}
 
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onActivityCreated(savedInstanceState);
+		Bundle b = getArguments();
+		Toast.makeText(getActivity(), b.getString("title"), Toast.LENGTH_SHORT)
+				.show();
 
 	}
 
@@ -105,7 +127,7 @@ public class ControlsFragments extends Fragment implements OnClickListener {
 			break;
 		case R.id.next_button:
 			mCallBack.nextPlayBack();
-			Toast.makeText(getActivity(), "NEXT", Toast.LENGTH_SHORT).show();
+			// Toast.makeText(getActivity(), "NEXT", Toast.LENGTH_SHORT).show();
 			break;
 		case R.id.back_button:
 			mCallBack.previousPlayBack();
@@ -116,6 +138,10 @@ public class ControlsFragments extends Fragment implements OnClickListener {
 		default:
 			break;
 		}
+	}
+
+	public void updateView(String name) {
+		title_view.setText(name);
 	}
 
 }
