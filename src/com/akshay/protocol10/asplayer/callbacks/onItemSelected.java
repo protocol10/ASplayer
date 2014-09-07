@@ -12,4 +12,5 @@ public interface onItemSelected {
 
 	void previousPlayBack();
 
+	void UpdateView(String name);
 }

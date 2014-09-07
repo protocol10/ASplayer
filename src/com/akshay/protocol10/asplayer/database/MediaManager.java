@@ -20,8 +20,6 @@ import android.widget.Toast;
 
 public class MediaManager {
 
-	List<HashMap<String, Object>> tracks_list;
-
 	Uri INTERNAL;
 	Uri EXTERNAL;
 	String selection = null;
@@ -43,16 +41,19 @@ public class MediaManager {
 	ContentResolver resolver;
 	Cursor cursor;
 
+	List<HashMap<String, Object>> tracks_list;
+	HashMap<String, Object> songs_map;
+
 	/**
 	 * PROJECTION - Retrieves the value for Tracks from MediaStore DataBase in
 	 * android Only used for MediaProjection for general tracks
 	 * 
 	 */
 
-	private static final String[] PROJECTION = { MediaStore.Audio.Media._ID,
-			MediaStore.Audio.Media.DATA, MediaStore.Audio.Media.DISPLAY_NAME,
-			MediaStore.Audio.Media.ARTIST, MediaStore.Audio.Media.ALBUM,
-			MediaStore.Audio.Media.DURATION };
+	private static final String[] TRACKS_COLUMNS = {
+			MediaStore.Audio.Media._ID, MediaStore.Audio.Media.DATA,
+			MediaStore.Audio.Media.DISPLAY_NAME, MediaStore.Audio.Media.ARTIST,
+			MediaStore.Audio.Media.ALBUM, MediaStore.Audio.Media.DURATION };
 	/**
 	 * ALBUM_COLUMNS - Used for projection no of Albums available for available
 	 * tracks on the device
@@ -92,8 +93,8 @@ public class MediaManager {
 	public List<HashMap<String, Object>> retriveContent(Context context) {
 
 		resolver = context.getContentResolver();
-		cursor = resolver.query(EXTERNAL, PROJECTION, selection, selectionArgs,
-				MediaStore.Audio.Media.DISPLAY_NAME);
+		cursor = resolver.query(EXTERNAL, TRACKS_COLUMNS, selection,
+				selectionArgs, MediaStore.Audio.Media.DISPLAY_NAME);
 
 		if (cursor == null)
 			Toast.makeText(context, UNABLE_TAG, Toast.LENGTH_SHORT).show();
@@ -111,7 +112,7 @@ public class MediaManager {
 				String album = cursor.getString(4);// ALBUMV
 				String duration = cursor.getString(5);// DURATION
 
-				HashMap<String, Object> songs_map = new HashMap<String, Object>();
+				songs_map = new HashMap<String, Object>();
 				songs_map.put(ID_KEY, id);
 				songs_map.put(PATH_KEY, path);
 				songs_map.put(TITLE_KEY, title);
@@ -122,6 +123,7 @@ public class MediaManager {
 
 			} while (cursor.moveToNext());
 		}
+		cursor.close();
 		return (ArrayList<HashMap<String, Object>>) tracks_list;
 	}
 
@@ -170,7 +172,7 @@ public class MediaManager {
 
 			} while (cursor.moveToNext());
 		}
-
+		cursor.close();
 		return album_list;
 	}
 
@@ -210,7 +212,46 @@ public class MediaManager {
 
 			} while (cursor.moveToNext());
 		}
-
+		cursor.close();
 		return artist_list;
+	}
+
+	public List<HashMap<String, Object>> retriveContent(Context context,
+			String name) {
+
+		resolver = context.getContentResolver();
+		selection = MediaStore.Audio.Media.ALBUM + "=?";
+
+		String selectionArgs[] = { name };
+		cursor = resolver.query(EXTERNAL, TRACKS_COLUMNS, selection,
+				selectionArgs, null);
+
+		if (cursor == null)
+			Toast.makeText(context, UNABLE_TAG, Toast.LENGTH_SHORT).show();
+		else if (!cursor.moveToFirst())
+			Toast.makeText(context, NOMEDIA_TAG, Toast.LENGTH_SHORT).show();
+		else {
+			do {
+				String id = cursor.getString(0); // ID
+				String path = cursor.getString(1);// DATA
+				String title = cursor.getString(2);// TITLE
+				Log.i(PATH_KEY, path);
+				String artist = cursor.getString(3);// ARTIST
+				String album = cursor.getString(4);// ALBUMV
+				String duration = cursor.getString(5);// DURATION
+
+				songs_map = new HashMap<String, Object>();
+				songs_map.put(ID_KEY, id);
+				songs_map.put(PATH_KEY, path);
+				songs_map.put(TITLE_KEY, title);
+				songs_map.put(ARTIST_KEY, artist);
+				songs_map.put(ALBUM_KEY, album);
+				songs_map.put(DURATION_KEY, duration);
+				tracks_list.add(songs_map);
+
+			} while (cursor.moveToNext());
+		}
+		cursor.close();
+		return tracks_list;
 	}
 }

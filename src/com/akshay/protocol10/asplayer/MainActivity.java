@@ -5,6 +5,7 @@ import java.util.HashMap;
 
 import com.akshay.protocol10.asplayer.adapters.DrawerAdapter;
 import com.akshay.protocol10.asplayer.callbacks.onItemSelected;
+import com.akshay.protocol10.asplayer.fragments.AlbumSongsFragment;
 import com.akshay.protocol10.asplayer.fragments.ControlsFragments;
 import com.akshay.protocol10.asplayer.fragments.PageSlider;
 import com.akshay.protocol10.asplayer.service.MediaServiceContoller;
@@ -88,10 +89,8 @@ public class MainActivity extends ActionBarActivity implements
 
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		getSupportActionBar().setHomeButtonEnabled(true);
+		new AsyncLoader().execute();
 
-		Fragment fragment = new PageSlider();
-		FragmentManager manager = getSupportFragmentManager();
-		manager.beginTransaction().replace(R.id.content, fragment).commit();
 	}
 
 	@Override
@@ -199,6 +198,19 @@ public class MainActivity extends ActionBarActivity implements
 		}
 	}
 
+	@Override
+	public void UpdateView(String name) {
+		// TODO Auto-generated method stub duration
+		AlbumSongsFragment fragment = new AlbumSongsFragment();
+		Bundle args = new Bundle();
+		args.putString("name", name);
+		fragment.setArguments(args);
+
+		FragmentTransaction transaction = getSupportFragmentManager()
+				.beginTransaction().replace(R.id.content, fragment);
+		transaction.addToBackStack(null).commit();
+	}
+
 	/**
 	 * Establish a connection with the service. We use an explicit class name
 	 * because we want a specific service implementation that we know will be
@@ -253,4 +265,18 @@ public class MainActivity extends ActionBarActivity implements
 			isBound = true;
 		}
 	};
+
+	class AsyncLoader extends android.os.AsyncTask<Void, Void, Void> {
+
+		@Override
+		protected Void doInBackground(Void... params) {
+			// TODO Auto-generated method stub
+			Fragment fragment = new PageSlider();
+			FragmentManager manager = getSupportFragmentManager();
+			manager.beginTransaction().replace(R.id.content, fragment).commit();
+			return null;
+		}
+
+	}
+
 }
