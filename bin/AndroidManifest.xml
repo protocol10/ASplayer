@@ -24,10 +24,24 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data android:scheme="file" />
+                <data android:mimeType="audio/*" />
+                <data android:mimeType="application/ogg" />
+                <data android:mimeType="application/x-ogg" />
+                <data android:mimeType="application/itunes" />
+            </intent-filter>
         </activity>
         <activity
             android:name=".PlayerControls"
             android:label="@string/title_activity_player_controls" >
+            <intent-filter>
+                <action android:name="android.intent.action.MUSIC_PLAYER" />
+            </intent-filter>
         </activity>
 
         <service android:name="com.akshay.protocol10.asplayer.service.MediaServiceContoller" >
