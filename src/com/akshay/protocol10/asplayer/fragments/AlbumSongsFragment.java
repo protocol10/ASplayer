@@ -16,7 +16,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.Toast;
+
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
@@ -50,11 +50,7 @@ public class AlbumSongsFragment extends Fragment implements OnItemClickListener 
 		Bundle args = getArguments();
 		if (args != null) {
 			String name = args.getString("name");
-			Toast.makeText(getActivity(), name + "a", Toast.LENGTH_LONG).show();
 			albums_media = manager.retriveContent(getActivity(), name);
-			Toast.makeText(getActivity(),
-					name + " size " + albums_media.size(), Toast.LENGTH_SHORT)
-					.show();
 		}
 	}
 

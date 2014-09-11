@@ -1,5 +1,8 @@
 package com.akshay.protocol10.asplayer;
 
+/**
+ * @author akshay
+ */
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -32,27 +35,23 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
 public class MainActivity extends ActionBarActivity implements
 		OnItemClickListener, onItemSelected {
 
-	private static final String TITLE_KEY = "title";
-
-	private static final String ARTIST_KEY = "artist";
-	private static final String ALBUM_KEY = "album";
-
+	boolean isBound = false;
+	String name, artist, album;
 	String[] drawer_options = {};
+	CharSequence title;
+	ArrayList<HashMap<String, Object>> track;
+
 	DrawerLayout drawer_layout;
 	ListView list_view;
 
 	ActionBarDrawerToggle drawer_toggle;
 	DrawerAdapter drawerAdapter;
-	CharSequence title;
-	ArrayList<HashMap<String, Object>> track;
 
-	boolean isBound = false;
 	MediaServiceContoller serviceController;
 	MediaBinder binder;
 
@@ -100,7 +99,11 @@ public class MainActivity extends ActionBarActivity implements
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		getSupportActionBar().setHomeButtonEnabled(true);
 
-		new AsyncLoader().execute();
+		Fragment fragment = new PageSlider();
+		FragmentManager manager = getSupportFragmentManager();
+		manager.beginTransaction().replace(R.id.content, fragment).commit();
+
+		// new AsyncLoader().execute();
 		filter = new IntentFilter();
 		filter.addAction(MediaServiceContoller.BROADCAST_ACTION);
 	}
@@ -274,8 +277,6 @@ public class MainActivity extends ActionBarActivity implements
 
 			MediaServiceContoller.MediaBinder bind = (MediaBinder) service;
 			serviceController = bind.getService();
-			Toast.makeText(getApplicationContext(), "Service Connected",
-					Toast.LENGTH_SHORT).show();
 			isBound = true;
 		}
 	};
@@ -290,7 +291,6 @@ public class MainActivity extends ActionBarActivity implements
 			manager.beginTransaction().replace(R.id.content, fragment).commit();
 			return null;
 		}
-
 	}
 
 	private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
@@ -302,13 +302,14 @@ public class MainActivity extends ActionBarActivity implements
 			if (intent.getAction() == MediaServiceContoller.BROADCAST_ACTION) {
 				ControlsFragments fragments = (ControlsFragments) getSupportFragmentManager()
 						.findFragmentById(R.id.content);
-				fragments.updateView(intent.getStringExtra(TITLE_KEY));
+
+				name = intent.getStringExtra(MediaServiceContoller.TITLE_KEY);
+				artist = intent
+						.getStringExtra(MediaServiceContoller.ARTIST_KEY);
+				album = intent.getStringExtra(MediaServiceContoller.ALBUM_KEY);
+				fragments.updateView(name, artist, album);
 			}
 		}
 
 	};
-
-	public String name() {
-		return "akshay";
-	}
 }

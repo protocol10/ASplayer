@@ -15,7 +15,6 @@ import android.net.Uri;
 import android.provider.MediaStore;
 import android.provider.MediaStore.Audio.Albums;
 import android.provider.MediaStore.Audio.Artists;
-import android.util.Log;
 import android.widget.Toast;
 
 public class MediaManager {
@@ -24,8 +23,6 @@ public class MediaManager {
 	Uri EXTERNAL;
 	String selection = null;
 	String[] selectionArgs = null;
-
-	// String selection = MediaStore.Audio.Media.IS_MUSIC + " != 0";
 
 	private final String ID_KEY = "id";
 	private final String TITLE_KEY = "title";
@@ -160,8 +157,6 @@ public class MediaManager {
 				String id = cursor.getString(1); // id
 				String artist = cursor.getString(2); // artist
 				String album_art = cursor.getString(3); // album-art
-				// Log.i("art", album_art);
-				Log.i("artist", artist);
 
 				album = new HashMap<String, Object>();
 				album.put(ALBUM_KEY, album_name);
@@ -235,7 +230,7 @@ public class MediaManager {
 				String id = cursor.getString(0); // ID
 				String path = cursor.getString(1);// DATA
 				String title = cursor.getString(2);// TITLE
-				Log.i(PATH_KEY, path);
+
 				String artist = cursor.getString(3);// ARTIST
 				String album = cursor.getString(4);// ALBUMV
 				String duration = cursor.getString(5);// DURATION

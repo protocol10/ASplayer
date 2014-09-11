@@ -70,7 +70,6 @@ public class Albums extends Fragment implements OnItemClickListener {
 			long id) {
 		// TODO Auto-generated method stub
 		String name = album_list.get(position).get("album").toString();
-		// Toast.makeText(getActivity(), name, Toast.LENGTH_SHORT).show();
 		mcallBack.UpdateView(name);
 
 	}

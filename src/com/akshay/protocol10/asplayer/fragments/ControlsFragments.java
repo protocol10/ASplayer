@@ -1,21 +1,20 @@
 package com.akshay.protocol10.asplayer.fragments;
 
-import com.akshay.protocol10.asplayer.MainActivity;
+/**
+ * @author akshay
+ */
 import com.akshay.protocol10.asplayer.R;
 import com.akshay.protocol10.asplayer.callbacks.onItemSelected;
-import com.akshay.protocol10.asplayer.service.MediaServiceContoller;
 
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class ControlsFragments extends Fragment implements OnClickListener {
 
@@ -29,22 +28,15 @@ public class ControlsFragments extends Fragment implements OnClickListener {
 	public void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
-		Bundle bundle = getArguments();
-		if (bundle != null) {
-			Log.i("bundas", bundle.getString("title"));
-		} else {
-			Log.i("bundas", "NasdOOO");
-		}
 	}
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
-
+		// setRetainInstance(true);
 		view = inflater.inflate(R.layout.controls_fragments, container, false);
-		String title = getArguments().getString("title");
-		Log.i("tag", title);
+
 		play_button = (Button) view.findViewById(R.id.play_button);
 		next_button = (Button) view.findViewById(R.id.next_button);
 		back_button = (Button) view.findViewById(R.id.back_button);
@@ -61,23 +53,17 @@ public class ControlsFragments extends Fragment implements OnClickListener {
 
 		Bundle bundle = getArguments();
 		if (bundle != null) {
-			Log.i("BUNDLE", "YES");
-			String title_text = bundle
-					.getString(MediaServiceContoller.TITLE_KEY);
+
+			String title_text = bundle.getString("title");
 			String album_text = bundle.getString("album");
 			String artist_text = bundle.getString("artist");
 			int position = bundle.getInt("position");
-			Log.i("TITLE", title_text);
-			Toast.makeText(getActivity(), title_text, Toast.LENGTH_SHORT)
-					.show();
+
 			title_view.setText(title_text.toString());
 			artist_view.setText(artist_text.toString());
 			album_view.setText(album_text.toString());
 
 			mCallBack.startPlayBack(position);
-		} else {
-			Log.i("BUNDLE", "NO");
-
 		}
 	}
 
@@ -89,7 +75,6 @@ public class ControlsFragments extends Fragment implements OnClickListener {
 				R.id.album_name_text_view);
 		album_view = (TextView) getActivity().findViewById(
 				R.id.artist_text_view);
-
 	}
 
 	private void setUpListeners() {
@@ -104,17 +89,12 @@ public class ControlsFragments extends Fragment implements OnClickListener {
 		// TODO Auto-generated method stub
 		super.onAttach(activity);
 		mCallBack = (onItemSelected) activity;
-
 	}
 
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onActivityCreated(savedInstanceState);
-		Bundle b = getArguments();
-		Toast.makeText(getActivity(), b.getString("title"), Toast.LENGTH_SHORT)
-				.show();
-
 	}
 
 	@Override
@@ -122,26 +102,35 @@ public class ControlsFragments extends Fragment implements OnClickListener {
 		// TODO Auto-generated method stub
 		switch (view.getId()) {
 		case R.id.play_button:
-			Toast.makeText(getActivity(), "PLAY", Toast.LENGTH_SHORT).show();
 			mCallBack.pausePlayBack();
 			break;
 		case R.id.next_button:
 			mCallBack.nextPlayBack();
-			// Toast.makeText(getActivity(), "NEXT", Toast.LENGTH_SHORT).show();
 			break;
 		case R.id.back_button:
 			mCallBack.previousPlayBack();
-			Toast.makeText(getActivity(), "PREVIOUS", Toast.LENGTH_SHORT)
-					.show();
 			break;
-
 		default:
 			break;
 		}
 	}
 
-	public void updateView(String name) {
+	/**
+	 * 
+	 * Method to be called from Activity to update the UI Elements
+	 * 
+	 * @param name
+	 *            - Title of the file
+	 * @param artist
+	 *            -Name of Artist
+	 * @param album
+	 *            -Name of Album
+	 */
+	public void updateView(String name, String artist, String album) {
 		title_view.setText(name);
+		artist_view.setText(artist);
+		album_view.setText(album);
+
 	}
 
 }
