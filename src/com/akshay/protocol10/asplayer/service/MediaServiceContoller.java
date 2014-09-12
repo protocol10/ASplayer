@@ -67,7 +67,7 @@ public class MediaServiceContoller extends Service {
 		/**
 		 * We want this service to continue until it is explicitly stopped.
 		 */
-		return START_STICKY;
+		return super.onStartCommand(intent, flags, startId);
 	}
 
 	public void play(int index) {

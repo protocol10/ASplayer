@@ -95,7 +95,7 @@ public class MainActivity extends ActionBarActivity implements
 		drawer_layout.setDrawerListener(drawer_toggle);
 
 		serviceController = new MediaServiceContoller();
-
+		doBindService();
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		getSupportActionBar().setHomeButtonEnabled(true);
 
@@ -106,6 +106,9 @@ public class MainActivity extends ActionBarActivity implements
 		// new AsyncLoader().execute();
 		filter = new IntentFilter();
 		filter.addAction(MediaServiceContoller.BROADCAST_ACTION);
+
+		// bind service
+
 	}
 
 	@Override
@@ -181,11 +184,16 @@ public class MainActivity extends ActionBarActivity implements
 	}
 
 	@Override
+	protected void onStart() {
+		// TODO Auto-generated method stub
+		super.onStart();
+		registerReceiver(broadcastReceiver, filter);
+	}
+
+	@Override
 	protected void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
-		doBindService();
-		registerReceiver(broadcastReceiver, filter);
 	}
 
 	@Override
