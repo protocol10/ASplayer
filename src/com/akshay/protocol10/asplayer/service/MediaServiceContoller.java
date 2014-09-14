@@ -32,9 +32,9 @@ public class MediaServiceContoller extends Service {
 	public static final String BROADCAST_ACTION = "com.akshay.protocol10.asplayer.UPDATE_TEXT";
 	private static final String TAG = "MEDIASERVICE CONTROLLER";
 
-	private int playBackIndex = 0;
+	private static int playBackIndex = 0;
 
-	MediaPlayer mediaplayer;
+	static MediaPlayer mediaplayer;
 	MediaManager manager;
 	List<HashMap<String, Object>> media_list;
 
@@ -53,7 +53,7 @@ public class MediaServiceContoller extends Service {
 		// TODO Auto-generated method stub
 		super.onCreate();
 		Log.i("SERVICE ", "Service Started");
-		mediaplayer = new MediaPlayer();
+		// mediaplayer = new MediaPlayer();
 		media_list = new ArrayList<HashMap<String, Object>>();
 		manager = new MediaManager();
 		media_list = manager.retriveContent(getApplicationContext());
@@ -67,14 +67,19 @@ public class MediaServiceContoller extends Service {
 		/**
 		 * We want this service to continue until it is explicitly stopped.
 		 */
-		return super.onStartCommand(intent, flags, startId);
+		return START_STICKY;
 	}
 
 	public void play(int index) {
 
 		try {
 			playBackIndex = index;
-			mediaplayer.reset();
+			if (mediaplayer == null) {
+				mediaplayer = new MediaPlayer();
+			} else {
+				mediaplayer.reset();
+			}
+
 			mediaplayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
 			mediaplayer.setDataSource(media_list.get(playBackIndex)
 					.get(PATH_KEY).toString());
@@ -147,6 +152,14 @@ public class MediaServiceContoller extends Service {
 		intent.putExtra(ARTIST_KEY, album);
 		sendBroadcast(intent);
 		Log.d(TAG, "BroadCast Sent");
+	}
+
+	@Override
+	public void onDestroy() {
+		// TODO Auto-generated method stub
+		super.onDestroy();
+		Log.i("SERVICE", "DESTROY");
+
 	}
 
 	/**

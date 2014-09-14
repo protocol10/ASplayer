@@ -56,6 +56,7 @@ public class MainActivity extends ActionBarActivity implements
 	MediaBinder binder;
 
 	IntentFilter filter;
+	Fragment fragment;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -95,20 +96,37 @@ public class MainActivity extends ActionBarActivity implements
 		drawer_layout.setDrawerListener(drawer_toggle);
 
 		serviceController = new MediaServiceContoller();
-		doBindService();
+
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		getSupportActionBar().setHomeButtonEnabled(true);
 
-		Fragment fragment = new PageSlider();
-		FragmentManager manager = getSupportFragmentManager();
-		manager.beginTransaction().replace(R.id.content, fragment).commit();
+		if (savedInstanceState == null) {
+			fragment = new PageSlider();
+			FragmentManager manager = getSupportFragmentManager();
+			manager.beginTransaction().replace(R.id.content, fragment).commit();
+		}
 
 		// new AsyncLoader().execute();
 		filter = new IntentFilter();
 		filter.addAction(MediaServiceContoller.BROADCAST_ACTION);
 
 		// bind service
+		doBindService();
+	}
 
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+		// TODO Auto-generated method stub
+		super.onSaveInstanceState(outState);
+		getSupportFragmentManager().putFragment(outState, "view", fragment);
+	}
+
+	@Override
+	protected void onRestoreInstanceState(Bundle savedInstanceState) {
+		// TODO Auto-generated method stub
+		super.onRestoreInstanceState(savedInstanceState);
+		fragment = getSupportFragmentManager().getFragment(savedInstanceState,
+				"view");
 	}
 
 	@Override
@@ -244,7 +262,6 @@ public class MainActivity extends ActionBarActivity implements
 	 */
 
 	private void doBindService() {
-
 		Intent serviceIntent = new Intent(this, MediaServiceContoller.class);
 		bindService(serviceIntent, mConnection, BIND_AUTO_CREATE);
 
