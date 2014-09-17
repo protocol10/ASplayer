@@ -15,6 +15,7 @@ import android.net.Uri;
 import android.provider.MediaStore;
 import android.provider.MediaStore.Audio.Albums;
 import android.provider.MediaStore.Audio.Artists;
+import android.util.Log;
 import android.widget.Toast;
 
 public class MediaManager {
@@ -30,6 +31,7 @@ public class MediaManager {
 	private final String ARTIST_KEY = "artist";
 	private final String ALBUM_KEY = "album";
 	private final String DURATION_KEY = "duration";
+	private final String ALBUM_ART = "duration";
 
 	private static final String UNABLE_TAG = "Unable to fetch media";
 	private static final String NOMEDIA_TAG = "No media on device";
@@ -102,6 +104,7 @@ public class MediaManager {
 
 			do {
 				String id = cursor.getString(0); // ID
+				Log.i(MediaManager.class.getName(), " " + id);
 				String path = cursor.getString(1);// DATA
 				String title = cursor.getString(2);// TITLE
 
@@ -162,7 +165,7 @@ public class MediaManager {
 				album.put(ALBUM_KEY, album_name);
 				album.put(ID_KEY, id);
 				album.put(ARTIST_KEY, artist);
-				album.put("albumart", album_art);
+				album.put(ALBUM_ART, album_art);
 				album_list.add(album);
 
 			} while (cursor.moveToNext());

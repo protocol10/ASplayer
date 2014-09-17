@@ -14,18 +14,17 @@ import android.app.Service;
 import android.content.Intent;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.media.MediaPlayer.OnCompletionListener;
 import android.os.Binder;
 import android.os.IBinder;
-import android.util.Log;
 
-public class MediaServiceContoller extends Service {
+public class MediaServiceContoller extends Service implements
+		OnCompletionListener {
 
-	// private final String ID_KEY = "id";
 	public static final String TITLE_KEY = "title";
 	private final String PATH_KEY = "src";
 	public static final String ARTIST_KEY = "artist";
 	public static final String ALBUM_KEY = "album";
-	// private final String DURATION_KEY = "duration";
 
 	private String title_text, artist_text, album_text;
 
@@ -52,13 +51,9 @@ public class MediaServiceContoller extends Service {
 	public void onCreate() {
 		// TODO Auto-generated method stub
 		super.onCreate();
-		Log.i("SERVICE ", "Service Started");
-		// mediaplayer = new MediaPlayer();
 		media_list = new ArrayList<HashMap<String, Object>>();
 		manager = new MediaManager();
 		media_list = manager.retriveContent(getApplicationContext());
-		Log.i("size", " " + media_list.size());
-
 	}
 
 	@Override
@@ -84,6 +79,7 @@ public class MediaServiceContoller extends Service {
 			mediaplayer.setDataSource(media_list.get(playBackIndex)
 					.get(PATH_KEY).toString());
 			mediaplayer.prepare();
+			mediaplayer.setOnCompletionListener(this);
 			mediaplayer.start();
 		} catch (IllegalArgumentException e) {
 			// TODO Auto-generated catch block
@@ -103,14 +99,11 @@ public class MediaServiceContoller extends Service {
 	public void pauseSong() {
 
 		if (mediaplayer != null) {
-			Log.i("mediaplayer", "Not Null");
 			if (mediaplayer.isPlaying()) {
 				mediaplayer.pause();
 			} else {
 				mediaplayer.start();
 			}
-		} else {
-			Log.i("MEDIAPLAYER", "NULL");
 		}
 	}
 
@@ -122,11 +115,7 @@ public class MediaServiceContoller extends Service {
 			playBackIndex = 0;
 			play(playBackIndex);
 		}
-
-		title_text = media_list.get(playBackIndex).get(TITLE_KEY).toString();
-		artist_text = media_list.get(playBackIndex).get(ARTIST_KEY).toString();
-		album_text = media_list.get(playBackIndex).get(ALBUM_KEY).toString();
-		updateView(title_text, album_text, artist_text);
+		updateView();
 	}
 
 	public void previousSong() {
@@ -137,29 +126,37 @@ public class MediaServiceContoller extends Service {
 			playBackIndex = 0;
 			play(playBackIndex);
 		}
+		updateView();
+	}
 
+	private void updateView() {
 		title_text = media_list.get(playBackIndex).get(TITLE_KEY).toString();
 		artist_text = media_list.get(playBackIndex).get(ARTIST_KEY).toString();
 		album_text = media_list.get(playBackIndex).get(ALBUM_KEY).toString();
-		updateView(title_text, album_text, artist_text);
+		sendBroadCastToView(title_text, album_text, artist_text);
 	}
 
-	private void updateView(String title, String album, String artist) {
+	/**
+	 *
+	 * @param title
+	 *            Title of the MediaTrack
+	 * @param album
+	 *            Album Name of MediaTrack
+	 * @param artist
+	 *            Artist Name of MediaTrack
+	 */
+	private void sendBroadCastToView(String title, String album, String artist) {
 		intent = new Intent(BROADCAST_ACTION);
-		// intent.setAction(BROADCAST_ACTION);
 		intent.putExtra(TITLE_KEY, title);
 		intent.putExtra(ALBUM_KEY, album);
 		intent.putExtra(ARTIST_KEY, album);
 		sendBroadcast(intent);
-		Log.d(TAG, "BroadCast Sent");
 	}
 
 	@Override
 	public void onDestroy() {
 		// TODO Auto-generated method stub
 		super.onDestroy();
-		Log.i("SERVICE", "DESTROY");
-
 	}
 
 	/**
@@ -173,5 +170,11 @@ public class MediaServiceContoller extends Service {
 		public MediaServiceContoller getService() {
 			return MediaServiceContoller.this;
 		}
+	}
+
+	@Override
+	public void onCompletion(MediaPlayer mp) {
+		// TODO Auto-generated method stub
+		nextSong();
 	}
 }

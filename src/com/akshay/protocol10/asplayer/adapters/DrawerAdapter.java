@@ -57,7 +57,9 @@ public class DrawerAdapter extends ArrayAdapter<String> {
 	}
 
 	/**
-	 * Optimization technique used for improving the performance of list
+	 * Optimization technique used for improving the performance of list as per
+	 * the design Guide Lines
+	 *
 	 */
 
 	static class ViewHolder {

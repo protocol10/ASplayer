@@ -21,7 +21,6 @@ import android.widget.ListView;
 
 public class TracksFragment extends Fragment implements OnItemClickListener {
 
-	private final String PATH_KEY = "src";
 	private final String TITLE_KEY = "title";
 	private final String ARTIST_KEY = "artist";
 	private final String ALBUM_KEY = "album";
@@ -76,7 +75,6 @@ public class TracksFragment extends Fragment implements OnItemClickListener {
 			long id) {
 		// TODO Auto-generated method stub
 		int index = position;
-		String path = tracks_list_data.get(position).get(PATH_KEY).toString();
 		String title = tracks_list_data.get(position).get(TITLE_KEY).toString();
 		String album = tracks_list_data.get(position).get(ALBUM_KEY).toString();
 		String artist = tracks_list_data.get(position).get(ARTIST_KEY)

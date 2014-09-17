@@ -5,12 +5,11 @@ package com.akshay.protocol10.asplayer.fragments;
  */
 import com.akshay.protocol10.asplayer.R;
 import com.akshay.protocol10.asplayer.callbacks.onItemSelected;
+import com.akshay.protocol10.asplayer.database.Preferences;
 
-import android.R.raw;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -20,27 +19,29 @@ import android.widget.TextView;
 
 public class ControlsFragments extends Fragment implements OnClickListener {
 
+	int position;
+	String title_text, album_text, artist_text;
+	private String POSITION_KEY = "position";
+
 	TextView title_view, artist_view, album_view;
 	Button play_button, next_button, back_button;
 	View view;
-	int position;
-	String title_text, album_text, artist_text;
+
 	onItemSelected mCallBack;
+
+	Preferences preferences;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
-		Log.i("LIFECYCLE", "onCreate");
-
+		preferences = new Preferences(getActivity());
 	}
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
-		// setRetainInstance(true);
-		Log.i("LIFECYCLE", "onCreateView");
 		view = inflater.inflate(R.layout.controls_fragments, container, false);
 
 		play_button = (Button) view.findViewById(R.id.play_button);
@@ -56,17 +57,19 @@ public class ControlsFragments extends Fragment implements OnClickListener {
 			title_text = bundle.getString("title");
 			album_text = bundle.getString("album");
 			artist_text = bundle.getString("artist");
-			position = bundle.getInt("position");
+			position = bundle.getInt(POSITION_KEY);
+
 		}
 
 		if (savedInstanceState == null) {
 			mCallBack.startPlayBack(position);
-		} else {
+			preferences.setName(title_text, artist_text, album_text);
 
 		}
-		title_view.setText(title_text.toString());
-		artist_view.setText(artist_text.toString());
-		album_view.setText(album_text.toString());
+		title_view.setText(preferences.getTitle());
+		artist_view.setText(preferences.getArtist());
+		album_view.setText(preferences.getAlbum());
+
 		setUpListeners();
 
 		return view;
@@ -76,7 +79,7 @@ public class ControlsFragments extends Fragment implements OnClickListener {
 	public void onSaveInstanceState(Bundle outState) {
 		// TODO Auto-generated method stub
 		super.onSaveInstanceState(outState);
-		outState.putInt("position", position);
+		outState.putInt(POSITION_KEY, position);
 
 	}
 
@@ -84,32 +87,7 @@ public class ControlsFragments extends Fragment implements OnClickListener {
 	public void onStart() {
 		// TODO Auto-generated method stub
 		super.onStart();
-		Log.i("LIFECYCLE", "onStart");
-		/*
-		 * setUpView();
-		 * 
-		 * Bundle bundle = getArguments(); if (bundle != null) {
-		 * 
-		 * String title_text = bundle.getString("title"); String album_text =
-		 * bundle.getString("album"); String artist_text =
-		 * bundle.getString("artist"); int position = bundle.getInt("position");
-		 * 
-		 * title_view.setText(title_text.toString());
-		 * artist_view.setText(artist_text.toString());
-		 * album_view.setText(album_text.toString());
-		 * 
-		 * mCallBack.startPlayBack(position); }
-		 */
-	}
 
-	private void setUpView() {
-		// TODO Auto-generated method stub
-		title_view = (TextView) getActivity().findViewById(
-				R.id.song_title_text_view);
-		artist_view = (TextView) getActivity().findViewById(
-				R.id.album_name_text_view);
-		album_view = (TextView) getActivity().findViewById(
-				R.id.artist_text_view);
 	}
 
 	private void setUpListeners() {
@@ -123,7 +101,6 @@ public class ControlsFragments extends Fragment implements OnClickListener {
 	public void onAttach(Activity activity) {
 		// TODO Auto-generated method stub
 		super.onAttach(activity);
-		Log.i("LIFECYCLE", "onAttach");
 		mCallBack = (onItemSelected) activity;
 	}
 
@@ -131,7 +108,6 @@ public class ControlsFragments extends Fragment implements OnClickListener {
 	public void onActivityCreated(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onActivityCreated(savedInstanceState);
-		Log.i("LIFECYCLE", "onActictyCreated");
 	}
 
 	@Override
@@ -164,9 +140,11 @@ public class ControlsFragments extends Fragment implements OnClickListener {
 	 *            -Name of Album
 	 */
 	public void updateView(String name, String artist, String album) {
-		title_view.setText(name);
-		artist_view.setText(artist);
-		album_view.setText(album);
+
+		preferences.setName(name, artist, album);
+		title_view.setText(preferences.getTitle());
+		artist_view.setText(preferences.getArtist());
+		album_view.setText(preferences.getAlbum());
 
 	}
 
@@ -174,28 +152,24 @@ public class ControlsFragments extends Fragment implements OnClickListener {
 	public void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
-		Log.i("LIFECYCLE", "onResume");
 	}
 
 	@Override
 	public void onPause() {
 		// TODO Auto-generated method stub
 		super.onPause();
-		Log.i("LIFECYCLE", "onPause");
 	}
 
 	@Override
 	public void onStop() {
 		// TODO Auto-generated method stub
 		super.onStop();
-		Log.i("LIFECYCLE", "onStop");
 	}
 
 	@Override
 	public void onDestroy() {
 		// TODO Auto-generated method stub
 		super.onDestroy();
-		Log.i("LIFECYCLE", "onDestroy");
 	}
 
 }
