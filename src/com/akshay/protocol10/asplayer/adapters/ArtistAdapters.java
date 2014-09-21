@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import com.akshay.protocol10.asplayer.R;
+import com.akshay.protocol10.asplayer.utils.ASUtils;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -44,8 +45,9 @@ public class ArtistAdapters extends ArrayAdapter<HashMap<String, Object>> {
 			holder = (ArtistViewHolder) view.getTag();
 		}
 
-		String album_name = objects.get(position).get("artist").toString();
-		String no_of_albums = objects.get(position).get("artist_count")
+		String album_name = objects.get(position).get(ASUtils.ARTIST_KEY)
+				.toString();
+		String no_of_albums = objects.get(position).get(ASUtils.ARTIST_COUNT)
 				.toString()
 				+ " albums";
 

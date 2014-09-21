@@ -1,8 +1,12 @@
 package com.akshay.protocol10.asplayer.callbacks;
 
+import java.util.HashMap;
+import java.util.List;
+
 public interface onItemSelected {
 
-	void updateView(String title, String artist, String album, int position);
+	void updateView(String title, String artist, String album, int position,
+			long id);
 
 	void startPlayBack(int index);
 
@@ -13,4 +17,8 @@ public interface onItemSelected {
 	void previousPlayBack();
 
 	void UpdateView(String name);
+
+	void selectArtist(String name);
+
+	void updateList(List<HashMap<String, Object>> list);
 }

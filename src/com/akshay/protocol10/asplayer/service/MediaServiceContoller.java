@@ -17,6 +17,7 @@ import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
 import android.os.Binder;
 import android.os.IBinder;
+import android.util.Log;
 
 public class MediaServiceContoller extends Service implements
 		OnCompletionListener {
@@ -25,8 +26,10 @@ public class MediaServiceContoller extends Service implements
 	private final String PATH_KEY = "src";
 	public static final String ARTIST_KEY = "artist";
 	public static final String ALBUM_KEY = "album";
+	public static final String ALBUM_ID = "album_id";
 
 	private String title_text, artist_text, album_text;
+	private long album_id;
 
 	public static final String BROADCAST_ACTION = "com.akshay.protocol10.asplayer.UPDATE_TEXT";
 	private static final String TAG = "MEDIASERVICE CONTROLLER";
@@ -53,7 +56,7 @@ public class MediaServiceContoller extends Service implements
 		super.onCreate();
 		media_list = new ArrayList<HashMap<String, Object>>();
 		manager = new MediaManager();
-		media_list = manager.retriveContent(getApplicationContext());
+		// media_list = manager.retriveContent(getApplicationContext());
 	}
 
 	@Override
@@ -129,11 +132,20 @@ public class MediaServiceContoller extends Service implements
 		updateView();
 	}
 
+	public void setSongs(List<HashMap<String, Object>> list) {
+
+		media_list.clear();
+		media_list.addAll(list);
+
+		Log.i(TAG, "SIZE   " + media_list.size());
+	}
+
 	private void updateView() {
 		title_text = media_list.get(playBackIndex).get(TITLE_KEY).toString();
 		artist_text = media_list.get(playBackIndex).get(ARTIST_KEY).toString();
 		album_text = media_list.get(playBackIndex).get(ALBUM_KEY).toString();
-		sendBroadCastToView(title_text, album_text, artist_text);
+		album_id = (Long) media_list.get(playBackIndex).get(ALBUM_ID);
+		sendBroadCastToView(title_text, album_text, artist_text, album_id);
 	}
 
 	/**
@@ -144,12 +156,17 @@ public class MediaServiceContoller extends Service implements
 	 *            Album Name of MediaTrack
 	 * @param artist
 	 *            Artist Name of MediaTrack
+	 * @param album_id
+	 *            ID for retriving ArtWork
 	 */
-	private void sendBroadCastToView(String title, String album, String artist) {
+
+	private void sendBroadCastToView(String title, String album, String artist,
+			long album_id) {
 		intent = new Intent(BROADCAST_ACTION);
 		intent.putExtra(TITLE_KEY, title);
 		intent.putExtra(ALBUM_KEY, album);
 		intent.putExtra(ARTIST_KEY, album);
+		intent.putExtra(ALBUM_ID, album_id);
 		sendBroadcast(intent);
 	}
 

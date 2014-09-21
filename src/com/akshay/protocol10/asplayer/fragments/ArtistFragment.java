@@ -10,23 +10,30 @@ import java.util.List;
 
 import com.akshay.protocol10.asplayer.R;
 import com.akshay.protocol10.asplayer.adapters.ArtistAdapters;
+import com.akshay.protocol10.asplayer.callbacks.onItemSelected;
 import com.akshay.protocol10.asplayer.database.MediaManager;
 
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.Toast;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
-public class ArtistFragment extends Fragment {
+public class ArtistFragment extends Fragment implements OnItemClickListener {
 
 	View view;
 	List<HashMap<String, Object>> artist_list;
 	MediaManager manager;
 	ListView artist_list_view;
 	ArtistAdapters adapters;
+
+	onItemSelected mcallBack;
 
 	public ArtistFragment() {
 		// Required empty public constructor
@@ -50,12 +57,14 @@ public class ArtistFragment extends Fragment {
 		adapters = new ArtistAdapters(getActivity(), R.layout.fragment_artist,
 				R.id.artist_name, artist_list);
 		artist_list_view.setAdapter(adapters);
+		artist_list_view.setOnItemClickListener(this);
 		return view;
 	}
 
 	@Override
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
+		mcallBack = (onItemSelected) getActivity();
 
 	}
 
@@ -63,6 +72,15 @@ public class ArtistFragment extends Fragment {
 	public void onDetach() {
 		super.onDetach();
 
+	}
+
+	@Override
+	public void onItemClick(AdapterView<?> parent, View view, int position,
+			long id) {
+		// TODO Auto-generated method stub
+		String name = artist_list.get(position).get("artist").toString();
+		Toast.makeText(getActivity(), name, Toast.LENGTH_SHORT).show();
+		mcallBack.selectArtist(name);
 	}
 
 }

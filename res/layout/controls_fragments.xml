@@ -65,4 +65,13 @@
         android:layout_alignParentRight="true"
         android:text="@string/next_btn" />
 
+    <ImageView
+        android:id="@+id/album_art"
+        android:layout_width="200dip"
+        android:layout_height="200dip"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="40dip"
+        android:contentDescription="@string/album_art" />
+
 </RelativeLayout>

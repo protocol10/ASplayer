@@ -5,10 +5,12 @@ package com.akshay.protocol10.asplayer;
  */
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import com.akshay.protocol10.asplayer.adapters.DrawerAdapter;
 import com.akshay.protocol10.asplayer.callbacks.onItemSelected;
 import com.akshay.protocol10.asplayer.fragments.AlbumSongsFragment;
+import com.akshay.protocol10.asplayer.fragments.ArtistAlbum;
 import com.akshay.protocol10.asplayer.fragments.ControlsFragments;
 import com.akshay.protocol10.asplayer.fragments.PageSlider;
 import com.akshay.protocol10.asplayer.service.MediaServiceContoller;
@@ -175,7 +177,7 @@ public class MainActivity extends ActionBarActivity implements
 
 	@Override
 	public void updateView(String title, String artist, String album,
-			int position) {
+			int position, long album_id) {
 		// TODO Auto-generated method stub
 		ControlsFragments fragments = new ControlsFragments();
 
@@ -184,6 +186,7 @@ public class MainActivity extends ActionBarActivity implements
 		args.putString("artist", artist);
 		args.putString("album", album);
 		args.putInt("position", position);
+		args.putLong("album_id", album_id);
 		fragments.setArguments(args);
 
 		FragmentTransaction transaction = getSupportFragmentManager()
@@ -242,9 +245,28 @@ public class MainActivity extends ActionBarActivity implements
 	}
 
 	@Override
+	public void updateList(List<HashMap<String, Object>> list) {
+		// TODO Auto-generated method stub
+		serviceController.setSongs(list);
+	}
+
+	@Override
 	public void UpdateView(String name) {
 		// TODO Auto-generated method stub duration
 		AlbumSongsFragment fragment = new AlbumSongsFragment();
+		Bundle args = new Bundle();
+		args.putString("name", name);
+		fragment.setArguments(args);
+
+		FragmentTransaction transaction = getSupportFragmentManager()
+				.beginTransaction().replace(R.id.content, fragment);
+		transaction.addToBackStack(null).commit();
+	}
+
+	@Override
+	public void selectArtist(String name) {
+		// TODO Auto-generated method stub
+		ArtistAlbum fragment = new ArtistAlbum();
 		Bundle args = new Bundle();
 		args.putString("name", name);
 		fragment.setArguments(args);
@@ -332,9 +354,13 @@ public class MainActivity extends ActionBarActivity implements
 				artist = intent
 						.getStringExtra(MediaServiceContoller.ARTIST_KEY);
 				album = intent.getStringExtra(MediaServiceContoller.ALBUM_KEY);
-				fragments.updateView(name, artist, album);
+				long id = intent
+						.getLongExtra(MediaServiceContoller.ALBUM_ID, 0);
+				fragments.updateView(name, artist, album, id);
+
 			}
 		}
 
 	};
+
 }

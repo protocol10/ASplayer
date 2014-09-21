@@ -4,15 +4,22 @@ package com.akshay.protocol10.asplayer.database;
  * @author akshay
  */
 
+import java.io.FileDescriptor;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
+import android.provider.MediaStore.Audio;
 import android.provider.MediaStore.Audio.Albums;
 import android.provider.MediaStore.Audio.Artists;
 import android.util.Log;
@@ -31,7 +38,8 @@ public class MediaManager {
 	private final String ARTIST_KEY = "artist";
 	private final String ALBUM_KEY = "album";
 	private final String DURATION_KEY = "duration";
-	private final String ALBUM_ART = "duration";
+	public static final String ALBUM_ART = "cover_art";
+	private final String ALBUM_ID = "album_id";
 
 	private static final String UNABLE_TAG = "Unable to fetch media";
 	private static final String NOMEDIA_TAG = "No media on device";
@@ -52,7 +60,8 @@ public class MediaManager {
 	private static final String[] TRACKS_COLUMNS = {
 			MediaStore.Audio.Media._ID, MediaStore.Audio.Media.DATA,
 			MediaStore.Audio.Media.DISPLAY_NAME, MediaStore.Audio.Media.ARTIST,
-			MediaStore.Audio.Media.ALBUM, MediaStore.Audio.Media.DURATION };
+			MediaStore.Audio.Media.ALBUM, MediaStore.Audio.Media.DURATION,
+			MediaStore.Audio.Media.ALBUM_ID };
 	/**
 	 * ALBUM_COLUMNS - Used for projection no of Albums available for available
 	 * tracks on the device
@@ -104,13 +113,13 @@ public class MediaManager {
 
 			do {
 				String id = cursor.getString(0); // ID
-				Log.i(MediaManager.class.getName(), " " + id);
 				String path = cursor.getString(1);// DATA
 				String title = cursor.getString(2);// TITLE
 
 				String artist = cursor.getString(3);// ARTIST
-				String album = cursor.getString(4);// ALBUMV
+				String album = cursor.getString(4);// ALBUM
 				String duration = cursor.getString(5);// DURATION
+				long album_id = cursor.getLong(6);
 
 				songs_map = new HashMap<String, Object>();
 				songs_map.put(ID_KEY, id);
@@ -119,6 +128,7 @@ public class MediaManager {
 				songs_map.put(ARTIST_KEY, artist);
 				songs_map.put(ALBUM_KEY, album);
 				songs_map.put(DURATION_KEY, duration);
+				songs_map.put(ALBUM_ID, album_id);
 				tracks_list.add(songs_map);
 
 			} while (cursor.moveToNext());
@@ -159,13 +169,12 @@ public class MediaManager {
 				String album_name = cursor.getString(0); // album
 				String id = cursor.getString(1); // id
 				String artist = cursor.getString(2); // artist
-				String album_art = cursor.getString(3); // album-art
-
+				String album_art = cursor.getString(cursor.getColumnIndex(Audio.Albums.ALBUM_ART));
 				album = new HashMap<String, Object>();
 				album.put(ALBUM_KEY, album_name);
 				album.put(ID_KEY, id);
 				album.put(ARTIST_KEY, artist);
-				album.put(ALBUM_ART, album_art);
+				album.put("album_art", album_art);
 				album_list.add(album);
 
 			} while (cursor.moveToNext());
@@ -237,6 +246,7 @@ public class MediaManager {
 				String artist = cursor.getString(3);// ARTIST
 				String album = cursor.getString(4);// ALBUMV
 				String duration = cursor.getString(5);// DURATION
+				long album_id = cursor.getLong(6);
 
 				songs_map = new HashMap<String, Object>();
 				songs_map.put(ID_KEY, id);
@@ -245,11 +255,82 @@ public class MediaManager {
 				songs_map.put(ARTIST_KEY, artist);
 				songs_map.put(ALBUM_KEY, album);
 				songs_map.put(DURATION_KEY, duration);
+				songs_map.put(ALBUM_ID, album_id);
+
 				tracks_list.add(songs_map);
 
 			} while (cursor.moveToNext());
 		}
 		cursor.close();
 		return tracks_list;
+	}
+
+	public List<HashMap<String, Object>> retriveArtistContent(Context context,
+			String name) {
+
+		List<HashMap<String, Object>> album_list = new ArrayList<HashMap<String, Object>>();
+		resolver = context.getContentResolver();
+		selection = MediaStore.Audio.Media.ARTIST + "=?";
+
+		String selectionArgs[] = { name };
+
+		cursor = resolver.query(Albums.EXTERNAL_CONTENT_URI, ALBUM_COLUMNS,
+				selection, selectionArgs, null);
+
+		if (cursor == null)
+			Toast.makeText(context, UNABLE_TAG, Toast.LENGTH_SHORT).show();
+		else if (!cursor.moveToFirst())
+			Toast.makeText(context, NOMEDIA_TAG, Toast.LENGTH_SHORT).show();
+		else {
+			do {
+				String album_name = cursor.getString(0); // album
+				Log.i("TAG", album_name);
+				String id = cursor.getString(1); // id
+				String artist = cursor.getString(2); // artist
+				Log.i("TAG", artist);
+				String album_art = cursor.getString(3); // album-art
+
+				songs_map = new HashMap<String, Object>();
+				songs_map.put(ALBUM_KEY, album_name);
+				songs_map.put(ID_KEY, id);
+				songs_map.put(ARTIST_KEY, artist);
+				songs_map.put(ALBUM_ART, album_art);
+				album_list.add(songs_map);
+			} while (cursor.moveToNext());
+		}
+		int i = album_list.size();
+		Toast.makeText(context, "size" + i, Toast.LENGTH_SHORT).show();
+		cursor.close();
+		return album_list;
+	}
+
+	/**
+	 * 
+	 * @param id
+	 *            album_id
+	 * @param context
+	 * 
+	 * @return bitmap
+	 */
+	public static Bitmap getAlbumArt(long id, Context context) {
+
+		Bitmap bitmap = null;
+
+		Uri artwork = Uri.parse("content://media/external/audio/albumart");
+
+		Uri uri = ContentUris.withAppendedId(artwork, id);
+
+		try {
+			ParcelFileDescriptor pDescriptor = context.getContentResolver()
+					.openFileDescriptor(uri, "r");
+			if (pDescriptor != null) {
+				FileDescriptor fileDescriptor = pDescriptor.getFileDescriptor();
+				bitmap = BitmapFactory.decodeFileDescriptor(fileDescriptor);
+			}
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return bitmap;
 	}
 }

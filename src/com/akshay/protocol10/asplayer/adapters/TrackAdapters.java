@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import com.akshay.protocol10.asplayer.R;
+import com.akshay.protocol10.asplayer.utils.ASUtils;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -18,11 +19,6 @@ public class TrackAdapters extends ArrayAdapter<HashMap<String, Object>> {
 	int resource;
 	int textViewResourceId;
 	List<HashMap<String, Object>> list;
-
-	private final String TITLE_KEY = "title";
-	private final String ARTIST_KEY = "artist";
-	private final String ALBUM_KEY = "album";
-	private final String DURATION_KEY = "duration";
 
 	public TrackAdapters(Context context, int resource, int textViewResourceId,
 			List<HashMap<String, Object>> list) {
@@ -54,10 +50,10 @@ public class TrackAdapters extends ArrayAdapter<HashMap<String, Object>> {
 		} else {
 			holder = (ViewHolder) view.getTag();
 		}
-		String title = (String) list.get(position).get(TITLE_KEY);
-		String duration = (String) list.get(position).get(DURATION_KEY);
-		String album = (String) list.get(position).get(ALBUM_KEY);
-		String artist = (String) list.get(position).get(ARTIST_KEY);
+		String title = (String) list.get(position).get(ASUtils.TITLE_KEY);
+		String duration = (String) list.get(position).get(ASUtils.DURATION_KEY);
+		String album = (String) list.get(position).get(ASUtils.ALBUM_KEY);
+		String artist = (String) list.get(position).get(ASUtils.ARTIST_KEY);
 
 		holder.title__text_view.setText(title);
 		holder.duration_text_view.setText(duration);

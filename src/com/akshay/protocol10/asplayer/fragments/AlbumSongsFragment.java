@@ -8,6 +8,7 @@ import com.akshay.protocol10.asplayer.R;
 import com.akshay.protocol10.asplayer.adapters.TrackAdapters;
 import com.akshay.protocol10.asplayer.callbacks.onItemSelected;
 import com.akshay.protocol10.asplayer.database.MediaManager;
+import com.akshay.protocol10.asplayer.utils.ASUtils;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -16,7 +17,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
@@ -49,7 +49,7 @@ public class AlbumSongsFragment extends Fragment implements OnItemClickListener 
 		super.onCreate(savedInstanceState);
 		Bundle args = getArguments();
 		if (args != null) {
-			String name = args.getString("name");
+			String name = args.getString(ASUtils.NAME_KEY);
 			albums_media = manager.retriveContent(getActivity(), name);
 		}
 	}
@@ -85,6 +85,17 @@ public class AlbumSongsFragment extends Fragment implements OnItemClickListener 
 			long id) {
 		// TODO Auto-generated method stub
 
+		int index = position;
+		String title = albums_media.get(position).get(ASUtils.TITLE_KEY)
+				.toString();
+		String album = albums_media.get(position).get(ASUtils.ALBUM_KEY)
+				.toString();
+		String artist = albums_media.get(position).get(ASUtils.ARTIST_KEY)
+				.toString();
+		long album_id = (Long) albums_media.get(position).get(
+				ASUtils.ALBUM_ID_KEY);
+		mcallback.updateList(albums_media);
+		mcallback.updateView(title, artist, album, index, album_id);
 	}
 
 }

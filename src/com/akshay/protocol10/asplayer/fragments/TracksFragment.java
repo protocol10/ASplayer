@@ -8,6 +8,7 @@ import com.akshay.protocol10.asplayer.R;
 import com.akshay.protocol10.asplayer.adapters.TrackAdapters;
 import com.akshay.protocol10.asplayer.callbacks.onItemSelected;
 import com.akshay.protocol10.asplayer.database.MediaManager;
+import com.akshay.protocol10.asplayer.utils.ASUtils;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -20,10 +21,6 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
 public class TracksFragment extends Fragment implements OnItemClickListener {
-
-	private final String TITLE_KEY = "title";
-	private final String ARTIST_KEY = "artist";
-	private final String ALBUM_KEY = "album";
 
 	ListView tracks_list_view;
 	View view;
@@ -67,7 +64,6 @@ public class TracksFragment extends Fragment implements OnItemClickListener {
 		// TODO Auto-generated method stub
 		super.onAttach(activity);
 		mcallback = (onItemSelected) activity;
-
 	}
 
 	@Override
@@ -75,11 +71,16 @@ public class TracksFragment extends Fragment implements OnItemClickListener {
 			long id) {
 		// TODO Auto-generated method stub
 		int index = position;
-		String title = tracks_list_data.get(position).get(TITLE_KEY).toString();
-		String album = tracks_list_data.get(position).get(ALBUM_KEY).toString();
-		String artist = tracks_list_data.get(position).get(ARTIST_KEY)
+		String title = tracks_list_data.get(position).get(ASUtils.TITLE_KEY)
 				.toString();
-		mcallback.updateView(title, artist, album, index);
+		String album = tracks_list_data.get(position).get(ASUtils.ALBUM_KEY)
+				.toString();
+		String artist = tracks_list_data.get(position).get(ASUtils.ARTIST_KEY)
+				.toString();
+		long album_id = (Long) tracks_list_data.get(position).get(
+				ASUtils.ALBUM_ID_KEY);
+		mcallback.updateList(tracks_list_data);
+		mcallback.updateView(title, artist, album, index, album_id);
 
 	}
 }

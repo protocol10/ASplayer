@@ -9,8 +9,8 @@
 *.class
 
 # Android generated files
-bin/*
-gen/*
+bin/
+gen/
 
 # Eclipse project files
 .classpath

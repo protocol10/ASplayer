@@ -5,28 +5,35 @@ package com.akshay.protocol10.asplayer.fragments;
  */
 import com.akshay.protocol10.asplayer.R;
 import com.akshay.protocol10.asplayer.callbacks.onItemSelected;
+import com.akshay.protocol10.asplayer.database.MediaManager;
 import com.akshay.protocol10.asplayer.database.Preferences;
+import com.akshay.protocol10.asplayer.utils.ASUtils;
 
 import android.app.Activity;
+import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 public class ControlsFragments extends Fragment implements OnClickListener {
 
 	int position;
+	long album_id;
 	String title_text, album_text, artist_text;
-	private String POSITION_KEY = "position";
 
+	ImageView album_art_view;
 	TextView title_view, artist_view, album_view;
 	Button play_button, next_button, back_button;
 	View view;
 
+	Handler handler;
 	onItemSelected mCallBack;
 
 	Preferences preferences;
@@ -35,6 +42,7 @@ public class ControlsFragments extends Fragment implements OnClickListener {
 	public void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
+		handler = new Handler();
 		preferences = new Preferences(getActivity());
 	}
 
@@ -51,14 +59,29 @@ public class ControlsFragments extends Fragment implements OnClickListener {
 		title_view = (TextView) view.findViewById(R.id.song_title_text_view);
 		album_view = (TextView) view.findViewById(R.id.album_name_text_view);
 		artist_view = (TextView) view.findViewById(R.id.artist_text_view);
+		album_art_view = (ImageView) view.findViewById(R.id.album_art);
 		Bundle bundle = getArguments();
 		if (bundle != null) {
 
-			title_text = bundle.getString("title");
-			album_text = bundle.getString("album");
-			artist_text = bundle.getString("artist");
-			position = bundle.getInt(POSITION_KEY);
+			title_text = bundle.getString(ASUtils.TITLE_KEY);
+			album_text = bundle.getString(ASUtils.ALBUM_KEY);
+			artist_text = bundle.getString(ASUtils.ARTIST_KEY);
+			position = bundle.getInt(ASUtils.POSITION_KEY);
+			album_id = bundle.getLong(ASUtils.ALBUM_ID_KEY);
 
+			handler.post(new Runnable() {
+
+				@Override
+				public void run() {
+					// TODO Auto-generated method stub
+					Bitmap bitmap = MediaManager.getAlbumArt(album_id,
+							getActivity());
+					if (bitmap != null)
+						album_art_view.setImageBitmap(bitmap);
+					else
+						album_art_view.setImageResource(R.drawable.ic_launcher);
+				}
+			});
 		}
 
 		if (savedInstanceState == null) {
@@ -79,7 +102,7 @@ public class ControlsFragments extends Fragment implements OnClickListener {
 	public void onSaveInstanceState(Bundle outState) {
 		// TODO Auto-generated method stub
 		super.onSaveInstanceState(outState);
-		outState.putInt(POSITION_KEY, position);
+		outState.putInt(ASUtils.POSITION_KEY, position);
 
 	}
 
@@ -138,13 +161,29 @@ public class ControlsFragments extends Fragment implements OnClickListener {
 	 *            -Name of Artist
 	 * @param album
 	 *            -Name of Album
+	 * @param id
 	 */
-	public void updateView(String name, String artist, String album) {
+	public void updateView(String name, String artist, String album, long id) {
 
 		preferences.setName(name, artist, album);
 		title_view.setText(preferences.getTitle());
 		artist_view.setText(preferences.getArtist());
 		album_view.setText(preferences.getAlbum());
+		final long album_id = id;
+		handler.post(new Runnable() {
+
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				Bitmap bitmap = MediaManager.getAlbumArt(album_id,
+						getActivity());
+
+				if (bitmap != null)
+					album_art_view.setImageBitmap(bitmap);
+				else
+					album_art_view.setImageResource(R.drawable.ic_launcher);
+			}
+		});
 
 	}
 
