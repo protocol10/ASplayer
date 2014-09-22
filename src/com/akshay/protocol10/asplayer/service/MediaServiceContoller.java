@@ -11,8 +11,10 @@ import java.util.List;
 import com.akshay.protocol10.asplayer.database.MediaManager;
 
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
+import android.media.AudioManager.OnAudioFocusChangeListener;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
 import android.os.Binder;
@@ -20,7 +22,7 @@ import android.os.IBinder;
 import android.util.Log;
 
 public class MediaServiceContoller extends Service implements
-		OnCompletionListener {
+		OnCompletionListener, OnAudioFocusChangeListener {
 
 	public static final String TITLE_KEY = "title";
 	private final String PATH_KEY = "src";
@@ -38,11 +40,13 @@ public class MediaServiceContoller extends Service implements
 
 	static MediaPlayer mediaplayer;
 	MediaManager manager;
+	AudioManager audioManager;
 	List<HashMap<String, Object>> media_list;
 
 	// mBinder object which is responsible for interacting with client.
 	private final IBinder mbinder = new MediaBinder();
 	Intent intent;
+	int result;
 
 	@Override
 	public IBinder onBind(Intent intent) {
@@ -74,10 +78,13 @@ public class MediaServiceContoller extends Service implements
 			playBackIndex = index;
 			if (mediaplayer == null) {
 				mediaplayer = new MediaPlayer();
+
 			} else {
 				mediaplayer.reset();
 			}
-
+			audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+			result = audioManager.requestAudioFocus(this,
+					AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
 			mediaplayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
 			mediaplayer.setDataSource(media_list.get(playBackIndex)
 					.get(PATH_KEY).toString());
@@ -193,5 +200,11 @@ public class MediaServiceContoller extends Service implements
 	public void onCompletion(MediaPlayer mp) {
 		// TODO Auto-generated method stub
 		nextSong();
+	}
+
+	@Override
+	public void onAudioFocusChange(int focusChange) {
+		// TODO Auto-generated method stub
+
 	}
 }
