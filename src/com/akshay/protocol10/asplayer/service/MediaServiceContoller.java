@@ -8,17 +8,25 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import com.akshay.protocol10.asplayer.MainActivity;
+import com.akshay.protocol10.asplayer.R;
 import com.akshay.protocol10.asplayer.database.MediaManager;
 
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.media.AudioManager;
 import android.media.AudioManager.OnAudioFocusChangeListener;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
 import android.os.Binder;
 import android.os.IBinder;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.TaskStackBuilder;
 import android.util.Log;
 
 public class MediaServiceContoller extends Service implements
@@ -60,7 +68,7 @@ public class MediaServiceContoller extends Service implements
 		super.onCreate();
 		media_list = new ArrayList<HashMap<String, Object>>();
 		manager = new MediaManager();
-		// media_list = manager.retriveContent(getApplicationContext());
+
 	}
 
 	@Override
@@ -91,6 +99,7 @@ public class MediaServiceContoller extends Service implements
 			mediaplayer.prepare();
 			mediaplayer.setOnCompletionListener(this);
 			mediaplayer.start();
+			updateView();
 		} catch (IllegalArgumentException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -125,7 +134,7 @@ public class MediaServiceContoller extends Service implements
 			playBackIndex = 0;
 			play(playBackIndex);
 		}
-		updateView();
+		// updateView();
 	}
 
 	public void previousSong() {
@@ -136,7 +145,7 @@ public class MediaServiceContoller extends Service implements
 			playBackIndex = 0;
 			play(playBackIndex);
 		}
-		updateView();
+		// updateView();
 	}
 
 	public void setSongs(List<HashMap<String, Object>> list) {
@@ -175,6 +184,40 @@ public class MediaServiceContoller extends Service implements
 		intent.putExtra(ARTIST_KEY, album);
 		intent.putExtra(ALBUM_ID, album_id);
 		sendBroadcast(intent);
+		showNotification(title, album, artist, album_id);
+	}
+
+	private void showNotification(String title, String album, String artist,
+			long id) {
+
+		Bitmap bitmap = getCover(id);
+
+		NotificationCompat.Builder builder = new NotificationCompat.Builder(
+				this).setSmallIcon(R.drawable.ic_launcher).setLargeIcon(bitmap)
+				.setContentTitle(title).setContentText(album);
+
+		Intent intent = new Intent(this, MainActivity.class);
+		TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+		stackBuilder.addParentStack(MainActivity.class);
+		stackBuilder.addNextIntent(intent);
+		PendingIntent pendingIntent = stackBuilder.getPendingIntent(0,
+				PendingIntent.FLAG_UPDATE_CURRENT);
+		builder.setContentIntent(pendingIntent);
+		NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+		manager.notify(25, builder.build());
+		startService(new Intent(this, MediaServiceContoller.class));
+		startForeground(25, builder.build());
+	}
+
+	private Bitmap getCover(long id) {
+		// TODO Auto-generated method stub
+		Bitmap bitmap = MediaManager.getAlbumArt(id, getApplicationContext());
+
+		if (bitmap == null)
+			bitmap = BitmapFactory.decodeResource(this.getResources(),
+					R.drawable.ic_launcher);
+
+		return bitmap;
 	}
 
 	@Override
@@ -205,6 +248,28 @@ public class MediaServiceContoller extends Service implements
 	@Override
 	public void onAudioFocusChange(int focusChange) {
 		// TODO Auto-generated method stub
-
+		switch (focusChange) {
+		case AudioManager.AUDIOFOCUS_GAIN:
+			if (mediaplayer != null) {
+				mediaplayer.setVolume(1.0f, 1.0f);
+				mediaplayer.start();
+			} else
+				mediaplayer = new MediaPlayer();
+			break;
+		case AudioManager.AUDIOFOCUS_LOSS:
+			if (mediaplayer != null)
+				mediaplayer.stop();
+			break;
+		case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
+			if (mediaplayer != null)
+				mediaplayer.pause();
+			break;
+		case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
+			if (mediaplayer.isPlaying())
+				mediaplayer.setVolume(0.1f, 0.1f);
+			break;
+		default:
+			break;
+		}
 	}
 }
