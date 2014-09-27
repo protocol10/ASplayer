@@ -11,6 +11,7 @@ import java.util.List;
 import com.akshay.protocol10.asplayer.MainActivity;
 import com.akshay.protocol10.asplayer.R;
 import com.akshay.protocol10.asplayer.database.MediaManager;
+import com.akshay.protocol10.asplayer.utils.ASUtils;
 
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -204,9 +205,9 @@ public class MediaServiceContoller extends Service implements
 				PendingIntent.FLAG_UPDATE_CURRENT);
 		builder.setContentIntent(pendingIntent);
 		NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-		manager.notify(25, builder.build());
+		manager.notify(ASUtils.NOTIFICATION_ID, builder.build());
 		startService(new Intent(this, MediaServiceContoller.class));
-		startForeground(25, builder.build());
+		startForeground(ASUtils.NOTIFICATION_ID, builder.build());
 	}
 
 	private Bitmap getCover(long id) {

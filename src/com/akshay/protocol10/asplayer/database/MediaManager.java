@@ -169,7 +169,8 @@ public class MediaManager {
 				String album_name = cursor.getString(0); // album
 				String id = cursor.getString(1); // id
 				String artist = cursor.getString(2); // artist
-				String album_art = cursor.getString(cursor.getColumnIndex(Audio.Albums.ALBUM_ART));
+				String album_art = cursor.getString(cursor
+						.getColumnIndex(Audio.Albums.ALBUM_ART));
 				album = new HashMap<String, Object>();
 				album.put(ALBUM_KEY, album_name);
 				album.put(ID_KEY, id);

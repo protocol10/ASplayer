@@ -41,4 +41,15 @@ public class ASUtils {
 
 	public static final String DURATION_KEY = "duration";
 
+	public static final String PAGE_SLIDER_TAG = "PAGESLIDER";
+
+	public static final String ALBUM_TAG = "ALBUMSTAG";
+
+	public static final String ARTIST_TAG = "ARTISTTAG";
+
+	public static final String GENRE_TAG = "GENRETAG";
+
+	public static final String CONTROL_TAG = "CONTROLTAG";
+
+	public static final int NOTIFICATION_ID = 25;
 }

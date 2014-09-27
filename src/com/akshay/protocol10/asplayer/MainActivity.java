@@ -32,6 +32,7 @@ import android.content.ServiceConnection;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -105,7 +106,9 @@ public class MainActivity extends ActionBarActivity implements
 		if (savedInstanceState == null) {
 			fragment = new PageSlider();
 			FragmentManager manager = getSupportFragmentManager();
-			manager.beginTransaction().replace(R.id.content, fragment).commit();
+			manager.beginTransaction()
+					.replace(R.id.content, fragment, ASUtils.PAGE_SLIDER_TAG)
+					.commit();
 		}
 
 		// new AsyncLoader().execute();
@@ -190,7 +193,8 @@ public class MainActivity extends ActionBarActivity implements
 		fragments.setArguments(args);
 
 		FragmentTransaction transaction = getSupportFragmentManager()
-				.beginTransaction().replace(R.id.content, fragments);
+				.beginTransaction().replace(R.id.content, fragments,
+						ASUtils.CONTROL_TAG);
 
 		transaction.addToBackStack(null);
 		transaction.commit();
@@ -259,7 +263,8 @@ public class MainActivity extends ActionBarActivity implements
 		fragment.setArguments(args);
 
 		FragmentTransaction transaction = getSupportFragmentManager()
-				.beginTransaction().replace(R.id.content, fragment);
+				.beginTransaction().replace(R.id.content, fragment,
+						ASUtils.ALBUM_TAG);
 		transaction.addToBackStack(null).commit();
 	}
 
@@ -272,7 +277,8 @@ public class MainActivity extends ActionBarActivity implements
 		fragment.setArguments(args);
 
 		FragmentTransaction transaction = getSupportFragmentManager()
-				.beginTransaction().replace(R.id.content, fragment);
+				.beginTransaction().replace(R.id.content, fragment,
+						ASUtils.ARTIST_TAG);
 		transaction.addToBackStack(null).commit();
 	}
 
@@ -335,7 +341,9 @@ public class MainActivity extends ActionBarActivity implements
 			// TODO Auto-generated method stub
 			Fragment fragment = new PageSlider();
 			FragmentManager manager = getSupportFragmentManager();
-			manager.beginTransaction().replace(R.id.content, fragment).commit();
+			manager.beginTransaction()
+					.replace(R.id.content, fragment, ASUtils.PAGE_SLIDER_TAG)
+					.commit();
 			return null;
 		}
 	}
@@ -348,16 +356,22 @@ public class MainActivity extends ActionBarActivity implements
 
 			if (intent.getAction() == MediaServiceContoller.BROADCAST_ACTION) {
 				ControlsFragments fragments = (ControlsFragments) getSupportFragmentManager()
-						.findFragmentById(R.id.content);
+						.findFragmentByTag(ASUtils.CONTROL_TAG);
 
-				name = intent.getStringExtra(MediaServiceContoller.TITLE_KEY);
-				artist = intent
-						.getStringExtra(MediaServiceContoller.ARTIST_KEY);
-				album = intent.getStringExtra(MediaServiceContoller.ALBUM_KEY);
-				long id = intent
-						.getLongExtra(MediaServiceContoller.ALBUM_ID, 0);
-				fragments.updateView(name, artist, album, id);
+				// Check whether fragment is in one-payne layout
+				if (fragments != null) {
+					Log.i("CONTROL FRAGMENT", "isVisible");
+					name = intent
+							.getStringExtra(MediaServiceContoller.TITLE_KEY);
+					artist = intent
+							.getStringExtra(MediaServiceContoller.ARTIST_KEY);
+					album = intent
+							.getStringExtra(MediaServiceContoller.ALBUM_KEY);
+					long id = intent.getLongExtra(
+							MediaServiceContoller.ALBUM_ID, 0);
+					fragments.updateView(name, artist, album, id);
 
+				}
 			}
 		}
 
