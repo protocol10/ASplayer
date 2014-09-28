@@ -14,7 +14,7 @@
         android:layout_width="240dp"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        android:background="#FFCC"
+        android:background="#FFFFFF"
         android:divider="@android:color/black"
         android:dividerHeight="0dp" >
     </ListView>

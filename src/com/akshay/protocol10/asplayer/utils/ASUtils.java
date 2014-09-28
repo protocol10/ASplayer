@@ -9,18 +9,18 @@ public class ASUtils {
 
 	private final static String OPTION_EQUALIZER = "Equalizer";
 
-	private final static String OPTION_PLAYLIST = "Playlist";
+	public final static String OPTION_PLAYLIST = "Playlist";
 
 	private final static String OPTION_SETTINGS = "Settings";
 
 	private final static String OPTION_ABOUT = "About";
 
 	public static final String[] options = { OPTION_HOME, OPTION_EQUALIZER,
-			OPTION_PLAYLIST, OPTION_SETTINGS, OPTION_ABOUT };
+			OPTION_SETTINGS, OPTION_ABOUT };
 
 	public static final int[] options_image = { R.drawable.ic_action_home,
-			R.drawable.ic_action_equalizer, R.drawable.ic_drawer,
-			R.drawable.ic_action_settings, R.drawable.ic_about };
+			R.drawable.ic_action_equalizer, R.drawable.ic_action_settings,
+			R.drawable.ic_about };
 
 	/* KEYS FOR BUNDLE ELEMENTS */
 	public static final String TITLE_KEY = "title";
