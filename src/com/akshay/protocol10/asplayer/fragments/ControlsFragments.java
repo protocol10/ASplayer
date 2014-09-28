@@ -20,9 +20,12 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.SeekBar;
+import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 
-public class ControlsFragments extends Fragment implements OnClickListener {
+public class ControlsFragments extends Fragment implements OnClickListener,
+		OnSeekBarChangeListener {
 
 	int position;
 	long album_id;
@@ -32,6 +35,7 @@ public class ControlsFragments extends Fragment implements OnClickListener {
 	TextView title_view, artist_view, album_view;
 	Button play_button, next_button, back_button;
 	View view;
+	SeekBar seekbar;
 
 	Handler handler;
 	onItemSelected mCallBack;
@@ -60,6 +64,8 @@ public class ControlsFragments extends Fragment implements OnClickListener {
 		album_view = (TextView) view.findViewById(R.id.album_name_text_view);
 		artist_view = (TextView) view.findViewById(R.id.artist_text_view);
 		album_art_view = (ImageView) view.findViewById(R.id.album_art);
+		seekbar = (SeekBar) view.findViewById(R.id.progress_Bar);
+
 		Bundle bundle = getArguments();
 		if (bundle != null) {
 
@@ -118,6 +124,7 @@ public class ControlsFragments extends Fragment implements OnClickListener {
 		play_button.setOnClickListener(this);
 		next_button.setOnClickListener(this);
 		back_button.setOnClickListener(this);
+		seekbar.setOnSeekBarChangeListener(this);
 	}
 
 	@Override
@@ -211,4 +218,30 @@ public class ControlsFragments extends Fragment implements OnClickListener {
 		super.onDestroy();
 	}
 
+	@Override
+	public void onProgressChanged(SeekBar seekBar, int progress,
+			boolean fromUser) {
+		// TODO Auto-generated method stub
+		if (fromUser) {
+			int seekTo = seekBar.getProgress();
+			mCallBack.seekTo(seekTo);
+		}
+	}
+
+	@Override
+	public void onStartTrackingTouch(SeekBar seekBar) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void onStopTrackingTouch(SeekBar seekBar) {
+		// TODO Auto-generated method stub
+
+	}
+
+	public void updateSeekBar(int maxDuration, int progress) {
+		seekbar.setMax(maxDuration);
+		seekbar.setProgress(progress);
+	}
 }

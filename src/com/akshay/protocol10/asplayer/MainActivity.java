@@ -32,7 +32,6 @@ import android.content.ServiceConnection;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -114,7 +113,8 @@ public class MainActivity extends ActionBarActivity implements
 		// new AsyncLoader().execute();
 		filter = new IntentFilter();
 		filter.addAction(MediaServiceContoller.BROADCAST_ACTION);
-
+		filter.addAction(MediaServiceContoller.SEEKBAR_ACTION);
+		filter.addAction("com.");
 		// bind service
 		doBindService();
 	}
@@ -282,6 +282,14 @@ public class MainActivity extends ActionBarActivity implements
 		transaction.addToBackStack(null).commit();
 	}
 
+	@Override
+	public void seekTo(int progress) {
+		// TODO Auto-generated method stub
+		Intent intent = new Intent(MediaServiceContoller.SEEKTO_ACTION);
+		intent.putExtra("seekpos", progress);
+		sendBroadcast(intent);
+	}
+
 	/**
 	 * Establish a connection with the service. We use an explicit class name
 	 * because we want a specific service implementation that we know will be
@@ -353,14 +361,13 @@ public class MainActivity extends ActionBarActivity implements
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			// TODO Auto-generated method stub
+			ControlsFragments controlFragments = (ControlsFragments) getSupportFragmentManager()
+					.findFragmentByTag(ASUtils.CONTROL_TAG);
 
 			if (intent.getAction() == MediaServiceContoller.BROADCAST_ACTION) {
-				ControlsFragments fragments = (ControlsFragments) getSupportFragmentManager()
-						.findFragmentByTag(ASUtils.CONTROL_TAG);
 
 				// Check whether fragment is in one-payne layout
-				if (fragments != null) {
-					Log.i("CONTROL FRAGMENT", "isVisible");
+				if (controlFragments != null) {
 					name = intent
 							.getStringExtra(MediaServiceContoller.TITLE_KEY);
 					artist = intent
@@ -369,8 +376,19 @@ public class MainActivity extends ActionBarActivity implements
 							.getStringExtra(MediaServiceContoller.ALBUM_KEY);
 					long id = intent.getLongExtra(
 							MediaServiceContoller.ALBUM_ID, 0);
-					fragments.updateView(name, artist, album, id);
+					controlFragments.updateView(name, artist, album, id);
 
+				}
+			}
+
+			if (intent.getAction().equals(MediaServiceContoller.SEEKBAR_ACTION)) {
+				if (controlFragments != null) {
+					int maxDuration = intent.getIntExtra(ASUtils.MAX_DURATION,
+							0);
+					int currentDuration = intent.getIntExtra(
+							ASUtils.CURRENT_POSITION, 0);
+					controlFragments
+							.updateSeekBar(maxDuration, currentDuration);
 				}
 			}
 		}

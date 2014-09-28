@@ -52,4 +52,8 @@ public class ASUtils {
 	public static final String CONTROL_TAG = "CONTROLTAG";
 
 	public static final int NOTIFICATION_ID = 25;
+
+	public static final String MAX_DURATION = "totalduartion";
+
+	public static final String CURRENT_POSITION = "currentPosition";
 }

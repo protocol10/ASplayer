@@ -16,8 +16,10 @@ import com.akshay.protocol10.asplayer.utils.ASUtils;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.AudioManager;
@@ -25,10 +27,10 @@ import android.media.AudioManager.OnAudioFocusChangeListener;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
 import android.os.Binder;
+import android.os.Handler;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
-import android.util.Log;
 
 public class MediaServiceContoller extends Service implements
 		OnCompletionListener, OnAudioFocusChangeListener {
@@ -43,19 +45,24 @@ public class MediaServiceContoller extends Service implements
 	private long album_id;
 
 	public static final String BROADCAST_ACTION = "com.akshay.protocol10.asplayer.UPDATE_TEXT";
+	public static final String SEEKBAR_ACTION = "com.akshay.protocol10.asplayer.UPDATE_SEEKBAR";
+	public static final String SEEKTO_ACTION = "com.akshay.protocol10.asplayer.SEEK_TO";
 	private static final String TAG = "MEDIASERVICE CONTROLLER";
 
 	private static int playBackIndex = 0;
 
+	List<HashMap<String, Object>> media_list;
+
+	int result;
 	static MediaPlayer mediaplayer;
 	MediaManager manager;
 	AudioManager audioManager;
-	List<HashMap<String, Object>> media_list;
 
+	Handler handler;
+	Intent intent;
+	IntentFilter filter;
 	// mBinder object which is responsible for interacting with client.
 	private final IBinder mbinder = new MediaBinder();
-	Intent intent;
-	int result;
 
 	@Override
 	public IBinder onBind(Intent intent) {
@@ -69,6 +76,11 @@ public class MediaServiceContoller extends Service implements
 		super.onCreate();
 		media_list = new ArrayList<HashMap<String, Object>>();
 		manager = new MediaManager();
+		handler = new Handler();
+		filter = new IntentFilter();
+		filter.addAction(SEEKBAR_ACTION);
+		filter.addAction(SEEKTO_ACTION);
+		registerReceiver(receiver, filter);
 
 	}
 
@@ -100,7 +112,9 @@ public class MediaServiceContoller extends Service implements
 			mediaplayer.prepare();
 			mediaplayer.setOnCompletionListener(this);
 			mediaplayer.start();
+			setUpHandlers();
 			updateView();
+
 		} catch (IllegalArgumentException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -114,6 +128,7 @@ public class MediaServiceContoller extends Service implements
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+
 	}
 
 	public void pauseSong() {
@@ -153,8 +168,6 @@ public class MediaServiceContoller extends Service implements
 
 		media_list.clear();
 		media_list.addAll(list);
-
-		Log.i(TAG, "SIZE   " + media_list.size());
 	}
 
 	private void updateView() {
@@ -163,6 +176,48 @@ public class MediaServiceContoller extends Service implements
 		album_text = media_list.get(playBackIndex).get(ALBUM_KEY).toString();
 		album_id = (Long) media_list.get(playBackIndex).get(ALBUM_ID);
 		sendBroadCastToView(title_text, album_text, artist_text, album_id);
+	}
+
+	BroadcastReceiver receiver = new BroadcastReceiver() {
+
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			// TODO Auto-generated method stub
+			if (intent.getAction().equals(SEEKTO_ACTION)) {
+				int seekTo = intent.getIntExtra("seekpos", 0);
+				if (mediaplayer.isPlaying())
+					mediaplayer.seekTo(seekTo);
+			}
+		}
+	};
+
+	private void setUpHandlers() {
+		// TODO Auto-generated method stub
+		handler.removeCallbacks(sendUpdatesToUI);
+		handler.postDelayed(sendUpdatesToUI, 1000);
+
+	}
+
+	private Runnable sendUpdatesToUI = new Runnable() {
+
+		@Override
+		public void run() {
+			// TODO Auto-generated method stub
+			logMediaPosition();
+			handler.postDelayed(this, 1000);
+		}
+	};
+
+	private void logMediaPosition() {
+		if (mediaplayer.isPlaying()) {
+			int currentPosition = mediaplayer.getCurrentPosition();
+			int totalduration = mediaplayer.getDuration();
+			intent = new Intent(SEEKBAR_ACTION);
+			intent.putExtra(ASUtils.CURRENT_POSITION, currentPosition);
+			intent.putExtra(ASUtils.MAX_DURATION, totalduration);
+			sendBroadcast(intent);
+		} else if (!mediaplayer.isPlaying())
+			handler.removeCallbacks(sendUpdatesToUI);
 	}
 
 	/**
@@ -225,6 +280,8 @@ public class MediaServiceContoller extends Service implements
 	public void onDestroy() {
 		// TODO Auto-generated method stub
 		super.onDestroy();
+		handler.removeCallbacks(sendUpdatesToUI);
+		unregisterReceiver(receiver);
 	}
 
 	/**

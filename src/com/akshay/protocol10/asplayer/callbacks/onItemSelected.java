@@ -21,4 +21,6 @@ public interface onItemSelected {
 	void selectArtist(String name);
 
 	void updateList(List<HashMap<String, Object>> list);
+
+	void seekTo(int progress);
 }

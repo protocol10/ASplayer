@@ -74,4 +74,12 @@
         android:layout_margin="40dip"
         android:contentDescription="@string/album_art" />
 
+    <SeekBar
+        android:id="@+id/progress_Bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_marginBottom="15dp" />
+
 </RelativeLayout>
