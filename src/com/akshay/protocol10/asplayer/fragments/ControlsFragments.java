@@ -18,7 +18,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
@@ -33,7 +33,9 @@ public class ControlsFragments extends Fragment implements OnClickListener,
 
 	ImageView album_art_view;
 	TextView title_view, artist_view, album_view;
-	Button play_button, next_button, back_button;
+
+	ImageButton play_button, next_button, back_button;
+	TextView current_time, total_duration;
 	View view;
 	SeekBar seekbar;
 
@@ -56,14 +58,17 @@ public class ControlsFragments extends Fragment implements OnClickListener,
 		// TODO Auto-generated method stub
 		view = inflater.inflate(R.layout.controls_fragments, container, false);
 
-		play_button = (Button) view.findViewById(R.id.play_button);
-		next_button = (Button) view.findViewById(R.id.next_button);
-		back_button = (Button) view.findViewById(R.id.back_button);
+		play_button = (ImageButton) view.findViewById(R.id.play_button);
+		next_button = (ImageButton) view.findViewById(R.id.next_button);
+		back_button = (ImageButton) view.findViewById(R.id.back_button);
 
 		title_view = (TextView) view.findViewById(R.id.song_title_text_view);
 		album_view = (TextView) view.findViewById(R.id.album_name_text_view);
 		artist_view = (TextView) view.findViewById(R.id.artist_text_view);
 		album_art_view = (ImageView) view.findViewById(R.id.album_art);
+
+		current_time = (TextView) view.findViewById(R.id.current_pos);
+		total_duration = (TextView) view.findViewById(R.id.total_duration);
 		seekbar = (SeekBar) view.findViewById(R.id.progress_Bar);
 
 		Bundle bundle = getArguments();
@@ -174,7 +179,7 @@ public class ControlsFragments extends Fragment implements OnClickListener,
 
 		preferences.setName(name, artist, album);
 		title_view.setText(preferences.getTitle());
-		artist_view.setText(preferences.getArtist());
+		artist_view.setVisibility(View.GONE);
 		album_view.setText(preferences.getAlbum());
 		final long album_id = id;
 		handler.post(new Runnable() {
@@ -241,7 +246,31 @@ public class ControlsFragments extends Fragment implements OnClickListener,
 	}
 
 	public void updateSeekBar(int maxDuration, int progress) {
+
 		seekbar.setMax(maxDuration);
+		current_time.setText(updateText(progress));
 		seekbar.setProgress(progress);
+		total_duration.setText(updateText(maxDuration));
+	}
+
+	private String updateText(long milliseconds) {
+		String finalTimeString = "";
+		String secondsString = "";
+
+		int hours = (int) (milliseconds / (1000 * 60 * 60));
+		int minutes = (int) ((milliseconds % (1000 * 60 * 60)) / (1000 * 60));
+		int seconds = (int) ((milliseconds % (1000 * 60 * 60)) % (1000 * 60) / 1000);
+
+		if (hours > 0)
+			finalTimeString = hours + ":";
+
+		if (seconds < 10)
+			secondsString = "0" + seconds;
+		else
+			secondsString = "" + seconds;
+
+		finalTimeString = finalTimeString + minutes + ":" + secondsString;
+
+		return finalTimeString;
 	}
 }

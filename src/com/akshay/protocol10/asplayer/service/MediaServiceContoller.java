@@ -31,6 +31,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
+import android.util.Log;
 
 public class MediaServiceContoller extends Service implements
 		OnCompletionListener, OnAudioFocusChangeListener {
@@ -173,6 +174,7 @@ public class MediaServiceContoller extends Service implements
 	private void updateView() {
 		title_text = media_list.get(playBackIndex).get(TITLE_KEY).toString();
 		artist_text = media_list.get(playBackIndex).get(ARTIST_KEY).toString();
+		Log.i(ARTIST_KEY, artist_text);
 		album_text = media_list.get(playBackIndex).get(ALBUM_KEY).toString();
 		album_id = (Long) media_list.get(playBackIndex).get(ALBUM_ID);
 		sendBroadCastToView(title_text, album_text, artist_text, album_id);
@@ -237,7 +239,7 @@ public class MediaServiceContoller extends Service implements
 		intent = new Intent(BROADCAST_ACTION);
 		intent.putExtra(TITLE_KEY, title);
 		intent.putExtra(ALBUM_KEY, album);
-		intent.putExtra(ARTIST_KEY, album);
+		intent.putExtra(ARTIST_KEY, artist);
 		intent.putExtra(ALBUM_ID, album_id);
 		sendBroadcast(intent);
 		showNotification(title, album, artist, album_id);

@@ -20,5 +20,15 @@
     <string name="artist_image">ic_artist</string>
     <string name="artist_name">Name</string>
     <string name="no_albums">No of albums</string>
+    <string name="rewind">Rewind</string>
+    <string name="play">play</string>
+    <string name="pause">pause</string>
+    <string name="Next">Next</string>
+    <string name="Back">Back</string>
+    <string name="Forward">Forward</string>
+    <string name="Shuffle">Shuffle</string>
+    <string name="Repeat">Repeat</string>
+    <string name="current_duration">current time</string>
+    <string name="total_duration">total_time</string>
 
 </resources>

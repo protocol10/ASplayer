@@ -12,6 +12,7 @@
         android:layout_height="144dip"
         android:contentDescription="@string/album_art"
         android:padding="4dp"
+        android:scaleType="fitXY"
         android:src="@drawable/ic_launcher" />
 
     <TextView
