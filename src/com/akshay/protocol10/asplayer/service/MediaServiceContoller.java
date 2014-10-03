@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import com.akshay.protocol10.asplayer.ASPlayer;
+import com.akshay.protocol10.asplayer.ASPlayerWidget;
 import com.akshay.protocol10.asplayer.MainActivity;
 import com.akshay.protocol10.asplayer.R;
 import com.akshay.protocol10.asplayer.database.MediaManager;
@@ -55,6 +56,15 @@ public class MediaServiceContoller extends Service implements
 	public static final String SEEKBAR_ACTION = "com.akshay.protocol10.asplayer.UPDATE_SEEKBAR";
 	public static final String SEEKTO_ACTION = "com.akshay.protocol10.asplayer.SEEK_TO";
 
+	public final static String APPWIDGET_INIT = "com.akshay.protocol10.widget.INIT";
+	public final static String APPWIDGET_UPDATE_TEXT = "com.akshay.protocol10.widget.UPDATETXT";
+	public final static String APPWIDGET_UPDATE_COVER = "com.akshay.protocol10.widget.UPDATECOVER";
+	public final static String APPWIDGET_PLAY = "com.akshay.protocol10.widget.PLAY";
+	public final static String APPWIDGET_BACK = "com.akshay.protocol10.widget.PREVIOUS";
+	public final static String APPWIDGET_NEXT = "com.akshay.protocol10.widget.NEXT";
+
+	private final String PACKAGE_NAME = "com.akshay.protocol10.asplayer";
+	private final String CLASS_NAME = "com.akshay.protocol10.asplayer.ASPlayerWidget";
 	private static final String TAG = "MEDIASERVICE CONTROLLER";
 
 	private static int playBackIndex = 0;
@@ -99,6 +109,12 @@ public class MediaServiceContoller extends Service implements
 		filter.addAction(SEEKTO_ACTION);
 		filter.addAction(ASPlayer.INCOMING_CALL_INTENT);
 		filter.addAction(ASPlayer.CALL_ENDED_INTENT);
+		filter.addAction(APPWIDGET_INIT);
+		filter.addAction(APPWIDGET_UPDATE_TEXT);
+		filter.addAction(APPWIDGET_UPDATE_COVER);
+		filter.addAction(APPWIDGET_BACK);
+		filter.addAction(APPWIDGET_PLAY);
+		filter.addAction(APPWIDGET_NEXT);
 		registerReceiver(receiver, filter);
 
 	}
@@ -141,7 +157,7 @@ public class MediaServiceContoller extends Service implements
 			mediaplayer.prepare();
 			mediaplayer.setOnCompletionListener(this);
 			mediaplayer.start();
-
+			updatewidget(this);
 			setUpHandlers();
 			updateView();
 
@@ -232,6 +248,22 @@ public class MediaServiceContoller extends Service implements
 			if (action.equals(ASPlayer.CALL_ENDED_INTENT) && wasPlaying) {
 				mediaplayer.start();
 			}
+			if (action.equals(APPWIDGET_INIT)) {
+				updatewidget(context);
+			}
+			if (action.equals(APPWIDGET_PLAY)) {
+				if (mediaplayer.isPlaying())
+					mediaplayer.pause();
+				else if (!mediaplayer.isPlaying()) {
+					mediaplayer.start();
+				}
+			}
+			if (action.equals(APPWIDGET_NEXT)) {
+				nextSong();
+			}
+			if (action.equals(APPWIDGET_BACK)) {
+				previousSong();
+			}
 
 		}
 	};
@@ -243,6 +275,44 @@ public class MediaServiceContoller extends Service implements
 
 	}
 
+	protected void updatewidget(Context context) {
+		// TODO Auto-generated method stub
+
+		updateWidgetText(context);
+		updateWidgetCover(context);
+	}
+
+	private void updateWidgetCover(Context context) {
+		// TODO Auto-generated method stub
+		Intent intent = new Intent();
+		intent.setClassName(PACKAGE_NAME, CLASS_NAME);
+		intent.setAction(APPWIDGET_UPDATE_COVER);
+		if (wasPlaying) {
+			intent.putExtra(ALBUM_ID, album_id());
+		}
+		sendBroadcast(intent);
+	}
+
+	private void updateWidgetText(Context context) {
+		// TODO Auto-generated method stub
+		Log.i(TAG, "UPDATEWIDGET");
+		Intent intent = new Intent();
+		intent.setClassName(PACKAGE_NAME, CLASS_NAME);
+		intent.setAction(APPWIDGET_UPDATE_TEXT);
+		if (wasPlaying) {
+			intent.putExtra(TITLE_KEY, getTitle());
+			intent.putExtra("isPlaying", mediaplayer.isPlaying());
+		} else {
+			intent.putExtra(TITLE_KEY, context.getString(R.string.title));
+		}
+
+		sendBroadcast(intent);
+	}
+
+	private long album_id() {
+		return (Long) media_list.get(playBackIndex).get(ALBUM_ID);
+	}
+
 	private Runnable sendUpdatesToUI = new Runnable() {
 
 		@Override
@@ -252,6 +322,10 @@ public class MediaServiceContoller extends Service implements
 			handler.postDelayed(this, 1000);
 		}
 	};
+
+	private String getTitle() {
+		return media_list.get(playBackIndex).get(TITLE_KEY).toString();
+	}
 
 	private void logMediaPosition() {
 		if (mediaplayer.isPlaying()) {
@@ -327,6 +401,7 @@ public class MediaServiceContoller extends Service implements
 		super.onDestroy();
 		handler.removeCallbacks(sendUpdatesToUI);
 		unregisterReceiver(receiver);
+		wasPlaying = false;
 	}
 
 	/**

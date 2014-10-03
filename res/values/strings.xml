@@ -30,5 +30,6 @@
     <string name="Repeat">Repeat</string>
     <string name="current_duration">current time</string>
     <string name="total_duration">total_time</string>
+    <string name="home_icon">home_icon</string>
 
 </resources>
