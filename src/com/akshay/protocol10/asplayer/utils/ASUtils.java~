@@ -32,7 +32,7 @@ public class ASUtils {
 	private final static String HEAVYMETAL_PRESET = "Heavy Metal";
 	private static final String HIP_HOP_PRESET = "Hip Hop";
 	private final static String JAZZ_PRESET = "Jazz";
-	private final static String POP_PRESET = "Pop";
+	private final static String POP_PRESET = "Folk";
 	private final static String ROCK_PRESET = "Rock";
 
 	public final static String[] DEFAULT_PRESETS = { NORMAL_PRESET,

@@ -1,3 +1,7 @@
+/**
+ * @author akshay
+ * THIS CLASS IS USED FOR MANUAL RETRIVING OF THE MEDIA PRESENT IN DEVICE
+ */
 package com.akshay.protocol10.asplayer.models;
 
 import java.io.File;
@@ -6,6 +10,7 @@ import java.util.HashMap;
 
 import android.media.MediaMetadataRetriever;
 import android.util.Log;
+
 public class DataRetriver {
 
 	ArrayList<HashMap<String, Object>> songs_list;
@@ -19,14 +24,12 @@ public class DataRetriver {
 	private static final String ARTIST_NAME = "ARTIST";
 	private static final String PATH = "PATH";
 
-	
 	public DataRetriver() {
 		// TODO Auto-generated constructor stub
 		Log.i("Path", "Path called");
 		songs_list = new ArrayList<HashMap<String, Object>>();
 		metadataRetriever = new MediaMetadataRetriever();
 	}
-	
 
 	public void retriveData(String path) {
 

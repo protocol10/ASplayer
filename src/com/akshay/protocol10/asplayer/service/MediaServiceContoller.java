@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import com.akshay.protocol10.asplayer.ASPlayer;
 import com.akshay.protocol10.asplayer.MainActivity;
 import com.akshay.protocol10.asplayer.R;
 import com.akshay.protocol10.asplayer.database.MediaManager;
@@ -20,15 +21,20 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.AudioManager;
 import android.media.AudioManager.OnAudioFocusChangeListener;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
+import android.media.audiofx.Equalizer;
+import android.os.AsyncTask;
 import android.os.Binder;
 import android.os.Handler;
 import android.os.IBinder;
+import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.util.Log;
@@ -44,10 +50,11 @@ public class MediaServiceContoller extends Service implements
 
 	private String title_text, artist_text, album_text;
 	private long album_id;
-
+	boolean wasPlaying = false;
 	public static final String BROADCAST_ACTION = "com.akshay.protocol10.asplayer.UPDATE_TEXT";
 	public static final String SEEKBAR_ACTION = "com.akshay.protocol10.asplayer.UPDATE_SEEKBAR";
 	public static final String SEEKTO_ACTION = "com.akshay.protocol10.asplayer.SEEK_TO";
+
 	private static final String TAG = "MEDIASERVICE CONTROLLER";
 
 	private static int playBackIndex = 0;
@@ -58,10 +65,14 @@ public class MediaServiceContoller extends Service implements
 	static MediaPlayer mediaplayer;
 	MediaManager manager;
 	AudioManager audioManager;
+	Equalizer equalizer;
 
 	Handler handler;
 	Intent intent;
 	IntentFilter filter;
+	int db_condition;
+	SharedPreferences preferences;
+	Editor editor;
 	// mBinder object which is responsible for interacting with client.
 	private final IBinder mbinder = new MediaBinder();
 
@@ -76,11 +87,18 @@ public class MediaServiceContoller extends Service implements
 		// TODO Auto-generated method stub
 		super.onCreate();
 		media_list = new ArrayList<HashMap<String, Object>>();
+		preferences = PreferenceManager.getDefaultSharedPreferences(this);
+		db_condition = preferences.getInt("DB_SET", 0);
+		if (db_condition == 0) {
+
+		}
 		manager = new MediaManager();
 		handler = new Handler();
 		filter = new IntentFilter();
 		filter.addAction(SEEKBAR_ACTION);
 		filter.addAction(SEEKTO_ACTION);
+		filter.addAction(ASPlayer.INCOMING_CALL_INTENT);
+		filter.addAction(ASPlayer.CALL_ENDED_INTENT);
 		registerReceiver(receiver, filter);
 
 	}
@@ -107,12 +125,23 @@ public class MediaServiceContoller extends Service implements
 			audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
 			result = audioManager.requestAudioFocus(this,
 					AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
+			equalizer = new Equalizer(1, mediaplayer.getAudioSessionId());
+			Short band = equalizer.getNumberOfBands();
+			Short m = equalizer.getNumberOfPresets();
+			String[] music = new String[m];
+			for (int i = 0; i < music.length; i++) {
+				music[i] = equalizer.getPresetName((short) i);
+				Log.i("PRESET", music[i]);
+			}
+			equalizer.setEnabled(true);
+
 			mediaplayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
 			mediaplayer.setDataSource(media_list.get(playBackIndex)
 					.get(PATH_KEY).toString());
 			mediaplayer.prepare();
 			mediaplayer.setOnCompletionListener(this);
 			mediaplayer.start();
+
 			setUpHandlers();
 			updateView();
 
@@ -137,6 +166,7 @@ public class MediaServiceContoller extends Service implements
 		if (mediaplayer != null) {
 			if (mediaplayer.isPlaying()) {
 				mediaplayer.pause();
+				wasPlaying = true;
 			} else {
 				mediaplayer.start();
 			}
@@ -185,11 +215,24 @@ public class MediaServiceContoller extends Service implements
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			// TODO Auto-generated method stub
-			if (intent.getAction().equals(SEEKTO_ACTION)) {
+			String action = intent.getAction();
+
+			/* BroadCastReciever Action SEEKBAR */
+			if (action.equals(SEEKTO_ACTION)) {
 				int seekTo = intent.getIntExtra("seekpos", 0);
 				if (mediaplayer.isPlaying())
 					mediaplayer.seekTo(seekTo);
 			}
+			/* BroadCastReciever Action for INCOMING CALL */
+			if (action.equals(ASPlayer.INCOMING_CALL_INTENT)) {
+				if (mediaplayer.isPlaying())
+					mediaplayer.pause();
+			}
+			/* BroadCastReciever Action for TELEPHONE STATE */
+			if (action.equals(ASPlayer.CALL_ENDED_INTENT) && wasPlaying) {
+				mediaplayer.start();
+			}
+
 		}
 	};
 
@@ -331,5 +374,15 @@ public class MediaServiceContoller extends Service implements
 		default:
 			break;
 		}
+	}
+
+	class DataAsync extends AsyncTask<Void, Void, Void> {
+
+		@Override
+		protected Void doInBackground(Void... params) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
 	}
 }

@@ -30,6 +30,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.res.Configuration;
+import android.media.audiofx.AudioEffect;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.view.Menu;

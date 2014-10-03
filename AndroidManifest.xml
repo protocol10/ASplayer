@@ -7,16 +7,29 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
 
     <uses-sdk
         android:minSdkVersion="10"
         android:targetSdkVersion="19" />
 
+    <!-- application name to initialize the ActiveAndroid ORM -->
     <application
+        android:name="ASPlayer"
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
+
+        <!-- value for ActiveAndroid library -->
+        <meta-data
+            android:name="effects_player"
+            android:value="effects.db" />
+        <meta-data
+            android:name="effects_version"
+            android:value="1" />
+
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name" >
@@ -25,6 +38,7 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            <!-- Use for specifying the default MediaPlayer -->
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -45,8 +59,16 @@
             </intent-filter>
         </activity>
 
+        <!-- SERVICE -->
         <service android:name="com.akshay.protocol10.asplayer.service.MediaServiceContoller" >
         </service>
+
+        <!-- READ PHONE STATE -->
+        <receiver android:name="com.akshay.protocol10.asplayer.receiver.PhoneStateReceiver" >
+            <intent-filter>
+                <action android:name="android.intent.action.PHONE_STATE" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>
