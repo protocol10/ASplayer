@@ -49,6 +49,7 @@
                 <data android:mimeType="application/ogg" />
                 <data android:mimeType="application/x-ogg" />
                 <data android:mimeType="application/itunes" />
+                <data android:pathPattern=".*\\.mp3" />
             </intent-filter>
         </activity>
         <activity

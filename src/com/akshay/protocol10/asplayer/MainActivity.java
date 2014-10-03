@@ -33,11 +33,13 @@ import android.content.res.Configuration;
 import android.media.audiofx.AudioEffect;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
 public class MainActivity extends ActionBarActivity implements
@@ -65,13 +67,15 @@ public class MainActivity extends ActionBarActivity implements
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-
 		drawer_options = ASUtils.options;
 		list_view = (ListView) findViewById(R.id.list_drawer_view);
 		drawer_layout = (DrawerLayout) findViewById(R.id.drawer);
 
 		drawerAdapter = new DrawerAdapter(this, R.layout.drawer_list_row,
 				R.id.option_text, drawer_options);
+		// bind service
+		doBindService();
+
 		list_view.setAdapter(drawerAdapter);
 
 		list_view.setOnItemClickListener(this);
@@ -115,9 +119,15 @@ public class MainActivity extends ActionBarActivity implements
 		filter = new IntentFilter();
 		filter.addAction(MediaServiceContoller.BROADCAST_ACTION);
 		filter.addAction(MediaServiceContoller.SEEKBAR_ACTION);
-		filter.addAction("com.");
-		// bind service
-		doBindService();
+		Intent intent = getIntent();
+		Log.i("INTENT", "" + intent);
+		if (intent.getAction().equals("android.intent.action.VIEW")) {
+			String path = intent.getData().getPath();
+			if (path != null)
+				Toast.makeText(getApplicationContext(), path,
+						Toast.LENGTH_SHORT).show();
+		}
+
 	}
 
 	@Override
