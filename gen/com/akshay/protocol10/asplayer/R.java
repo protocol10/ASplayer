@@ -1205,14 +1205,14 @@ containing a value of this type.
         public static final int action_menu_divider=0x7f070016;
         public static final int action_menu_presenter=0x7f070017;
         public static final int action_mode_close_button=0x7f070024;
-        public static final int action_settings=0x7f070066;
+        public static final int action_settings=0x7f070068;
         public static final int activity_chooser_view_content=0x7f070025;
         public static final int album_art=0x7f07004c;
         public static final int album_artist_text_view=0x7f070042;
         public static final int album_cover=0x7f070040;
         public static final int album_grid=0x7f07005b;
         public static final int album_name_text_view=0x7f070041;
-        public static final int album_text_view=0x7f070065;
+        public static final int album_text_view=0x7f070067;
         public static final int always=0x7f07000b;
         public static final int artist_icon=0x7f070043;
         public static final int artist_list=0x7f07005c;
@@ -1232,9 +1232,10 @@ containing a value of this type.
         public static final int disableHome=0x7f070008;
         public static final int drawer=0x7f07003c;
         public static final int dropdown=0x7f07000f;
-        public static final int duration_text_view=0x7f070064;
+        public static final int duration_text_view=0x7f070066;
         public static final int edit_query=0x7f070030;
         public static final int end=0x7f070013;
+        public static final int equalizer_preset=0x7f07005d;
         public static final int expand_activities_button=0x7f070026;
         public static final int expanded_menu=0x7f07002c;
         public static final int fast_forward=0x7f070053;
@@ -1263,11 +1264,12 @@ containing a value of this type.
         public static final int progress_circular=0x7f070018;
         public static final int progress_horizontal=0x7f070019;
         public static final int radio=0x7f07002f;
-        public static final int remote_album=0x7f070062;
-        public static final int remote_art=0x7f070060;
-        public static final int remote_title=0x7f070061;
+        public static final int remote_album=0x7f070064;
+        public static final int remote_art=0x7f070062;
+        public static final int remote_title=0x7f070063;
         public static final int rewind=0x7f070048;
         public static final int rewind_button=0x7f07004f;
+        public static final int savePreset=0x7f07005e;
         public static final int search_badge=0x7f070032;
         public static final int search_bar=0x7f070031;
         public static final int search_button=0x7f070033;
@@ -1286,16 +1288,16 @@ containing a value of this type.
         public static final int split_action_bar=0x7f07001e;
         public static final int submit_area=0x7f070039;
         public static final int tabMode=0x7f070002;
-        public static final int tabs=0x7f07005e;
+        public static final int tabs=0x7f070060;
         public static final int title=0x7f07002b;
         public static final int title_text=0x7f070047;
-        public static final int title_text_view=0x7f070063;
+        public static final int title_text_view=0x7f070065;
         public static final int top_action_bar=0x7f070020;
         public static final int total_duration=0x7f070058;
-        public static final int tracks_view=0x7f07005d;
+        public static final int tracks_view=0x7f07005f;
         public static final int up=0x7f070021;
         public static final int useLogo=0x7f070003;
-        public static final int view_pager=0x7f07005f;
+        public static final int view_pager=0x7f070061;
         public static final int withText=0x7f07000c;
     }
     public static final class integer {
@@ -1359,13 +1361,14 @@ containing a value of this type.
         public static final int fragment_album=0x7f030020;
         public static final int fragment_artist=0x7f030021;
         public static final int fragment_blank=0x7f030022;
-        public static final int fragment_genre=0x7f030023;
-        public static final int fragment_tracks=0x7f030024;
-        public static final int page_slider=0x7f030025;
-        public static final int remote_layout=0x7f030026;
-        public static final int rounded=0x7f030027;
-        public static final int support_simple_spinner_dropdown_item=0x7f030028;
-        public static final int tracks_row=0x7f030029;
+        public static final int fragment_equalizer=0x7f030023;
+        public static final int fragment_genre=0x7f030024;
+        public static final int fragment_tracks=0x7f030025;
+        public static final int page_slider=0x7f030026;
+        public static final int remote_layout=0x7f030027;
+        public static final int rounded=0x7f030028;
+        public static final int support_simple_spinner_dropdown_item=0x7f030029;
+        public static final int tracks_row=0x7f03002a;
     }
     public static final class menu {
         public static final int main=0x7f0d0000;
@@ -1438,6 +1441,7 @@ containing a value of this type.
         public static final int play=0x7f0b0021;
         public static final int play_btn=0x7f0b001a;
         public static final int rewind=0x7f0b0020;
+        public static final int savePreset=0x7f0b002b;
         public static final int title=0x7f0b0019;
         public static final int title_activity_page_slider=0x7f0b0012;
         public static final int title_activity_player_controls=0x7f0b0016;

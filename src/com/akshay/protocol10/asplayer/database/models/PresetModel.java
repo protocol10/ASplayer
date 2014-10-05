@@ -8,7 +8,7 @@ import com.activeandroid.annotation.Table;
 public class PresetModel extends Model {
 
 	@Column(name = "presetName")
-	String preset;
+	public String preset;
 
 	public PresetModel() {
 		// TODO Auto-generated constructor stub

@@ -11,6 +11,7 @@ public class Preferences {
 	SharedPreferences settings;
 	SharedPreferences.Editor editor;
 	private static final String PREF_NAME = "Settings";
+	private static final String DATABASE = "DATABASE_KEY";
 
 	public Preferences(Context context) {
 		// TODO Auto-generated constructor stub
@@ -28,6 +29,11 @@ public class Preferences {
 		editor.commit();
 	}
 
+	public void setDataBase(boolean check) {
+		editor.putBoolean(DATABASE, check);
+		editor.commit();
+	}
+
 	public String getTitle() {
 		return settings.getString(MediaServiceContoller.TITLE_KEY, "");
 	}
@@ -38,6 +44,10 @@ public class Preferences {
 
 	public String getArtist() {
 		return settings.getString(MediaServiceContoller.ARTIST_KEY, "");
+	}
+
+	public boolean checkDataBase() {
+		return settings.getBoolean(DATABASE, false);
 	}
 
 }

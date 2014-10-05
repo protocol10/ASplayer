@@ -69,6 +69,7 @@
                 <action android:name="android.intent.action.PHONE_STATE" />
             </intent-filter>
         </receiver>
+        <!-- RECEIVER FOR APP WIDGET -->
         <receiver android:name="com.akshay.protocol10.asplayer.ASPlayerWidget" >
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />

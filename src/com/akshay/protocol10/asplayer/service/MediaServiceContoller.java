@@ -9,7 +9,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import com.akshay.protocol10.asplayer.ASPlayer;
-import com.akshay.protocol10.asplayer.ASPlayerWidget;
 import com.akshay.protocol10.asplayer.MainActivity;
 import com.akshay.protocol10.asplayer.R;
 import com.akshay.protocol10.asplayer.database.MediaManager;
@@ -43,6 +42,7 @@ import android.util.Log;
 public class MediaServiceContoller extends Service implements
 		OnCompletionListener, OnAudioFocusChangeListener {
 
+	/* HASHMAP KEYS */
 	public static final String TITLE_KEY = "title";
 	private final String PATH_KEY = "src";
 	public static final String ARTIST_KEY = "artist";
@@ -52,6 +52,7 @@ public class MediaServiceContoller extends Service implements
 	private String title_text, artist_text, album_text;
 	private long album_id;
 	boolean wasPlaying = false;
+	/* INTENTFILTER ACTIONS FOR BROADCAST RECEIVER */
 	public static final String BROADCAST_ACTION = "com.akshay.protocol10.asplayer.UPDATE_TEXT";
 	public static final String SEEKBAR_ACTION = "com.akshay.protocol10.asplayer.UPDATE_SEEKBAR";
 	public static final String SEEKTO_ACTION = "com.akshay.protocol10.asplayer.SEEK_TO";
@@ -63,8 +64,11 @@ public class MediaServiceContoller extends Service implements
 	public final static String APPWIDGET_BACK = "com.akshay.protocol10.widget.PREVIOUS";
 	public final static String APPWIDGET_NEXT = "com.akshay.protocol10.widget.NEXT";
 
+	private final static String NOTIFICATION_ACTION = "com.akshay.protocol10.NOTIFICATION";
+	/* USED FOR APPWIDGET INTENTS */
 	private final String PACKAGE_NAME = "com.akshay.protocol10.asplayer";
 	private final String CLASS_NAME = "com.akshay.protocol10.asplayer.ASPlayerWidget";
+
 	private static final String TAG = "MEDIASERVICE CONTROLLER";
 
 	private static int playBackIndex = 0;
@@ -372,6 +376,7 @@ public class MediaServiceContoller extends Service implements
 				.setContentTitle(title).setContentText(album);
 
 		Intent intent = new Intent(this, MainActivity.class);
+		intent.setAction(NOTIFICATION_ACTION);
 		TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
 		stackBuilder.addParentStack(MainActivity.class);
 		stackBuilder.addNextIntent(intent);

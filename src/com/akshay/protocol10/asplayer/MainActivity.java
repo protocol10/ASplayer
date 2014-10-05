@@ -7,8 +7,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import com.activeandroid.ActiveAndroid;
 import com.akshay.protocol10.asplayer.adapters.DrawerAdapter;
 import com.akshay.protocol10.asplayer.callbacks.onItemSelected;
+import com.akshay.protocol10.asplayer.database.Preferences;
+import com.akshay.protocol10.asplayer.database.models.PresetModel;
 import com.akshay.protocol10.asplayer.fragments.AlbumSongsFragment;
 import com.akshay.protocol10.asplayer.fragments.ArtistAlbum;
 import com.akshay.protocol10.asplayer.fragments.ControlsFragments;
@@ -30,7 +33,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.res.Configuration;
-import android.media.audiofx.AudioEffect;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
@@ -62,11 +64,15 @@ public class MainActivity extends ActionBarActivity implements
 
 	IntentFilter filter;
 	Fragment fragment;
+	Preferences preferences;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		preferences = new Preferences(this);
+		new AsyncLoader().execute();
+
 		drawer_options = ASUtils.options;
 		list_view = (ListView) findViewById(R.id.list_drawer_view);
 		drawer_layout = (DrawerLayout) findViewById(R.id.drawer);
@@ -115,19 +121,22 @@ public class MainActivity extends ActionBarActivity implements
 					.commit();
 		}
 
-		// new AsyncLoader().execute();
+		// IntentFilter for BroadCastReceiver
 		filter = new IntentFilter();
 		filter.addAction(MediaServiceContoller.BROADCAST_ACTION);
 		filter.addAction(MediaServiceContoller.SEEKBAR_ACTION);
 		Intent intent = getIntent();
 		Log.i("INTENT", "" + intent);
-		if (intent.getAction().equals("android.intent.action.VIEW")) {
-			String path = intent.getData().getPath();
-			if (path != null)
-				Toast.makeText(getApplicationContext(), path,
-						Toast.LENGTH_SHORT).show();
+		if (intent != null) {
+			String action = intent.getAction();
+			// open file from file manager and action to check if blank
+			if (action.equals("android.intent.action.VIEW") && action != null) {
+				String path = intent.getData().getPath();
+				if (path != null)
+					Toast.makeText(getApplicationContext(), path,
+							Toast.LENGTH_SHORT).show();
+			}
 		}
-
 	}
 
 	@Override
@@ -353,20 +362,6 @@ public class MainActivity extends ActionBarActivity implements
 		}
 	};
 
-	class AsyncLoader extends android.os.AsyncTask<Void, Void, Void> {
-
-		@Override
-		protected Void doInBackground(Void... params) {
-			// TODO Auto-generated method stub
-			Fragment fragment = new PageSlider();
-			FragmentManager manager = getSupportFragmentManager();
-			manager.beginTransaction()
-					.replace(R.id.content, fragment, ASUtils.PAGE_SLIDER_TAG)
-					.commit();
-			return null;
-		}
-	}
-
 	private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
 
 		@Override
@@ -377,7 +372,7 @@ public class MainActivity extends ActionBarActivity implements
 
 			if (intent.getAction() == MediaServiceContoller.BROADCAST_ACTION) {
 
-				// Check whether fragment is in one-payne layout
+				// Check whether fragment is in ONE-PAYNE layout
 				if (controlFragments != null) {
 					name = intent
 							.getStringExtra(MediaServiceContoller.TITLE_KEY);
@@ -405,5 +400,31 @@ public class MainActivity extends ActionBarActivity implements
 		}
 
 	};
+
+	// AsyncTask to load the initial presets from the database.
+	class AsyncLoader extends android.os.AsyncTask<Void, Void, Void> {
+
+		@Override
+		protected Void doInBackground(Void... params) {
+			// TODO Auto-generated method stub
+			if (!preferences.checkDataBase()) {
+				/**
+				 * INSERT MULTIPLE RECORDS AS THE SAME TIME USE TRANSACTIONS.
+				 * RECOMMENDED WAY TO PERFORM BULT TRANSACTION.
+				 * REFERENCE:-ACTIVEANDROID WIKI
+				 */
+				ActiveAndroid.beginTransaction();
+				try {
+					for (int i = 0; i < ASUtils.DEFAULT_PRESETS.length; i++) {
+						new PresetModel(ASUtils.DEFAULT_PRESETS[i]).save();
+					}
+					ActiveAndroid.setTransactionSuccessful();
+				} finally {
+					ActiveAndroid.endTransaction();
+				}
+			}
+			return null;
+		}
+	}
 
 }
