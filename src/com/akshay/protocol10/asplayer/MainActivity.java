@@ -15,6 +15,7 @@ import com.akshay.protocol10.asplayer.database.models.PresetModel;
 import com.akshay.protocol10.asplayer.fragments.AlbumSongsFragment;
 import com.akshay.protocol10.asplayer.fragments.ArtistAlbum;
 import com.akshay.protocol10.asplayer.fragments.ControlsFragments;
+import com.akshay.protocol10.asplayer.fragments.EqualizerFragment;
 import com.akshay.protocol10.asplayer.fragments.PageSlider;
 import com.akshay.protocol10.asplayer.service.MediaServiceContoller;
 import com.akshay.protocol10.asplayer.service.MediaServiceContoller.MediaBinder;
@@ -190,6 +191,14 @@ public class MainActivity extends ActionBarActivity implements
 	public void onItemClick(AdapterView<?> parent, View view, int position,
 			long id) {
 		// TODO Auto-generated method stub
+		if (drawer_options[position].equals("Equalizer")) {
+			EqualizerFragment equalizerFragment = new EqualizerFragment();
+			FragmentTransaction transaction = getSupportFragmentManager()
+					.beginTransaction().replace(R.id.content,
+							equalizerFragment, "EQUALIZER");
+			transaction.addToBackStack(null);
+			transaction.commit();
+		}
 		drawer_layout.closeDrawer(list_view);
 	}
 

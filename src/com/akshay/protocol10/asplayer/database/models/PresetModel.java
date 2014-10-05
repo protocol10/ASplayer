@@ -19,4 +19,5 @@ public class PresetModel extends Model {
 		super();
 		this.preset = preset;
 	}
+
 }
