@@ -90,7 +90,8 @@ public class ControlsFragments extends Fragment implements OnClickListener,
 					if (bitmap != null)
 						album_art_view.setImageBitmap(bitmap);
 					else
-						album_art_view.setImageResource(R.drawable.ic_launcher);
+						album_art_view
+								.setImageResource(R.drawable.ic_album_art);
 				}
 			});
 		}
@@ -193,7 +194,7 @@ public class ControlsFragments extends Fragment implements OnClickListener,
 				if (bitmap != null)
 					album_art_view.setImageBitmap(bitmap);
 				else
-					album_art_view.setImageResource(R.drawable.ic_launcher);
+					album_art_view.setImageResource(R.drawable.ic_album_art);
 			}
 		});
 
@@ -253,7 +254,7 @@ public class ControlsFragments extends Fragment implements OnClickListener,
 		total_duration.setText(updateText(maxDuration));
 	}
 
-	private String updateText(long milliseconds) {
+	public static String updateText(long milliseconds) {
 		String finalTimeString = "";
 		String secondsString = "";
 

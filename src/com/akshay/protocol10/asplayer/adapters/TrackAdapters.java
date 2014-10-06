@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import com.akshay.protocol10.asplayer.R;
+import com.akshay.protocol10.asplayer.fragments.ControlsFragments;
 import com.akshay.protocol10.asplayer.utils.ASUtils;
 
 import android.content.Context;
@@ -56,7 +57,8 @@ public class TrackAdapters extends ArrayAdapter<HashMap<String, Object>> {
 		String artist = (String) list.get(position).get(ASUtils.ARTIST_KEY);
 
 		holder.title__text_view.setText(title);
-		holder.duration_text_view.setText(duration);
+		holder.duration_text_view.setText(ControlsFragments.updateText(Integer
+				.parseInt(duration)));
 		holder.artist__text_view.setText(artist);
 		holder.album_text_view.setText(album);
 

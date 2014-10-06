@@ -63,7 +63,7 @@ public class AlbumSampleAdapter extends ArrayAdapter<HashMap<String, Object>> {
 		if (bitmap != null)
 			holder.album_cover.setImageBitmap(bitmap);
 		else
-			holder.album_cover.setImageResource(R.drawable.ic_launcher);
+			holder.album_cover.setImageResource(R.drawable.ic_album_art);
 		holder.textview.setText(album_name);
 		holder.artistTextView.setText(artist_name);
 
