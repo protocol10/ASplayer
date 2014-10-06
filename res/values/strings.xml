@@ -32,5 +32,10 @@
     <string name="total_duration">total_time</string>
     <string name="home_icon">home_icon</string>
     <string name="savePreset">Save Preset</string>
+    <string name="band_frequency_1">63 Hz</string>
+    <string name="band_frequency_2">210 Hz</string>
+    <string name="band_frequency_3">910 Hz</string>
+    <string name="band_frequency_4">4 KHz</string>
+    <string name="band_frequency_5">14 kHz</string>
 
 </resources>

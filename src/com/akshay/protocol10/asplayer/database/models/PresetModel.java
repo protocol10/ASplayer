@@ -9,6 +9,7 @@ public class PresetModel extends Model {
 
 	@Column(name = "presetName")
 	public String preset;
+	public boolean readOnly;
 
 	public PresetModel() {
 		// TODO Auto-generated constructor stub

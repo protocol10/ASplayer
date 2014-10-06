@@ -48,7 +48,7 @@ import android.widget.AdapterView.OnItemClickListener;
 public class MainActivity extends ActionBarActivity implements
 		OnItemClickListener, onItemSelected {
 
-	boolean isBound = false;
+	boolean isBound;
 	String name, artist, album;
 	String[] drawer_options = {};
 	CharSequence title;
@@ -71,6 +71,7 @@ public class MainActivity extends ActionBarActivity implements
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+
 		preferences = new Preferences(this);
 		new AsyncLoader().execute();
 
@@ -80,8 +81,6 @@ public class MainActivity extends ActionBarActivity implements
 
 		drawerAdapter = new DrawerAdapter(this, R.layout.drawer_list_row,
 				R.id.option_text, drawer_options);
-		// bind service
-		doBindService();
 
 		list_view.setAdapter(drawerAdapter);
 
@@ -128,14 +127,23 @@ public class MainActivity extends ActionBarActivity implements
 		filter.addAction(MediaServiceContoller.SEEKBAR_ACTION);
 		Intent intent = getIntent();
 		Log.i("INTENT", "" + intent);
+		// bind service
+		doBindService();
+
 		if (intent != null) {
 			String action = intent.getAction();
 			// open file from file manager and action to check if blank
 			if (action.equals("android.intent.action.VIEW") && action != null) {
 				String path = intent.getData().getPath();
-				if (path != null)
+				if (path != null) {
 					Toast.makeText(getApplicationContext(), path,
 							Toast.LENGTH_SHORT).show();
+					intent = new Intent(this, MediaServiceContoller.class);
+					intent.setAction("com.akshay.protocol10.PLAYPATH");
+					intent.putExtra("path", path);
+					startService(intent);
+				}
+
 			}
 		}
 	}

@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.akshay.protocol10.asplayer.ASPlayer;
 import com.akshay.protocol10.asplayer.MainActivity;
@@ -87,6 +88,7 @@ public class MediaServiceContoller extends Service implements
 	int db_condition;
 	SharedPreferences preferences;
 	Editor editor;
+
 	// mBinder object which is responsible for interacting with client.
 	private final IBinder mbinder = new MediaBinder();
 
@@ -102,11 +104,8 @@ public class MediaServiceContoller extends Service implements
 		super.onCreate();
 		media_list = new ArrayList<HashMap<String, Object>>();
 		preferences = PreferenceManager.getDefaultSharedPreferences(this);
-		db_condition = preferences.getInt("DB_SET", 0);
-		if (db_condition == 0) {
-
-		}
 		manager = new MediaManager();
+		media_list = manager.retriveContent(this);
 		handler = new Handler();
 		filter = new IntentFilter();
 		filter.addAction(SEEKBAR_ACTION);
@@ -129,6 +128,14 @@ public class MediaServiceContoller extends Service implements
 		/**
 		 * We want this service to continue until it is explicitly stopped.
 		 */
+		String action = intent.getAction();
+		if (action != null && action.equals("com.akshay.protocol10.PLAYPATH")) {
+
+			String path = intent.getStringExtra("path");
+			playFromPath(path);
+
+		}
+
 		return START_STICKY;
 	}
 
@@ -464,5 +471,36 @@ public class MediaServiceContoller extends Service implements
 			return null;
 		}
 
+	}
+
+	public void playFromPath(String path) {
+
+		try {
+
+			Log.i("szie", "" + media_list.size());
+			for (Map<String, Object> map : media_list) {
+
+				for (Map.Entry<String, Object> entry : map.entrySet()) {
+					if (entry.getValue().equals(path)) {
+						playBackIndex = media_list.indexOf(map);
+						play(playBackIndex);
+						Log.i("playback", "" + playBackIndex);
+					}
+				}
+			}
+
+		} catch (IllegalArgumentException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SecurityException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalStateException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }
