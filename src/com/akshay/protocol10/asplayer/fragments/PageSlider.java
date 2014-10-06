@@ -1,6 +1,7 @@
 package com.akshay.protocol10.asplayer.fragments;
 
 import android.app.Activity;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -38,6 +39,7 @@ public class PageSlider extends Fragment {
 		super.onViewCreated(view, savedInstanceState);
 		PagerSlidingTabStrip tab = (PagerSlidingTabStrip) view
 				.findViewById(com.akshay.protocol10.asplayer.R.id.tabs);
+		tab.setIndicatorColor(Color.parseColor("#0099cc"));
 		ViewPager pager = (ViewPager) view
 				.findViewById(com.akshay.protocol10.asplayer.R.id.view_pager);
 		MyPagerAdapter adapter = new MyPagerAdapter(getChildFragmentManager());
