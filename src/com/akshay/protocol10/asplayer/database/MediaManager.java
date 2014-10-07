@@ -271,7 +271,7 @@ public class MediaManager {
 
 		List<HashMap<String, Object>> album_list = new ArrayList<HashMap<String, Object>>();
 		resolver = context.getContentResolver();
-		selection = MediaStore.Audio.Media.ARTIST + "=?";
+		selection = MediaStore.Audio.Albums.ARTIST + "=?";
 
 		String selectionArgs[] = { name };
 

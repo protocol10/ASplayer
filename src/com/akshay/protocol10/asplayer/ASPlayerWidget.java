@@ -10,7 +10,6 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.util.Log;
 import android.widget.RemoteViews;
 
 public class ASPlayerWidget extends AppWidgetProvider {
@@ -61,7 +60,7 @@ public class ASPlayerWidget extends AppWidgetProvider {
 		}
 
 		if (action.equals(APPWIDGET_UPDATE_TEXT)) {
-			Log.i(ASPlayerWidget.class.getName(), "AKSHAY");
+
 			String title = intent
 					.getStringExtra(MediaServiceContoller.TITLE_KEY);
 			boolean isPlaying = intent.getBooleanExtra("isPlaying", false);

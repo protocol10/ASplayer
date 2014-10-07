@@ -38,7 +38,6 @@ import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
-import android.util.Log;
 
 public class MediaServiceContoller extends Service implements
 		OnCompletionListener, OnAudioFocusChangeListener {
@@ -118,6 +117,7 @@ public class MediaServiceContoller extends Service implements
 		filter.addAction(APPWIDGET_BACK);
 		filter.addAction(APPWIDGET_PLAY);
 		filter.addAction(APPWIDGET_NEXT);
+		filter.addAction(Intent.ACTION_HEADSET_PLUG);
 		registerReceiver(receiver, filter);
 
 	}
@@ -158,7 +158,7 @@ public class MediaServiceContoller extends Service implements
 			String[] music = new String[m];
 			for (int i = 0; i < music.length; i++) {
 				music[i] = equalizer.getPresetName((short) i);
-				Log.i("PRESET", music[i]);
+
 			}
 			equalizer.setEnabled(true);
 
@@ -231,7 +231,7 @@ public class MediaServiceContoller extends Service implements
 	private void updateView() {
 		title_text = media_list.get(playBackIndex).get(TITLE_KEY).toString();
 		artist_text = media_list.get(playBackIndex).get(ARTIST_KEY).toString();
-		Log.i(ARTIST_KEY, artist_text);
+
 		album_text = media_list.get(playBackIndex).get(ALBUM_KEY).toString();
 		album_id = (Long) media_list.get(playBackIndex).get(ALBUM_ID);
 		sendBroadCastToView(title_text, album_text, artist_text, album_id);
@@ -262,11 +262,31 @@ public class MediaServiceContoller extends Service implements
 			if (action.equals(APPWIDGET_INIT)) {
 				updatewidget(context);
 			}
+
 			if (action.equals(APPWIDGET_PLAY)) {
 				if (mediaplayer.isPlaying())
 					mediaplayer.pause();
 				else if (!mediaplayer.isPlaying()) {
+					mediaplayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
 					mediaplayer.start();
+				}
+			}
+			if (action.equals(Intent.ACTION_HEADSET_PLUG)) {
+
+				int state = intent.getIntExtra("state", 0);
+
+				if (mediaplayer != null && mediaplayer.isPlaying()
+						&& wasPlaying && state != 0) {
+					mediaplayer.start();
+				} else if (state == 0) {
+					if (mediaplayer != null && mediaplayer.isPlaying())
+						mediaplayer.pause();
+				}
+			}
+			if (action.equals(AudioManager.ACTION_AUDIO_BECOMING_NOISY)) {
+				if (mediaplayer != null && mediaplayer.isPlaying()
+						&& wasPlaying) {
+					mediaplayer.pause();
 				}
 			}
 			if (action.equals(APPWIDGET_NEXT)) {
@@ -306,7 +326,7 @@ public class MediaServiceContoller extends Service implements
 
 	private void updateWidgetText(Context context) {
 		// TODO Auto-generated method stub
-		Log.i(TAG, "UPDATEWIDGET");
+
 		Intent intent = new Intent();
 		intent.setClassName(PACKAGE_NAME, CLASS_NAME);
 		intent.setAction(APPWIDGET_UPDATE_TEXT);
@@ -477,14 +497,13 @@ public class MediaServiceContoller extends Service implements
 
 		try {
 
-			Log.i("szie", "" + media_list.size());
 			for (Map<String, Object> map : media_list) {
 
 				for (Map.Entry<String, Object> entry : map.entrySet()) {
 					if (entry.getValue().equals(path)) {
 						playBackIndex = media_list.indexOf(map);
 						play(playBackIndex);
-						Log.i("playback", "" + playBackIndex);
+
 					}
 				}
 			}
