@@ -76,7 +76,6 @@ public class ArtistAlbum extends Fragment implements OnItemClickListener {
 		// TODO Auto-generated method stub
 		String name = album_list.get(position).get(ASUtils.ALBUM_KEY)
 				.toString();
-		Toast.makeText(getActivity(), name, Toast.LENGTH_SHORT).show();
 		mcallBack.UpdateView(name);
 	}
 }

@@ -38,7 +38,7 @@ public class MediaManager {
 	private final String ARTIST_KEY = "artist";
 	private final String ALBUM_KEY = "album";
 	private final String DURATION_KEY = "duration";
-	public static final String ALBUM_ART = "cover_art";
+	public static final String ALBUM_ART = "album_art";
 	private final String ALBUM_ID = "album_id";
 
 	private static final String UNABLE_TAG = "Unable to fetch media";
@@ -175,7 +175,7 @@ public class MediaManager {
 				album.put(ALBUM_KEY, album_name);
 				album.put(ID_KEY, id);
 				album.put(ARTIST_KEY, artist);
-				album.put("album_art", album_art);
+				album.put(ALBUM_ART, album_art);
 				album_list.add(album);
 
 			} while (cursor.moveToNext());
@@ -288,10 +288,10 @@ public class MediaManager {
 		else {
 			do {
 				String album_name = cursor.getString(0); // album
-				Log.i("TAG", album_name);
+
 				String id = cursor.getString(1); // id
 				String artist = cursor.getString(2); // artist
-				Log.i("TAG", artist);
+
 				String album_art = cursor.getString(3); // album-art
 
 				songs_map = new HashMap<String, Object>();
