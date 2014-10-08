@@ -59,7 +59,9 @@ public class ASUtils {
 
 	public static final String DURATION_KEY = "duration";
 
-	public static final String PAGE_SLIDER_TAG = "PAGESLIDER";
+	public static final String PAGE_SLIDER_TAG = "Home";
+
+	public static final String EQAULIZER_TAG = "Equalizer";
 
 	public static final String ALBUM_TAG = "ALBUMSTAG";
 

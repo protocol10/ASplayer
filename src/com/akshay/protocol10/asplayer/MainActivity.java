@@ -12,6 +12,7 @@ import com.akshay.protocol10.asplayer.adapters.DrawerAdapter;
 import com.akshay.protocol10.asplayer.callbacks.onItemSelected;
 import com.akshay.protocol10.asplayer.database.Preferences;
 import com.akshay.protocol10.asplayer.database.models.PresetModel;
+import com.akshay.protocol10.asplayer.fragments.AboutFragment;
 import com.akshay.protocol10.asplayer.fragments.AlbumSongsFragment;
 import com.akshay.protocol10.asplayer.fragments.ArtistAlbum;
 import com.akshay.protocol10.asplayer.fragments.ControlsFragments;
@@ -36,13 +37,11 @@ import android.content.ServiceConnection;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
 public class MainActivity extends ActionBarActivity implements
@@ -66,6 +65,7 @@ public class MainActivity extends ActionBarActivity implements
 	IntentFilter filter;
 	Fragment fragment;
 	Preferences preferences;
+	private String currentTag;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -119,6 +119,7 @@ public class MainActivity extends ActionBarActivity implements
 			manager.beginTransaction()
 					.replace(R.id.content, fragment, ASUtils.PAGE_SLIDER_TAG)
 					.commit();
+			currentTag = ASUtils.PAGE_SLIDER_TAG;
 		}
 
 		// IntentFilter for BroadCastReceiver
@@ -126,7 +127,6 @@ public class MainActivity extends ActionBarActivity implements
 		filter.addAction(MediaServiceContoller.BROADCAST_ACTION);
 		filter.addAction(MediaServiceContoller.SEEKBAR_ACTION);
 		Intent intent = getIntent();
-		Log.i("INTENT", "" + intent);
 		// bind service
 		doBindService();
 
@@ -136,8 +136,7 @@ public class MainActivity extends ActionBarActivity implements
 			if (action.equals("android.intent.action.VIEW") && action != null) {
 				String path = intent.getData().getPath();
 				if (path != null) {
-					Toast.makeText(getApplicationContext(), path,
-							Toast.LENGTH_SHORT).show();
+
 					intent = new Intent(this, MediaServiceContoller.class);
 					intent.setAction("com.akshay.protocol10.PLAYPATH");
 					intent.putExtra("path", path);
@@ -146,6 +145,41 @@ public class MainActivity extends ActionBarActivity implements
 
 			}
 		}
+	}
+
+	@Override
+	public void onItemClick(AdapterView<?> parent, View view, int position,
+			long id) {
+		// TODO Auto-generated method stub
+		String select_fragments = drawer_options[position];
+
+		Fragment current = getSupportFragmentManager().findFragmentById(
+				R.id.content);
+		if (current != null && current.getTag().equals(select_fragments)) {
+			drawer_layout.closeDrawer(list_view);
+			return;
+		}
+
+		/**
+		 * Clear any backstack before switching different tabs. This avoids
+		 * activating old backstack, when user presses the back button to quit
+		 */
+		getSupportFragmentManager().popBackStack(null,
+				FragmentManager.POP_BACK_STACK_INCLUSIVE);
+		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+		Fragment f = null;
+		if (select_fragments.equals("Home")) {
+			f = new PageSlider();
+		} else if (select_fragments.equals("Equalizer")) {
+			f = new EqualizerFragment();
+		} else if (select_fragments.equals("About")) {
+			f = new AboutFragment();
+		}
+		f.setRetainInstance(true);
+		ft.replace(R.id.content, f, select_fragments).commit();
+		current.setUserVisibleHint(false);
+		f.setUserVisibleHint(true);
+		drawer_layout.closeDrawer(list_view);
 	}
 
 	@Override
@@ -193,21 +227,6 @@ public class MainActivity extends ActionBarActivity implements
 			return true;
 
 		return super.onOptionsItemSelected(item);
-	}
-
-	@Override
-	public void onItemClick(AdapterView<?> parent, View view, int position,
-			long id) {
-		// TODO Auto-generated method stub
-		if (drawer_options[position].equals("Equalizer")) {
-			EqualizerFragment equalizerFragment = new EqualizerFragment();
-			FragmentTransaction transaction = getSupportFragmentManager()
-					.beginTransaction().replace(R.id.content,
-							equalizerFragment, "EQUALIZER");
-			transaction.addToBackStack(null);
-			transaction.commit();
-		}
-		drawer_layout.closeDrawer(list_view);
 	}
 
 	/**
