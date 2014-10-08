@@ -77,9 +77,10 @@ public class ArtistFragment extends Fragment implements OnItemClickListener {
 	public void onItemClick(AdapterView<?> parent, View view, int position,
 			long id) {
 		// TODO Auto-generated method stub
-		String name = artist_list.get(position).get("artist").toString();
-		Toast.makeText(getActivity(), name, Toast.LENGTH_SHORT).show();
-		mcallBack.selectArtist(name);
+		long artist_id = (Long) artist_list.get(position).get("id");
+		Toast.makeText(getActivity(), "" + artist_id, Toast.LENGTH_SHORT)
+				.show();
+		mcallBack.selectArtist(artist_id);
 	}
 
 }

@@ -208,7 +208,7 @@ public class MediaManager {
 		} else {
 
 			do {
-				String artist_id = cursor.getString(0); // ARTIST._ID
+				long artist_id = cursor.getLong(0); // ARTIST._ID
 				String artist = cursor.getString(1); // Artist.ARTIST
 				String album_count = cursor.getString(2);// Artist.NUMBER_OF_ALBUMS
 
@@ -267,16 +267,19 @@ public class MediaManager {
 	}
 
 	public List<HashMap<String, Object>> retriveArtistContent(Context context,
-			String name) {
+			long id_album) {
 
 		List<HashMap<String, Object>> album_list = new ArrayList<HashMap<String, Object>>();
 		resolver = context.getContentResolver();
-		selection = MediaStore.Audio.Albums.ARTIST + "=?";
 
-		String selectionArgs[] = { name };
-
-		cursor = resolver.query(Albums.EXTERNAL_CONTENT_URI, ALBUM_COLUMNS,
-				selection, selectionArgs, null);
+		/**
+		 * 
+		 * Little tweak as by query albums by name produces uncertainty. It may
+		 * or may not display albums. Used this workaround to get the things
+		 * done. REF: Google Media Frameworks
+		 */
+		cursor = resolver.query(MediaStore.Audio.Artists.Albums.getContentUri(
+				"external", id_album), ALBUM_COLUMNS, null, null, null);
 
 		if (cursor == null)
 			Toast.makeText(context, UNABLE_TAG, Toast.LENGTH_SHORT).show();

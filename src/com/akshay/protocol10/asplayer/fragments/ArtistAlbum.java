@@ -58,7 +58,7 @@ public class ArtistAlbum extends Fragment implements OnItemClickListener {
 		super.onCreate(savedInstanceState);
 		Bundle bundle = getArguments();
 		if (bundle != null) {
-			String name = bundle.getString(ASUtils.NAME_KEY);
+			long name = bundle.getLong("artist_id");
 			album_list = manager.retriveArtistContent(getActivity(), name);
 		}
 	}

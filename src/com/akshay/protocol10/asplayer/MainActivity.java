@@ -94,14 +94,14 @@ public class MainActivity extends ActionBarActivity implements
 				R.string.drawer_closed) {
 			@Override
 			public void onDrawerOpened(View drawerView) {
-				// TODO Auto-generated method stub
+
 				super.onDrawerOpened(drawerView);
 
 			}
 
 			@Override
 			public void onDrawerClosed(View drawerView) {
-				// TODO Auto-generated method stub
+
 				super.onDrawerClosed(drawerView);
 				// invalidateOptionsMenu();
 			}
@@ -115,6 +115,7 @@ public class MainActivity extends ActionBarActivity implements
 
 		if (savedInstanceState == null) {
 			fragment = new PageSlider();
+			this.fragment.setRetainInstance(true);
 			FragmentManager manager = getSupportFragmentManager();
 			manager.beginTransaction()
 					.replace(R.id.content, fragment, ASUtils.PAGE_SLIDER_TAG)
@@ -150,7 +151,7 @@ public class MainActivity extends ActionBarActivity implements
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position,
 			long id) {
-		// TODO Auto-generated method stub
+
 		String select_fragments = drawer_options[position];
 
 		Fragment current = getSupportFragmentManager().findFragmentById(
@@ -184,14 +185,13 @@ public class MainActivity extends ActionBarActivity implements
 
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
-		// TODO Auto-generated method stub
+
 		super.onSaveInstanceState(outState);
-		getSupportFragmentManager().putFragment(outState, "view", fragment);
 	}
 
 	@Override
 	protected void onRestoreInstanceState(Bundle savedInstanceState) {
-		// TODO Auto-generated method stub
+
 		super.onRestoreInstanceState(savedInstanceState);
 		fragment = getSupportFragmentManager().getFragment(savedInstanceState,
 				"view");
@@ -199,14 +199,14 @@ public class MainActivity extends ActionBarActivity implements
 
 	@Override
 	protected void onPostCreate(Bundle savedInstanceState) {
-		// TODO Auto-generated method stub
+
 		super.onPostCreate(savedInstanceState);
 		drawer_toggle.syncState();
 	}
 
 	@Override
 	public void onConfigurationChanged(Configuration newConfig) {
-		// TODO Auto-generated method stub
+
 		super.onConfigurationChanged(newConfig);
 		drawer_toggle.onConfigurationChanged(newConfig);
 	}
@@ -237,7 +237,7 @@ public class MainActivity extends ActionBarActivity implements
 	@Override
 	public void updateView(String title, String artist, String album,
 			int position, long album_id) {
-		// TODO Auto-generated method stub
+
 		ControlsFragments fragments = new ControlsFragments();
 
 		Bundle args = new Bundle();
@@ -258,7 +258,7 @@ public class MainActivity extends ActionBarActivity implements
 
 	@Override
 	protected void onDestroy() {
-		// TODO Auto-generated method stub
+
 		super.onDestroy();
 		doUnbindService();
 		unregisterReceiver(broadcastReceiver);
@@ -266,38 +266,37 @@ public class MainActivity extends ActionBarActivity implements
 
 	@Override
 	protected void onStart() {
-		// TODO Auto-generated method stub
+
 		super.onStart();
 		registerReceiver(broadcastReceiver, filter);
 	}
 
 	@Override
 	protected void onResume() {
-		// TODO Auto-generated method stub
+
 		super.onResume();
 	}
 
 	@Override
 	public void pausePlayBack() {
-		// TODO Auto-generated method stub
+
 		serviceController.pauseSong();
 	}
 
 	@Override
 	public void nextPlayBack() {
-		// TODO Auto-generated method stub
+
 		serviceController.nextSong();
 	}
 
 	@Override
 	public void previousPlayBack() {
-		// TODO Auto-generated method stub
+
 		serviceController.previousSong();
 	}
 
 	@Override
 	public void startPlayBack(int index) {
-		// TODO Auto-generated method stub
 
 		if (isBound == true) {
 			serviceController.play(index);
@@ -306,13 +305,13 @@ public class MainActivity extends ActionBarActivity implements
 
 	@Override
 	public void updateList(List<HashMap<String, Object>> list) {
-		// TODO Auto-generated method stub
+
 		serviceController.setSongs(list);
 	}
 
 	@Override
 	public void UpdateView(String name) {
-		// TODO Auto-generated method stub duration
+
 		AlbumSongsFragment fragment = new AlbumSongsFragment();
 		Bundle args = new Bundle();
 		args.putString("name", name);
@@ -325,11 +324,10 @@ public class MainActivity extends ActionBarActivity implements
 	}
 
 	@Override
-	public void selectArtist(String name) {
-		// TODO Auto-generated method stub
+	public void selectArtist(long artist_id) {
 		ArtistAlbum fragment = new ArtistAlbum();
 		Bundle args = new Bundle();
-		args.putString("name", name);
+		args.putLong("artist_id", artist_id);
 		fragment.setArguments(args);
 
 		FragmentTransaction transaction = getSupportFragmentManager()
@@ -340,7 +338,7 @@ public class MainActivity extends ActionBarActivity implements
 
 	@Override
 	public void seekTo(int progress) {
-		// TODO Auto-generated method stub
+
 		Intent intent = new Intent(MediaServiceContoller.SEEKTO_ACTION);
 		intent.putExtra("seekpos", progress);
 		sendBroadcast(intent);
@@ -360,7 +358,7 @@ public class MainActivity extends ActionBarActivity implements
 	}
 
 	private void doUnbindService() {
-		// TODO Auto-generated method stub
+
 		// Detach our existing connection.
 
 		if (isBound) {
@@ -373,7 +371,7 @@ public class MainActivity extends ActionBarActivity implements
 
 		@Override
 		public void onServiceDisconnected(ComponentName name) {
-			// TODO Auto-generated method stub
+
 			// This is called when the connection with the service has been
 			// unexpectedly disconnected -- that is, its process crashed.
 			// Because it is running in our same process, we should never
@@ -385,7 +383,7 @@ public class MainActivity extends ActionBarActivity implements
 
 		@Override
 		public void onServiceConnected(ComponentName name, IBinder service) {
-			// TODO Auto-generated method stub
+
 			// This is called when the connection with the service has been
 			// established, giving us the service object we can use to
 			// interact with the service. Because we have bound to a explicit
@@ -402,7 +400,7 @@ public class MainActivity extends ActionBarActivity implements
 
 		@Override
 		public void onReceive(Context context, Intent intent) {
-			// TODO Auto-generated method stub
+
 			ControlsFragments controlFragments = (ControlsFragments) getSupportFragmentManager()
 					.findFragmentByTag(ASUtils.CONTROL_TAG);
 
@@ -442,7 +440,7 @@ public class MainActivity extends ActionBarActivity implements
 
 		@Override
 		protected Void doInBackground(Void... params) {
-			// TODO Auto-generated method stub
+
 			if (!preferences.checkDataBase()) {
 				/**
 				 * INSERT MULTIPLE RECORDS AS THE SAME TIME USE TRANSACTIONS.

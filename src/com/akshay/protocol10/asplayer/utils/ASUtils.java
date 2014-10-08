@@ -77,4 +77,5 @@ public class ASUtils {
 
 	public static final String CURRENT_POSITION = "currentPosition";
 
+	public static final String ID_KEY = "id";
 }

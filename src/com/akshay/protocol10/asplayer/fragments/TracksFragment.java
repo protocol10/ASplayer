@@ -43,6 +43,7 @@ public class TracksFragment extends Fragment implements OnItemClickListener {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		tracks_list_data = mediaManager.retriveContent(getActivity());
+
 	}
 
 	@Override

@@ -18,7 +18,7 @@ public interface onItemSelected {
 
 	void UpdateView(String name);
 
-	void selectArtist(String name);
+	void selectArtist(long name);
 
 	void updateList(List<HashMap<String, Object>> list);
 
