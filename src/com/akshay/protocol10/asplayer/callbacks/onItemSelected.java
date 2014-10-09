@@ -5,8 +5,7 @@ import java.util.List;
 
 public interface onItemSelected {
 
-	void updateView(String title, String artist, String album, int position,
-			long id);
+	void updateView(String title, String artist, String album, int index, long album_id);
 
 	void startPlayBack(int index);
 

@@ -65,7 +65,6 @@ public class MainActivity extends ActionBarActivity implements
 	IntentFilter filter;
 	Fragment fragment;
 	Preferences preferences;
-	private String currentTag;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -120,7 +119,6 @@ public class MainActivity extends ActionBarActivity implements
 			manager.beginTransaction()
 					.replace(R.id.content, fragment, ASUtils.PAGE_SLIDER_TAG)
 					.commit();
-			currentTag = ASUtils.PAGE_SLIDER_TAG;
 		}
 
 		// IntentFilter for BroadCastReceiver
