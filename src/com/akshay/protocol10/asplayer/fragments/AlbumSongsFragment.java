@@ -27,7 +27,7 @@ public class AlbumSongsFragment extends Fragment implements OnItemClickListener 
 	TrackAdapters adapters;
 	View view;
 	ListView albums_media_view;
-
+	long artist_id = 0;
 	onItemSelected mcallback;
 
 	public AlbumSongsFragment() {
@@ -50,8 +50,14 @@ public class AlbumSongsFragment extends Fragment implements OnItemClickListener 
 		Bundle args = getArguments();
 		if (args != null) {
 			String name = args.getString(ASUtils.NAME_KEY);
-			long id = args.getLong("artist_id");
-			albums_media = manager.retriveTracks(getActivity(), name, id);
+			artist_id = args.getLong("artist_id");
+			if (artist_id != 0) {
+				albums_media = manager.retriveTracks(getActivity(), name,
+						artist_id);
+			} else {
+				albums_media = manager.retriveContent(getActivity(), name);
+			}
+
 		}
 	}
 

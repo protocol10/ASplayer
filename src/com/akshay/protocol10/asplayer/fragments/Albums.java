@@ -73,7 +73,7 @@ public class Albums extends Fragment implements OnItemClickListener {
 		String name = album_list.get(position).get(ASUtils.ALBUM_KEY)
 				.toString();
 
-		mcallBack.UpdateView(name);
+		mcallBack.updateArtistAlbum(name, 0);
 
 	}
 }
