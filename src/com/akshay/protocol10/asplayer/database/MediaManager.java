@@ -22,7 +22,9 @@ import android.provider.MediaStore;
 import android.provider.MediaStore.Audio;
 import android.provider.MediaStore.Audio.Albums;
 import android.provider.MediaStore.Audio.Artists;
+import android.provider.MediaStore.Audio.Genres;
 import android.provider.MediaStore.Audio.Media;
+import android.util.Log;
 import android.widget.Toast;
 
 public class MediaManager {
@@ -76,6 +78,8 @@ public class MediaManager {
 	 */
 	private static final String[] ARTIST_COLUMNS = { Artists._ID,
 			Artists.ARTIST, Artists.NUMBER_OF_ALBUMS };
+
+	private static final String[] GENRE_COLUMNGS = { Genres._ID, Genres.NAME, };
 
 	/**
 	 * Constructor
@@ -350,6 +354,50 @@ public class MediaManager {
 		}
 		cursor.close();
 		return albumSongs;
+	}
+
+	public List<HashMap<String, Object>> retriveGenre(Context context) {
+
+		cursor = context.getContentResolver().query(
+				Genres.EXTERNAL_CONTENT_URI, GENRE_COLUMNGS, null, null,
+				Genres.DEFAULT_SORT_ORDER);
+		if (cursor == null) {
+
+		} else if (!cursor.moveToFirst()) {
+
+		} else {
+			do {
+				long id = cursor.getLong(cursor.getColumnIndex(Genres._ID));
+				String genreName = cursor.getString(cursor
+						.getColumnIndex(Genres.NAME));
+				songs_map = new HashMap<String, Object>();
+				songs_map.put(ID_KEY, id);
+				songs_map.put("genre", genreName);
+				tracks_list.add(songs_map);
+			} while (cursor.moveToNext());
+		}
+		cursor.close();
+		return tracks_list;
+	}
+
+	public void retriveGenreAlbum(Context context, long id) {
+		String[] projection = { Albums.ALBUM, Albums.ALBUM_ID, Albums.ARTIST };
+		cursor = context.getContentResolver().query(
+				Genres.Members.getContentUri("external", id), projection, null,
+				null, null);
+		Log.i("SIZE", "" + cursor.getColumnName(0));
+		if (cursor == null) {
+
+		} else if (!cursor.moveToFirst()) {
+
+		} else {
+			do {
+				String album=cursor.getString(cursor.getColumnIndex(Albums.ALBUM));
+				Log.i("ALBUM", album);
+			} while (cursor.moveToNext());
+		}
+
+		cursor.close();
 	}
 
 	/**

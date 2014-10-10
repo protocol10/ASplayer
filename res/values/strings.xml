@@ -37,5 +37,6 @@
     <string name="band_frequency_3">910 Hz</string>
     <string name="band_frequency_4">4 KHz</string>
     <string name="band_frequency_5">14 kHz</string>
+    <string name="genre_text">Genre Icon</string>
 
 </resources>
