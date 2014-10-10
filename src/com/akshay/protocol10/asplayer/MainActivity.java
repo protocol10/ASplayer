@@ -308,20 +308,6 @@ public class MainActivity extends ActionBarActivity implements
 	}
 
 	@Override
-	public void UpdateView(String name) {
-
-		AlbumSongsFragment fragment = new AlbumSongsFragment();
-		Bundle args = new Bundle();
-		args.putString("name", name);
-		fragment.setArguments(args);
-
-		FragmentTransaction transaction = getSupportFragmentManager()
-				.beginTransaction().replace(R.id.content, fragment,
-						ASUtils.ALBUM_TAG);
-		transaction.addToBackStack(null).commit();
-	}
-
-	@Override
 	public void selectArtist(long artist_id) {
 		ArtistAlbum fragment = new ArtistAlbum();
 		Bundle args = new Bundle();
@@ -332,6 +318,22 @@ public class MainActivity extends ActionBarActivity implements
 				.beginTransaction().replace(R.id.content, fragment,
 						ASUtils.ARTIST_TAG);
 		transaction.addToBackStack(null).commit();
+	}
+
+	@Override
+	public void updateArtistAlbum(String name, long id) {
+		// TODO Auto-generated method stub
+		AlbumSongsFragment fragment = new AlbumSongsFragment();
+		Bundle args = new Bundle();
+		args.putString("name", name);
+		args.putLong("artist_id", id);
+		fragment.setArguments(args);
+
+		FragmentTransaction transaction = getSupportFragmentManager()
+				.beginTransaction().replace(R.id.content, fragment,
+						ASUtils.ALBUM_TAG);
+		transaction.addToBackStack(null).commit();
+
 	}
 
 	@Override

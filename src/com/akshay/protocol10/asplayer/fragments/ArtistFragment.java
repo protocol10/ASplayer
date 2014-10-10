@@ -20,7 +20,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
@@ -78,8 +77,6 @@ public class ArtistFragment extends Fragment implements OnItemClickListener {
 			long id) {
 		// TODO Auto-generated method stub
 		long artist_id = (Long) artist_list.get(position).get("id");
-		Toast.makeText(getActivity(), "" + artist_id, Toast.LENGTH_SHORT)
-				.show();
 		mcallBack.selectArtist(artist_id);
 	}
 

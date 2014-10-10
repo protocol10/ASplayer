@@ -22,7 +22,7 @@ import android.provider.MediaStore;
 import android.provider.MediaStore.Audio;
 import android.provider.MediaStore.Audio.Albums;
 import android.provider.MediaStore.Audio.Artists;
-import android.util.Log;
+import android.provider.MediaStore.Audio.Media;
 import android.widget.Toast;
 
 public class MediaManager {
@@ -61,7 +61,7 @@ public class MediaManager {
 			MediaStore.Audio.Media._ID, MediaStore.Audio.Media.DATA,
 			MediaStore.Audio.Media.DISPLAY_NAME, MediaStore.Audio.Media.ARTIST,
 			MediaStore.Audio.Media.ALBUM, MediaStore.Audio.Media.DURATION,
-			MediaStore.Audio.Media.ALBUM_ID };
+			MediaStore.Audio.Media.ALBUM_ID, MediaStore.Audio.Media.ARTIST_ID };
 	/**
 	 * ALBUM_COLUMNS - Used for projection no of Albums available for available
 	 * tracks on the device
@@ -119,7 +119,7 @@ public class MediaManager {
 				String artist = cursor.getString(3);// ARTIST
 				String album = cursor.getString(4);// ALBUM
 				String duration = cursor.getString(5);// DURATION
-				long album_id = cursor.getLong(6);
+				long album_id = cursor.getLong(6);// ALBUM_ART
 
 				songs_map = new HashMap<String, Object>();
 				songs_map.put(ID_KEY, id);
@@ -302,10 +302,54 @@ public class MediaManager {
 				album_list.add(songs_map);
 			} while (cursor.moveToNext());
 		}
-		int i = album_list.size();
-		Toast.makeText(context, "size" + i, Toast.LENGTH_SHORT).show();
 		cursor.close();
 		return album_list;
+	}
+
+	public List<HashMap<String, Object>> retriveTracks(Context context,
+			String name, long id) {
+		List<HashMap<String, Object>> albumSongs = new ArrayList<HashMap<String, Object>>();
+		String selection = MediaStore.Audio.Media.ALBUM + "= ? AND "
+				+ MediaStore.Audio.Media.ARTIST_ID + "= ?";
+
+		String[] selectArgs = new String[] { name, String.valueOf(id) };
+
+		cursor = context.getContentResolver().query(EXTERNAL, TRACKS_COLUMNS,
+				selection, selectArgs, null);
+
+		if (cursor == null) {
+
+		} else if (!cursor.moveToFirst()) {
+
+		} else {
+			do {
+				int trackId = cursor.getInt(cursor.getColumnIndex(Media._ID));
+				String path = cursor.getString(cursor
+						.getColumnIndex(Media.DATA));
+				String title = cursor.getString(cursor
+						.getColumnIndex(Media.DISPLAY_NAME));
+				String artist = cursor.getString(cursor
+						.getColumnIndex(Media.ARTIST));
+				String album = cursor.getString(cursor
+						.getColumnIndex(Media.ALBUM));
+				String duration = cursor.getString(cursor
+						.getColumnIndex(Media.DURATION));
+				long album_id = cursor.getLong(cursor
+						.getColumnIndex(Media.ALBUM_ID));
+
+				songs_map = new HashMap<String, Object>();
+				songs_map.put(ID_KEY, trackId);
+				songs_map.put(PATH_KEY, path);
+				songs_map.put(TITLE_KEY, title);
+				songs_map.put(ARTIST_KEY, artist);
+				songs_map.put(ALBUM_KEY, album);
+				songs_map.put(DURATION_KEY, duration);
+				songs_map.put(ALBUM_ART, album_id);
+				albumSongs.add(songs_map);
+			} while (cursor.moveToNext());
+		}
+		cursor.close();
+		return albumSongs;
 	}
 
 	/**

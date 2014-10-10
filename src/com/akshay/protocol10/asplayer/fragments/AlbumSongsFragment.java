@@ -50,7 +50,8 @@ public class AlbumSongsFragment extends Fragment implements OnItemClickListener 
 		Bundle args = getArguments();
 		if (args != null) {
 			String name = args.getString(ASUtils.NAME_KEY);
-			albums_media = manager.retriveContent(getActivity(), name);
+			long id = args.getLong("artist_id");
+			albums_media = manager.retriveTracks(getActivity(), name, id);
 		}
 	}
 

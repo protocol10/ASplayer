@@ -5,7 +5,8 @@ import java.util.List;
 
 public interface onItemSelected {
 
-	void updateView(String title, String artist, String album, int index, long album_id);
+	void updateView(String title, String artist, String album, int index,
+			long album_id);
 
 	void startPlayBack(int index);
 
@@ -15,11 +16,11 @@ public interface onItemSelected {
 
 	void previousPlayBack();
 
-	void UpdateView(String name);
-
 	void selectArtist(long name);
 
 	void updateList(List<HashMap<String, Object>> list);
 
 	void seekTo(int progress);
+
+	void updateArtistAlbum(String name, long id);
 }

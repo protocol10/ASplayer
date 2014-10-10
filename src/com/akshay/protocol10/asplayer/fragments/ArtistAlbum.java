@@ -31,6 +31,7 @@ public class ArtistAlbum extends Fragment implements OnItemClickListener {
 	MediaManager manager;
 
 	AlbumSampleAdapter adapter;
+	long artist_id;
 
 	public ArtistAlbum() {
 		// TODO Auto-generated constructor stub
@@ -57,8 +58,8 @@ public class ArtistAlbum extends Fragment implements OnItemClickListener {
 		super.onCreate(savedInstanceState);
 		Bundle bundle = getArguments();
 		if (bundle != null) {
-			long name = bundle.getLong("artist_id");
-			album_list = manager.retriveArtistContent(getActivity(), name);
+			artist_id = bundle.getLong("artist_id");
+			album_list = manager.retriveArtistContent(getActivity(), artist_id);
 		}
 	}
 
@@ -75,6 +76,8 @@ public class ArtistAlbum extends Fragment implements OnItemClickListener {
 		// TODO Auto-generated method stub
 		String name = album_list.get(position).get(ASUtils.ALBUM_KEY)
 				.toString();
-		mcallBack.UpdateView(name);
+		//manager.retriveTracks(getActivity(), name, artist_id);
+		// mcallBack.UpdateView(name);
+		mcallBack.updateArtistAlbum(name, artist_id);
 	}
 }
