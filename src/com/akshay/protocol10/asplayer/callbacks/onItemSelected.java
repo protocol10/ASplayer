@@ -23,4 +23,6 @@ public interface onItemSelected {
 	void seekTo(int progress);
 
 	void updateArtistAlbum(String name, long id);
+
+	void updateGenreAlbum(long genreId);
 }

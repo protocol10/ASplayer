@@ -29,6 +29,7 @@ public class AlbumSongsFragment extends Fragment implements OnItemClickListener 
 	ListView albums_media_view;
 	long artist_id = 0;
 	onItemSelected mcallback;
+	String key = null;
 
 	public AlbumSongsFragment() {
 		// TODO Auto-generated constructor stub
@@ -54,8 +55,10 @@ public class AlbumSongsFragment extends Fragment implements OnItemClickListener 
 			if (artist_id != 0) {
 				albums_media = manager.retriveTracks(getActivity(), name,
 						artist_id);
+				key = ASUtils.ALBUM_ART;
 			} else {
 				albums_media = manager.retriveContent(getActivity(), name);
+				key = ASUtils.ALBUM_ID_KEY;
 			}
 
 		}
@@ -99,8 +102,7 @@ public class AlbumSongsFragment extends Fragment implements OnItemClickListener 
 				.toString();
 		String artist = albums_media.get(position).get(ASUtils.ARTIST_KEY)
 				.toString();
-		long album_id = (Long) albums_media.get(position).get(
-				ASUtils.ALBUM_ID_KEY);
+		long album_id = (Long) albums_media.get(position).get(key);
 		mcallback.updateList(albums_media);
 		mcallback.updateView(title, artist, album, index, album_id);
 	}

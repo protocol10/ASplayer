@@ -503,7 +503,7 @@ public class MediaServiceContoller extends Service implements
 					if (entry.getValue().equals(path)) {
 						playBackIndex = media_list.indexOf(map);
 						play(playBackIndex);
-
+						break;
 					}
 				}
 			}

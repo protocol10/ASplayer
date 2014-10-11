@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.akshay.protocol10.asplayer.R;
 import com.akshay.protocol10.asplayer.adapters.GenreAdapter;
+import com.akshay.protocol10.asplayer.callbacks.onItemSelected;
 import com.akshay.protocol10.asplayer.database.MediaManager;
 import com.akshay.protocol10.asplayer.utils.ASUtils;
 
@@ -25,6 +26,7 @@ public class GenreFragment extends Fragment implements OnItemClickListener {
 	List<HashMap<String, Object>> genreList;
 	GenreAdapter adapter;
 	ListView genreListView;
+	onItemSelected mCallBack;
 
 	public GenreFragment() {
 		// Required empty public constructor
@@ -55,7 +57,7 @@ public class GenreFragment extends Fragment implements OnItemClickListener {
 	@Override
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
-
+		mCallBack = (onItemSelected) activity;
 	}
 
 	@Override
@@ -68,7 +70,7 @@ public class GenreFragment extends Fragment implements OnItemClickListener {
 	public void onItemClick(AdapterView<?> parent, View view, int position,
 			long id) {
 		// TODO Auto-generated method stub
-		long genre_id =  (Long) genreList.get(position).get(ASUtils.ID_KEY);
-		manager.retriveGenreAlbum(getActivity(), genre_id);
+		long genre_id = (Long) genreList.get(position).get(ASUtils.ID_KEY);
+		mCallBack.updateGenreAlbum(genre_id);
 	}
 }

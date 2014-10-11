@@ -17,6 +17,8 @@ import com.akshay.protocol10.asplayer.fragments.AlbumSongsFragment;
 import com.akshay.protocol10.asplayer.fragments.ArtistAlbum;
 import com.akshay.protocol10.asplayer.fragments.ControlsFragments;
 import com.akshay.protocol10.asplayer.fragments.EqualizerFragment;
+import com.akshay.protocol10.asplayer.fragments.GenreAlbums;
+import com.akshay.protocol10.asplayer.fragments.GenreFragment;
 import com.akshay.protocol10.asplayer.fragments.PageSlider;
 import com.akshay.protocol10.asplayer.service.MediaServiceContoller;
 import com.akshay.protocol10.asplayer.service.MediaServiceContoller.MediaBinder;
@@ -255,6 +257,19 @@ public class MainActivity extends ActionBarActivity implements
 	}
 
 	@Override
+	public void updateGenreAlbum(long genreId) {
+		// TODO Auto-generated method stub
+		GenreAlbums fragment = new GenreAlbums();
+		Bundle bundle = new Bundle();
+		bundle.putLong("genre_id", genreId);
+		fragment.setArguments(bundle);
+		FragmentTransaction transaction = getSupportFragmentManager()
+				.beginTransaction().replace(R.id.content, fragment, "GENRE");
+		transaction.addToBackStack(null);
+		transaction.commit();
+	}
+
+	@Override
 	protected void onDestroy() {
 
 		super.onDestroy();
@@ -460,5 +475,4 @@ public class MainActivity extends ActionBarActivity implements
 			return null;
 		}
 	}
-
 }

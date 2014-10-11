@@ -41,7 +41,7 @@ public class MediaManager {
 	private final String ALBUM_KEY = "album";
 	private final String DURATION_KEY = "duration";
 	public static final String ALBUM_ART = "album_art";
-	private final String ALBUM_ID = "album_id";
+	private final String ALBUM_ID = "album_art";
 
 	private static final String UNABLE_TAG = "Unable to fetch media";
 	private static final String NOMEDIA_TAG = "No media on device";
@@ -380,24 +380,62 @@ public class MediaManager {
 		return tracks_list;
 	}
 
-	public void retriveGenreAlbum(Context context, long id) {
+	/**
+	 * Tweaks with terribly design GENRES COLUMN in ANDROID MEDIA FRAMEWORKS
+	 * 
+	 * @param context
+	 * @param id
+	 * @return
+	 */
+	public List<HashMap<String, Object>> retriveGenreAlbum(Context context,
+			long id) {
 		String[] projection = { Albums.ALBUM, Albums.ALBUM_ID, Albums.ARTIST };
+
 		cursor = context.getContentResolver().query(
 				Genres.Members.getContentUri("external", id), projection, null,
 				null, null);
-		Log.i("SIZE", "" + cursor.getColumnName(0));
+
 		if (cursor == null) {
 
-		} else if (!cursor.moveToFirst()) {
-
-		} else {
+		} else if (cursor.moveToFirst()) {
 			do {
-				String album=cursor.getString(cursor.getColumnIndex(Albums.ALBUM));
-				Log.i("ALBUM", album);
-			} while (cursor.moveToNext());
-		}
+				String album = cursor.getString(cursor
+						.getColumnIndex(Albums.ALBUM));
+				String albumId = cursor.getString(cursor
+						.getColumnIndex(Albums.ALBUM_ID));
+				String artist = cursor.getString(cursor
+						.getColumnIndex(Albums.ARTIST));
+				songs_map = new HashMap<String, Object>();
+				Cursor artCursor = context.getContentResolver().query(
+						Albums.EXTERNAL_CONTENT_URI, null,
+						Albums.ALBUM + " =?", new String[] { album }, null);
+				// Fetch the Album Art for respective Albums in genre.
+				if (artCursor.moveToFirst()) {
+					String album_art = artCursor.getString(artCursor
+							.getColumnIndex(Albums.ALBUM_ART));
+					songs_map.put(ALBUM_ART, album_art);
+				}
+				artCursor.close();
 
+				// Fetch the artist id genre columns do not
+				Cursor idCursor = context.getContentResolver().query(
+						Artists.EXTERNAL_CONTENT_URI, null,
+						Artists.ARTIST + " = ?", new String[] { artist }, null);
+				if (idCursor.moveToFirst()) {
+					long artist_id = idCursor.getLong(idCursor
+							.getColumnIndex(Artists._ID));
+					songs_map.put("artist_id", artist_id);
+				}
+				idCursor.close();
+				songs_map.put(ARTIST_KEY, artist);
+				songs_map.put(ALBUM_KEY, album);
+				songs_map.put(ID_KEY, albumId);
+				tracks_list.add(songs_map);
+			} while (cursor.moveToNext());
+
+		}
 		cursor.close();
+		return tracks_list;
 	}
 
 	/**
