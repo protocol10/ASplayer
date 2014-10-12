@@ -79,7 +79,7 @@ public class TracksFragment extends Fragment implements OnItemClickListener {
 		String artist = tracks_list_data.get(position).get(ASUtils.ARTIST_KEY)
 				.toString();
 		long album_id = (Long) tracks_list_data.get(position).get(
-				ASUtils.ALBUM_ID_KEY);
+				ASUtils.ALBUM_ART);
 
 		mcallback.updateView(title, artist, album, index, album_id);
 

@@ -233,7 +233,7 @@ public class MediaServiceContoller extends Service implements
 		artist_text = media_list.get(playBackIndex).get(ARTIST_KEY).toString();
 
 		album_text = media_list.get(playBackIndex).get(ALBUM_KEY).toString();
-		album_id = (Long) media_list.get(playBackIndex).get(ALBUM_ID);
+		album_id = (Long) media_list.get(playBackIndex).get(ASUtils.ALBUM_ART);
 		sendBroadCastToView(title_text, album_text, artist_text, album_id);
 	}
 

@@ -132,7 +132,7 @@ public class MediaManager {
 				songs_map.put(ARTIST_KEY, artist);
 				songs_map.put(ALBUM_KEY, album);
 				songs_map.put(DURATION_KEY, duration);
-				songs_map.put(ALBUM_ID, album_id);
+				songs_map.put(ALBUM_ART, album_id);
 				tracks_list.add(songs_map);
 
 			} while (cursor.moveToNext());

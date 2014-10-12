@@ -49,7 +49,7 @@ public class ASUtils {
 
 	public static final String ALBUM_KEY = "album";
 
-	public static final String ALBUM_ID_KEY = "album_id";
+	public static final String ALBUM_ID_KEY = "album_art";
 
 	public static final String POSITION_KEY = "position";
 

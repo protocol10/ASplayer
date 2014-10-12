@@ -102,7 +102,7 @@ public class AlbumSongsFragment extends Fragment implements OnItemClickListener 
 				.toString();
 		String artist = albums_media.get(position).get(ASUtils.ARTIST_KEY)
 				.toString();
-		long album_id = (Long) albums_media.get(position).get(key);
+		long album_id = (Long) albums_media.get(position).get(ASUtils.ALBUM_ART);
 		mcallback.updateList(albums_media);
 		mcallback.updateView(title, artist, album, index, album_id);
 	}
