@@ -18,7 +18,6 @@ import com.akshay.protocol10.asplayer.fragments.ArtistAlbum;
 import com.akshay.protocol10.asplayer.fragments.ControlsFragments;
 import com.akshay.protocol10.asplayer.fragments.EqualizerFragment;
 import com.akshay.protocol10.asplayer.fragments.GenreAlbums;
-import com.akshay.protocol10.asplayer.fragments.GenreFragment;
 import com.akshay.protocol10.asplayer.fragments.PageSlider;
 import com.akshay.protocol10.asplayer.service.MediaServiceContoller;
 import com.akshay.protocol10.asplayer.service.MediaServiceContoller.MediaBinder;
@@ -421,12 +420,15 @@ public class MainActivity extends ActionBarActivity implements
 
 			if (intent.getAction() == MediaServiceContoller.BROADCAST_ACTION) {
 
+				name = intent.getStringExtra(MediaServiceContoller.TITLE_KEY);
+				artist = intent
+						.getStringExtra(MediaServiceContoller.ARTIST_KEY);
+				PageSlider sliderFrag = (PageSlider) getSupportFragmentManager()
+						.findFragmentByTag(ASUtils.PAGE_SLIDER_TAG);
+				sliderFrag.updateNowPlaying(name, artist);
 				// Check whether fragment is in ONE-PAYNE layout
 				if (controlFragments != null) {
-					name = intent
-							.getStringExtra(MediaServiceContoller.TITLE_KEY);
-					artist = intent
-							.getStringExtra(MediaServiceContoller.ARTIST_KEY);
+
 					album = intent
 							.getStringExtra(MediaServiceContoller.ALBUM_KEY);
 					long id = intent.getLongExtra(

@@ -1240,15 +1240,16 @@ containing a value of this type.
         public static final int action_menu_divider=0x7f070016;
         public static final int action_menu_presenter=0x7f070017;
         public static final int action_mode_close_button=0x7f070024;
-        public static final int action_settings=0x7f070076;
+        public static final int action_settings=0x7f07007b;
         public static final int activity_chooser_view_content=0x7f070025;
         public static final int album_art=0x7f07004c;
         public static final int album_artist_text_view=0x7f070042;
         public static final int album_cover=0x7f070040;
         public static final int album_grid=0x7f07005c;
         public static final int album_name_text_view=0x7f070041;
-        public static final int album_text_view=0x7f070075;
+        public static final int album_text_view=0x7f07007a;
         public static final int always=0x7f07000b;
+        public static final int artist=0x7f07006f;
         public static final int artist_icon=0x7f070043;
         public static final int artist_list=0x7f07005d;
         public static final int artist_name=0x7f070044;
@@ -1272,7 +1273,7 @@ containing a value of this type.
         public static final int disableHome=0x7f070008;
         public static final int drawer=0x7f07003c;
         public static final int dropdown=0x7f07000f;
-        public static final int duration_text_view=0x7f070074;
+        public static final int duration_text_view=0x7f070079;
         public static final int edit_query=0x7f070030;
         public static final int end=0x7f070013;
         public static final int equalizer_band1=0x7f070060;
@@ -1301,21 +1302,25 @@ containing a value of this type.
         public static final int list_item=0x7f070029;
         public static final int middle=0x7f070012;
         public static final int never=0x7f070009;
+        public static final int next=0x7f070071;
         public static final int next_button=0x7f070052;
         public static final int no_albums=0x7f070045;
         public static final int none=0x7f070010;
         public static final int normal=0x7f070000;
+        public static final int nowPlaying=0x7f07006e;
+        public static final int nowPlayingWidget=0x7f070074;
         public static final int option_text=0x7f07005a;
         public static final int play_button=0x7f070051;
         public static final int play_pause=0x7f070049;
         public static final int preset_name=0x7f07005b;
+        public static final int previous=0x7f070070;
         public static final int progress_Bar=0x7f070056;
         public static final int progress_circular=0x7f070018;
         public static final int progress_horizontal=0x7f070019;
         public static final int radio=0x7f07002f;
-        public static final int remote_album=0x7f070072;
-        public static final int remote_art=0x7f070070;
-        public static final int remote_title=0x7f070071;
+        public static final int remote_album=0x7f070077;
+        public static final int remote_art=0x7f070075;
+        public static final int remote_title=0x7f070076;
         public static final int rewind=0x7f070048;
         public static final int rewind_button=0x7f07004f;
         public static final int savePreset=0x7f07005f;
@@ -1337,16 +1342,16 @@ containing a value of this type.
         public static final int split_action_bar=0x7f07001e;
         public static final int submit_area=0x7f070039;
         public static final int tabMode=0x7f070002;
-        public static final int tabs=0x7f07006e;
+        public static final int tabs=0x7f070072;
         public static final int title=0x7f07002b;
         public static final int title_text=0x7f070047;
-        public static final int title_text_view=0x7f070073;
+        public static final int title_text_view=0x7f070078;
         public static final int top_action_bar=0x7f070020;
         public static final int total_duration=0x7f070058;
         public static final int tracks_view=0x7f07006b;
         public static final int up=0x7f070021;
         public static final int useLogo=0x7f070003;
-        public static final int view_pager=0x7f07006f;
+        public static final int view_pager=0x7f070073;
         public static final int withText=0x7f07000c;
     }
     public static final class integer {
@@ -1416,11 +1421,12 @@ containing a value of this type.
         public static final int fragment_genre=0x7f030026;
         public static final int fragment_tracks=0x7f030027;
         public static final int genre_row=0x7f030028;
-        public static final int page_slider=0x7f030029;
-        public static final int remote_layout=0x7f03002a;
-        public static final int rounded=0x7f03002b;
-        public static final int support_simple_spinner_dropdown_item=0x7f03002c;
-        public static final int tracks_row=0x7f03002d;
+        public static final int now_playing=0x7f030029;
+        public static final int page_slider=0x7f03002a;
+        public static final int remote_layout=0x7f03002b;
+        public static final int rounded=0x7f03002c;
+        public static final int support_simple_spinner_dropdown_item=0x7f03002d;
+        public static final int tracks_row=0x7f03002e;
     }
     public static final class menu {
         public static final int main=0x7f0d0000;

@@ -12,6 +12,7 @@ public class Preferences {
 	SharedPreferences.Editor editor;
 	private static final String PREF_NAME = "Settings";
 	private static final String DATABASE = "DATABASE_KEY";
+	public static final String UPDATE_NOWPLAYING = "NOW_PLAYING";
 
 	public Preferences(Context context) {
 		// TODO Auto-generated constructor stub
@@ -48,6 +49,14 @@ public class Preferences {
 
 	public boolean checkDataBase() {
 		return settings.getBoolean(DATABASE, false);
+	}
+
+	public void updateWidget(boolean condition) {
+		editor.putBoolean(UPDATE_NOWPLAYING, condition).commit();
+	}
+
+	public boolean getNowPlaying() {
+		return settings.getBoolean(UPDATE_NOWPLAYING, false);
 	}
 
 }
