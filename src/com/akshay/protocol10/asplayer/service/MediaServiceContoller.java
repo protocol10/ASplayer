@@ -52,6 +52,8 @@ public class MediaServiceContoller extends Service implements
 	private String title_text, artist_text, album_text;
 	private long album_id;
 	boolean wasPlaying = false;
+	boolean isPLaying = false;
+
 	/* INTENTFILTER ACTIONS FOR BROADCAST RECEIVER */
 	public static final String BROADCAST_ACTION = "com.akshay.protocol10.asplayer.UPDATE_TEXT";
 	public static final String SEEKBAR_ACTION = "com.akshay.protocol10.asplayer.UPDATE_SEEKBAR";
@@ -63,6 +65,9 @@ public class MediaServiceContoller extends Service implements
 	public final static String APPWIDGET_PLAY = "com.akshay.protocol10.widget.PLAY";
 	public final static String APPWIDGET_BACK = "com.akshay.protocol10.widget.PREVIOUS";
 	public final static String APPWIDGET_NEXT = "com.akshay.protocol10.widget.NEXT";
+
+	public final static String CONTROL_PLAY = "com.akshay.protocol10.control.PLAY";
+	public final static String NOWPLAYING_PLAY = "com.akshay.protocol10.nowplaying.PLAY";
 
 	private final static String NOTIFICATION_ACTION = "com.akshay.protocol10.NOTIFICATION";
 	/* USED FOR APPWIDGET INTENTS */
@@ -118,6 +123,8 @@ public class MediaServiceContoller extends Service implements
 		filter.addAction(APPWIDGET_PLAY);
 		filter.addAction(APPWIDGET_NEXT);
 		filter.addAction(Intent.ACTION_HEADSET_PLUG);
+		filter.addAction(CONTROL_PLAY);
+		filter.addAction(NOWPLAYING_PLAY);
 		registerReceiver(receiver, filter);
 
 	}
@@ -148,6 +155,9 @@ public class MediaServiceContoller extends Service implements
 
 			} else {
 				mediaplayer.reset();
+			}
+			if (playBackIndex > media_list.size()) {
+				media_list = manager.retriveContent(getApplicationContext());
 			}
 			audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
 			result = audioManager.requestAudioFocus(this,
@@ -194,9 +204,14 @@ public class MediaServiceContoller extends Service implements
 			if (mediaplayer.isPlaying()) {
 				mediaplayer.pause();
 				wasPlaying = true;
+				isPLaying = false;
 			} else {
 				mediaplayer.start();
+				isPLaying = true;
 			}
+			Intent i = new Intent(CONTROL_PLAY);
+			i.putExtra("isPlaying", isPLaying);
+			sendBroadcast(i);
 		}
 	}
 
@@ -208,7 +223,6 @@ public class MediaServiceContoller extends Service implements
 			playBackIndex = 0;
 			play(playBackIndex);
 		}
-		// updateView();
 	}
 
 	public void previousSong() {
@@ -219,7 +233,6 @@ public class MediaServiceContoller extends Service implements
 			playBackIndex = 0;
 			play(playBackIndex);
 		}
-		// updateView();
 	}
 
 	public void setSongs(List<HashMap<String, Object>> list) {
@@ -295,7 +308,6 @@ public class MediaServiceContoller extends Service implements
 			if (action.equals(APPWIDGET_BACK)) {
 				previousSong();
 			}
-
 		}
 	};
 

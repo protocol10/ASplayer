@@ -14,7 +14,6 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -222,7 +221,6 @@ public class ControlsFragments extends Fragment implements OnClickListener,
 	public void onDestroy() {
 		// TODO Auto-generated method stub
 		super.onDestroy();
-		Log.i("onDestroy", "ControlFragment");
 	}
 
 	@Override
@@ -276,10 +274,16 @@ public class ControlsFragments extends Fragment implements OnClickListener,
 		return finalTimeString;
 	}
 
+	public void updateIcon(boolean isPlaying) {
+		play_button.setImageResource(isPlaying ? R.drawable.ic_pause
+				: R.drawable.ic_play);
+	}
+
 	@Override
 	public void onDestroyView() {
 		// TODO Auto-generated method stub
 		super.onDestroyView();
 		preferences.updateWidget(true);
 	}
+
 }

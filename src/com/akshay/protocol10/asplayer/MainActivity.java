@@ -126,6 +126,7 @@ public class MainActivity extends ActionBarActivity implements
 		filter = new IntentFilter();
 		filter.addAction(MediaServiceContoller.BROADCAST_ACTION);
 		filter.addAction(MediaServiceContoller.SEEKBAR_ACTION);
+		filter.addAction(MediaServiceContoller.CONTROL_PLAY);
 		Intent intent = getIntent();
 		// bind service
 		doBindService();
@@ -450,8 +451,9 @@ public class MainActivity extends ActionBarActivity implements
 
 			ControlsFragments controlFragments = (ControlsFragments) getSupportFragmentManager()
 					.findFragmentByTag(ASUtils.CONTROL_TAG);
+			String action = intent.getAction();
 
-			if (intent.getAction() == MediaServiceContoller.BROADCAST_ACTION) {
+			if (action.equals(MediaServiceContoller.BROADCAST_ACTION)) {
 
 				name = intent.getStringExtra(MediaServiceContoller.TITLE_KEY);
 				artist = intent
@@ -474,7 +476,7 @@ public class MainActivity extends ActionBarActivity implements
 			/**
 			 * Update the SeekBar from BroadCast Receiver
 			 */
-			if (intent.getAction().equals(MediaServiceContoller.SEEKBAR_ACTION)) {
+			if (action.equals(MediaServiceContoller.SEEKBAR_ACTION)) {
 				if (controlFragments != null) {
 					int maxDuration = intent.getIntExtra(ASUtils.MAX_DURATION,
 							0);
@@ -483,6 +485,19 @@ public class MainActivity extends ActionBarActivity implements
 					controlFragments
 							.updateSeekBar(maxDuration, currentDuration);
 				}
+			}
+
+			if (action.equals(MediaServiceContoller.CONTROL_PLAY)) {
+				boolean isPlaying = intent.getBooleanExtra("isPlaying", false);
+				if (controlFragments != null) {
+					controlFragments.updateIcon(isPlaying);
+				}
+				PageSlider slider = (PageSlider) getSupportFragmentManager()
+						.findFragmentByTag(ASUtils.PAGE_SLIDER_TAG);
+				if (slider != null) {
+					slider.updateIcon(isPlaying);
+				}
+
 			}
 		}
 
@@ -527,5 +542,12 @@ public class MainActivity extends ActionBarActivity implements
 		sliderFrag.updateNowPlaying(title, artist);
 
 		preferences.setName(title, artist);
+	}
+
+	@Override
+	public void onBackPressed() {
+		// TODO Auto-generated method stub
+		super.onBackPressed();
+
 	}
 }
