@@ -341,7 +341,7 @@ public class MediaServiceContoller extends Service implements
 	}
 
 	private long album_id() {
-		return (Long) media_list.get(playBackIndex).get(ALBUM_ID);
+		return (Long) media_list.get(playBackIndex).get(ASUtils.ALBUM_ART);
 	}
 
 	private Runnable sendUpdatesToUI = new Runnable() {

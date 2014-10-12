@@ -59,4 +59,9 @@ public class Preferences {
 		return settings.getBoolean(UPDATE_NOWPLAYING, false);
 	}
 
+	public void setName(String title, String artist) {
+		editor.putString(MediaServiceContoller.TITLE_KEY, title);
+		editor.putString(MediaServiceContoller.ARTIST_KEY, artist);
+	}
+
 }

@@ -229,7 +229,6 @@ public class MainActivity extends ActionBarActivity implements
 	}
 
 	/**
-	 * 
 	 * The callback for fragments-activity communication
 	 */
 
@@ -289,17 +288,27 @@ public class MainActivity extends ActionBarActivity implements
 		super.onResume();
 	}
 
+	/**
+	 * CALL BACK FOR PAUSE
+	 */
 	@Override
 	public void pausePlayBack() {
 
 		serviceController.pauseSong();
 	}
 
+	/**
+	 * CALLBACK FOR PLAYING NEXT SONG
+	 */
 	@Override
 	public void nextPlayBack() {
 
 		serviceController.nextSong();
 	}
+
+	/**
+	 * CALLBACK FOR PLAYING PREVIOUS SONG
+	 */
 
 	@Override
 	public void previousPlayBack() {
@@ -307,6 +316,11 @@ public class MainActivity extends ActionBarActivity implements
 		serviceController.previousSong();
 	}
 
+	/**
+	 * CALLBACK FOR PLAYING SONG
+	 * 
+	 * @param songIndex
+	 */
 	@Override
 	public void startPlayBack(int index) {
 
@@ -315,12 +329,20 @@ public class MainActivity extends ActionBarActivity implements
 		}
 	}
 
+	/**
+	 * UPDATE THE LIST AT IN SERVICE
+	 */
 	@Override
 	public void updateList(List<HashMap<String, Object>> list) {
 
 		serviceController.setSongs(list);
 	}
 
+	/**
+	 * Pass the ARTIST ID to retrieve the album w.r.t to Artist
+	 * 
+	 * @param artist_id
+	 */
 	@Override
 	public void selectArtist(long artist_id) {
 		ArtistAlbum fragment = new ArtistAlbum();
@@ -334,6 +356,12 @@ public class MainActivity extends ActionBarActivity implements
 		transaction.addToBackStack(null).commit();
 	}
 
+	/**
+	 * Pass the ALBUM NAME and ARTIST ID to retrieve songs
+	 * 
+	 * @param name
+	 * @param id
+	 */
 	@Override
 	public void updateArtistAlbum(String name, long id) {
 		// TODO Auto-generated method stub
@@ -350,6 +378,11 @@ public class MainActivity extends ActionBarActivity implements
 
 	}
 
+	/**
+	 * callback for updating the SeekBar using broadcast receiver from service
+	 * 
+	 * @param progress
+	 */
 	@Override
 	public void seekTo(int progress) {
 
@@ -423,9 +456,9 @@ public class MainActivity extends ActionBarActivity implements
 				name = intent.getStringExtra(MediaServiceContoller.TITLE_KEY);
 				artist = intent
 						.getStringExtra(MediaServiceContoller.ARTIST_KEY);
-				PageSlider sliderFrag = (PageSlider) getSupportFragmentManager()
-						.findFragmentByTag(ASUtils.PAGE_SLIDER_TAG);
-				sliderFrag.updateNowPlaying(name, artist);
+
+				updateNowPlaying(name, artist);
+
 				// Check whether fragment is in ONE-PAYNE layout
 				if (controlFragments != null) {
 
@@ -438,6 +471,9 @@ public class MainActivity extends ActionBarActivity implements
 				}
 			}
 
+			/**
+			 * Update the SeekBar from BroadCast Receiver
+			 */
 			if (intent.getAction().equals(MediaServiceContoller.SEEKBAR_ACTION)) {
 				if (controlFragments != null) {
 					int maxDuration = intent.getIntExtra(ASUtils.MAX_DURATION,
@@ -476,5 +512,20 @@ public class MainActivity extends ActionBarActivity implements
 			}
 			return null;
 		}
+	}
+
+	/**
+	 * Update the NOW-PLAYING WIDGET
+	 * 
+	 * @param title
+	 * @param artist
+	 */
+	private void updateNowPlaying(String title, String artist) {
+
+		PageSlider sliderFrag = (PageSlider) getSupportFragmentManager()
+				.findFragmentByTag(ASUtils.PAGE_SLIDER_TAG);
+		sliderFrag.updateNowPlaying(title, artist);
+
+		preferences.setName(title, artist);
 	}
 }

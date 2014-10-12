@@ -3,7 +3,6 @@ package com.akshay.protocol10.asplayer.fragments;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.activeandroid.Model;
 import com.activeandroid.query.Select;
 import com.akshay.protocol10.asplayer.R;
 import com.akshay.protocol10.asplayer.adapters.EqualizerAdapter;
@@ -15,7 +14,6 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
 public class EqualizerFragment extends Fragment {
