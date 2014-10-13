@@ -3,6 +3,50 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" >
-    
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="4dip"
+        android:background="#05CDFF"
+        android:orientation="horizontal"
+        android:padding="8dip" >
+
+        <ImageButton
+            android:id="@+id/notify_pause"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="4dip"
+            android:layout_marginRight="8dip"
+            android:background="@null"
+            android:contentDescription="@string/pause"
+            android:paddingLeft="4dip"
+            android:paddingRight="8dip"
+            android:src="@drawable/ic_pause" />
+
+        <ImageButton
+            android:id="@+id/notify_next"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="4dip"
+            android:layout_marginRight="8dip"
+            android:background="@null"
+            android:contentDescription="@string/Next"
+            android:paddingLeft="4dip"
+            android:paddingRight="8dip"
+            android:src="@drawable/ic_forward" />
+
+        <ImageButton
+            android:id="@+id/notify_exit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="4dip"
+            android:layout_marginRight="8dip"
+            android:background="@null"
+            android:contentDescription="@string/close"
+            android:paddingLeft="4dip"
+            android:paddingRight="8dip"
+            android:src="@drawable/ic_close" />
+    </LinearLayout>
 
 </LinearLayout>

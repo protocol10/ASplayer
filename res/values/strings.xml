@@ -24,6 +24,7 @@
     <string name="play">play</string>
     <string name="pause">pause</string>
     <string name="Next">Next</string>
+    <string name="close">Close</string>
     <string name="Back">Back</string>
     <string name="Forward">Forward</string>
     <string name="Shuffle">Shuffle</string>

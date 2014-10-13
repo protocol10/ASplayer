@@ -38,6 +38,7 @@ import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
+import android.widget.RemoteViews;
 
 public class MediaServiceContoller extends Service implements
 		OnCompletionListener, OnAudioFocusChangeListener {
@@ -410,9 +411,11 @@ public class MediaServiceContoller extends Service implements
 
 		Bitmap bitmap = getCover(id);
 
+		RemoteViews remoteViews = new RemoteViews(getPackageName(),
+				R.layout.as_widget_main);
 		NotificationCompat.Builder builder = new NotificationCompat.Builder(
-				this).setSmallIcon(R.drawable.ic_launcher).setLargeIcon(bitmap)
-				.setContentTitle(title).setContentText(album);
+				this).setSmallIcon(R.drawable.ic_launcher).setContent(
+				remoteViews);
 
 		Intent intent = new Intent(this, MainActivity.class);
 		intent.setAction(NOTIFICATION_ACTION);
