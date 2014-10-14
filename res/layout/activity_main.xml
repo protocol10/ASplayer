@@ -3,11 +3,25 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
-    <FrameLayout
-        android:id="@+id/content"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent" >
-    </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/nowPlayingMain" >
+        </FrameLayout>
+
+        <include
+            android:id="@+id/nowPlayingMain"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            layout="@layout/now_playing"
+            android:visibility="visible" />
+    </RelativeLayout>
 
     <ListView
         android:id="@+id/list_drawer_view"

@@ -41,12 +41,16 @@ import android.os.IBinder;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.AdapterView;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.TextView;
 
 public class MainActivity extends ActionBarActivity implements
-		OnItemClickListener, onItemSelected {
+		OnItemClickListener, onItemSelected, OnClickListener {
 
 	boolean isBound;
 	String name, artist, album;
@@ -67,6 +71,10 @@ public class MainActivity extends ActionBarActivity implements
 	Fragment fragment;
 	Preferences preferences;
 
+	LinearLayout nowPlaying;
+	TextView titleText, artistText;
+	ImageButton previous, play, next;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -78,6 +86,18 @@ public class MainActivity extends ActionBarActivity implements
 		drawer_options = ASUtils.options;
 		list_view = (ListView) findViewById(R.id.list_drawer_view);
 		drawer_layout = (DrawerLayout) findViewById(R.id.drawer);
+		nowPlaying = (LinearLayout) findViewById(R.id.nowPlayingMain);
+
+		titleText = (TextView) findViewById(R.id.title);
+		artistText = (TextView) findViewById(R.id.artist);
+
+		previous = (ImageButton) findViewById(R.id.previous);
+		play = (ImageButton) findViewById(R.id.play_pause);
+		next = (ImageButton) findViewById(R.id.next);
+
+		play.setOnClickListener(this);
+		next.setOnClickListener(this);
+		previous.setOnClickListener(this);
 
 		drawerAdapter = new DrawerAdapter(this, R.layout.drawer_list_row,
 				R.id.option_text, drawer_options);
@@ -120,6 +140,9 @@ public class MainActivity extends ActionBarActivity implements
 			manager.beginTransaction()
 					.replace(R.id.content, fragment, ASUtils.PAGE_SLIDER_TAG)
 					.commit();
+		} else {
+			titleText.setText(preferences.getTitle());
+			artistText.setText(preferences.getArtist());
 		}
 
 		// IntentFilter for BroadCastReceiver
@@ -138,7 +161,8 @@ public class MainActivity extends ActionBarActivity implements
 				String path = intent.getData().getPath();
 				if (path != null) {
 
-					intent = new Intent(getApplicationContext(), MediaServiceContoller.class);
+					intent = new Intent(getApplicationContext(),
+							MediaServiceContoller.class);
 					intent.setAction("com.akshay.protocol10.PLAYPATH");
 					intent.putExtra("path", path);
 					startService(intent);
@@ -250,7 +274,7 @@ public class MainActivity extends ActionBarActivity implements
 		FragmentTransaction transaction = getSupportFragmentManager()
 				.beginTransaction().replace(R.id.content, fragments,
 						ASUtils.CONTROL_TAG);
-
+		nowPlaying.setVisibility(View.GONE);
 		transaction.addToBackStack(null);
 		transaction.commit();
 	}
@@ -492,11 +516,8 @@ public class MainActivity extends ActionBarActivity implements
 				if (controlFragments != null) {
 					controlFragments.updateIcon(isPlaying);
 				}
-				PageSlider slider = (PageSlider) getSupportFragmentManager()
-						.findFragmentByTag(ASUtils.PAGE_SLIDER_TAG);
-				if (slider != null) {
-					slider.updateIcon(isPlaying);
-				}
+				updateIcon(isPlaying);
+				// slider.updateIcon(isPlaying);
 
 			}
 		}
@@ -536,18 +557,43 @@ public class MainActivity extends ActionBarActivity implements
 	 * @param artist
 	 */
 	private void updateNowPlaying(String title, String artist) {
-
-		PageSlider sliderFrag = (PageSlider) getSupportFragmentManager()
-				.findFragmentByTag(ASUtils.PAGE_SLIDER_TAG);
-		sliderFrag.updateNowPlaying(title, artist);
-
 		preferences.setName(title, artist);
+		titleText.setText(preferences.getTitle().toString());
+		artistText.setText(preferences.getArtist().toString());
+	}
+
+	protected void updateIcon(boolean isPlaying) {
+		// TODO Auto-generated method stub
+		play.setImageResource(isPlaying ? R.drawable.ic_pause
+				: R.drawable.ic_play);
 	}
 
 	@Override
 	public void onBackPressed() {
 		// TODO Auto-generated method stub
 		super.onBackPressed();
+		if (nowPlaying.getVisibility() != View.VISIBLE) {
+			nowPlaying.setVisibility(View.VISIBLE);
+		}
 
+	}
+
+	@Override
+	public void onClick(View v) {
+		// TODO Auto-generated method stub
+		switch (v.getId()) {
+		case R.id.play_pause:
+			serviceController.pauseSong();
+			break;
+		case R.id.next:
+			serviceController.nextSong();
+			break;
+		case R.id.previous:
+			serviceController.previousSong();
+			break;
+
+		default:
+			break;
+		}
 	}
 }

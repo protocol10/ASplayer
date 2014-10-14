@@ -62,6 +62,7 @@ public class Preferences {
 	public void setName(String title, String artist) {
 		editor.putString(MediaServiceContoller.TITLE_KEY, title);
 		editor.putString(MediaServiceContoller.ARTIST_KEY, artist);
+		editor.commit();
 	}
 
 }
