@@ -38,6 +38,7 @@ import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
+import android.util.Log;
 import android.widget.RemoteViews;
 
 public class MediaServiceContoller extends Service implements
@@ -69,6 +70,9 @@ public class MediaServiceContoller extends Service implements
 
 	public final static String CONTROL_PLAY = "com.akshay.protocol10.control.PLAY";
 	public final static String NOWPLAYING_PLAY = "com.akshay.protocol10.nowplaying.PLAY";
+	public final static String NOTIFY_PAUSE = "com.akshay.protocol10.notify.PLAYPAUSE";
+	public final static String NOTIFY_NEXT = "com.akshay.protocol10.notify.NEXT";
+	public final static String NOTIFY_CLOSE = "com.akshay.protocol10.notify.CLOSE";
 
 	private final static String NOTIFICATION_ACTION = "com.akshay.protocol10.NOTIFICATION";
 	/* USED FOR APPWIDGET INTENTS */
@@ -126,6 +130,9 @@ public class MediaServiceContoller extends Service implements
 		filter.addAction(Intent.ACTION_HEADSET_PLUG);
 		filter.addAction(CONTROL_PLAY);
 		filter.addAction(NOWPLAYING_PLAY);
+		filter.addAction(NOTIFY_CLOSE);
+		filter.addAction(NOTIFY_PAUSE);
+		filter.addAction(NOTIFY_NEXT);
 		registerReceiver(receiver, filter);
 
 	}
@@ -136,14 +143,15 @@ public class MediaServiceContoller extends Service implements
 		/**
 		 * We want this service to continue until it is explicitly stopped.
 		 */
-		String action = intent.getAction();
-		if (action != null && action.equals("com.akshay.protocol10.PLAYPATH")) {
+		if (intent != null) {
+			String action = intent.getAction();
+			if (action != null && action.equals("com.akshay.protocol10.PLAYPATH")) {
 
-			String path = intent.getStringExtra("path");
-			playFromPath(path);
+				String path = intent.getStringExtra("path");
+				playFromPath(path);
 
+			}
 		}
-
 		return START_STICKY;
 	}
 
@@ -257,7 +265,6 @@ public class MediaServiceContoller extends Service implements
 		public void onReceive(Context context, Intent intent) {
 			// TODO Auto-generated method stub
 			String action = intent.getAction();
-
 			/* BroadCastReciever Action SEEKBAR */
 			if (action.equals(SEEKTO_ACTION)) {
 				int seekTo = intent.getIntExtra("seekpos", 0);
@@ -277,7 +284,7 @@ public class MediaServiceContoller extends Service implements
 				updatewidget(context);
 			}
 
-			if (action.equals(APPWIDGET_PLAY)) {
+			if (action.equals(APPWIDGET_PLAY) || action.equals(NOTIFY_PAUSE)) {
 				if (mediaplayer.isPlaying())
 					mediaplayer.pause();
 				else if (!mediaplayer.isPlaying()) {
@@ -303,11 +310,15 @@ public class MediaServiceContoller extends Service implements
 					mediaplayer.pause();
 				}
 			}
-			if (action.equals(APPWIDGET_NEXT)) {
+			if (action.equals(APPWIDGET_NEXT) || action.equals(NOTIFY_NEXT)) {
 				nextSong();
 			}
 			if (action.equals(APPWIDGET_BACK)) {
 				previousSong();
+			}
+			if (action.equals(NOTIFY_CLOSE)) {
+				stopForeground(true);
+				pauseSong();
 			}
 		}
 	};
@@ -413,12 +424,34 @@ public class MediaServiceContoller extends Service implements
 
 		RemoteViews remoteViews = new RemoteViews(getPackageName(),
 				R.layout.as_widget_main);
+
 		NotificationCompat.Builder builder = new NotificationCompat.Builder(
 				this).setSmallIcon(R.drawable.ic_launcher).setContent(
 				remoteViews);
-
+		/* Launch the App from Notification */
 		Intent intent = new Intent(this, MainActivity.class);
 		intent.setAction(NOTIFICATION_ACTION);
+
+		/* Play/Pause a media through notification */
+		Intent pauseIntent = new Intent(NOTIFY_PAUSE);
+		PendingIntent pendingPauseIntent = PendingIntent.getBroadcast(
+				getApplicationContext(), 0, pauseIntent, 0);
+		remoteViews.setOnClickPendingIntent(R.id.notify_pause,
+				pendingPauseIntent);
+
+		/* Play next media through Notification */
+		Intent nextIntent = new Intent(NOTIFY_NEXT);
+		PendingIntent pendingNextIntent = PendingIntent.getBroadcast(
+				getApplicationContext(), 0, nextIntent, 0);
+		remoteViews
+				.setOnClickPendingIntent(R.id.notify_next, pendingNextIntent);
+
+		Intent closeIntent = new Intent(NOTIFY_CLOSE);
+		PendingIntent pendingCloseIntent = PendingIntent.getBroadcast(
+				getApplicationContext(), 0, closeIntent, 0);
+		remoteViews.setOnClickPendingIntent(R.id.notify_exit,
+				pendingCloseIntent);
+		/* Close the media and stopForegroundService */
 		TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
 		stackBuilder.addParentStack(MainActivity.class);
 		stackBuilder.addNextIntent(intent);
