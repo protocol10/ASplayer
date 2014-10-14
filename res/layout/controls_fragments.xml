@@ -19,7 +19,7 @@
             android:layout_height="250dp"
             android:contentDescription="@string/album_art"
             android:scaleType="fitXY"
-            android:src="@drawable/ic_action_home" />
+            android:src="@drawable/ic_album_art" />
     </LinearLayout>
 
     <LinearLayout

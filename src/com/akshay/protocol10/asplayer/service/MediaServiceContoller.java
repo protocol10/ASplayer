@@ -145,7 +145,8 @@ public class MediaServiceContoller extends Service implements
 		 */
 		if (intent != null) {
 			String action = intent.getAction();
-			if (action != null && action.equals("com.akshay.protocol10.PLAYPATH")) {
+			if (action != null
+					&& action.equals("com.akshay.protocol10.PLAYPATH")) {
 
 				String path = intent.getStringExtra("path");
 				playFromPath(path);

@@ -1,52 +1,90 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+    android:layout_width="fill_parent"
     android:layout_height="match_parent"
+    android:layout_marginBottom="2dip"
+    android:layout_marginTop="3dip"
     android:orientation="vertical" >
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="4dip"
-        android:background="#05CDFF"
-        android:orientation="horizontal"
-        android:padding="8dip" >
+        android:layout_height="wrap_content" >
 
-        <ImageButton
-            android:id="@+id/notify_pause"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="4dip"
-            android:layout_marginRight="8dip"
-            android:background="@null"
-            android:contentDescription="@string/pause"
-            android:paddingLeft="4dip"
-            android:paddingRight="8dip"
-            android:src="@drawable/ic_pause" />
+        <ImageView
+            android:id="@+id/notify_icon"
+            android:layout_width="64dip"
+            android:layout_height="64dip"
+            android:contentDescription="@string/description_icon"
+            android:src="@drawable/ic_launcher" />
 
-        <ImageButton
-            android:id="@+id/notify_next"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="4dip"
-            android:layout_marginRight="8dip"
-            android:background="@null"
-            android:contentDescription="@string/Next"
-            android:paddingLeft="4dip"
-            android:paddingRight="8dip"
-            android:src="@drawable/ic_forward" />
+            android:orientation="vertical" >
 
-        <ImageButton
-            android:id="@+id/notify_exit"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="4dip"
-            android:layout_marginRight="8dip"
-            android:background="@null"
-            android:contentDescription="@string/close"
-            android:paddingLeft="4dip"
-            android:paddingRight="8dip"
-            android:src="@drawable/ic_close" />
+            <TextView
+                android:id="@+id/notify_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:padding="4dip"
+                android:text="@string/title" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="4dip" >
+
+                <ImageButton
+                    android:id="@+id/notify_previous"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="8dip"
+                    android:layout_marginRight="8dip"
+                    android:background="@null"
+                    android:contentDescription="@string/pause"
+                    android:paddingLeft="8dip"
+                    android:paddingRight="8dip"
+                    android:src="@drawable/ic_back" />
+
+                <ImageButton
+                    android:id="@+id/notify_pause"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="8dip"
+                    android:layout_marginRight="8dip"
+                    android:background="@null"
+                    android:contentDescription="@string/pause"
+                    android:paddingLeft="8dip"
+                    android:paddingRight="8dip"
+                    android:src="@drawable/ic_pause" />
+
+                <ImageButton
+                    android:id="@+id/notify_next"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="8dip"
+                    android:layout_marginRight="8dip"
+                    android:background="@null"
+                    android:contentDescription="@string/Next"
+                    android:paddingLeft="8dip"
+                    android:paddingRight="8dip"
+                    android:src="@drawable/ic_forward" />
+
+                <ImageButton
+                    android:id="@+id/notify_exit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right"
+                    android:layout_marginLeft="8dip"
+                    android:background="@null"
+                    android:contentDescription="@string/close"
+                    android:paddingLeft="8dip"
+                    android:paddingRight="8dip"
+                    android:src="@drawable/ic_close" />
+            </LinearLayout>
+        </LinearLayout>
     </LinearLayout>
 
 </LinearLayout>
