@@ -7,11 +7,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import com.activeandroid.ActiveAndroid;
 import com.akshay.protocol10.asplayer.adapters.DrawerAdapter;
 import com.akshay.protocol10.asplayer.callbacks.onItemSelected;
 import com.akshay.protocol10.asplayer.database.Preferences;
-import com.akshay.protocol10.asplayer.database.models.PresetModel;
 import com.akshay.protocol10.asplayer.fragments.AboutFragment;
 import com.akshay.protocol10.asplayer.fragments.AlbumSongsFragment;
 import com.akshay.protocol10.asplayer.fragments.ArtistAlbum;
@@ -74,6 +72,9 @@ public class MainActivity extends ActionBarActivity implements
 	LinearLayout nowPlaying;
 	TextView titleText, artistText;
 	ImageButton previous, play, next;
+	ControlsFragments controlFragments;
+
+	private static final String SEEKKEY = "seekpos";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -81,7 +82,6 @@ public class MainActivity extends ActionBarActivity implements
 		setContentView(R.layout.activity_main);
 
 		preferences = new Preferences(this);
-		new AsyncLoader().execute();
 
 		drawer_options = ASUtils.options;
 		list_view = (ListView) findViewById(R.id.list_drawer_view);
@@ -140,6 +140,8 @@ public class MainActivity extends ActionBarActivity implements
 			manager.beginTransaction()
 					.replace(R.id.content, fragment, ASUtils.PAGE_SLIDER_TAG)
 					.commit();
+			titleText.setText(preferences.getTitle());
+			artistText.setText(preferences.getArtist());
 		} else {
 			titleText.setText(preferences.getTitle());
 			artistText.setText(preferences.getArtist());
@@ -261,7 +263,7 @@ public class MainActivity extends ActionBarActivity implements
 	public void updateView(String title, String artist, String album,
 			int position, long album_id) {
 
-		ControlsFragments fragments = new ControlsFragments();
+		controlFragments = new ControlsFragments();
 
 		Bundle args = new Bundle();
 		args.putString("title", title);
@@ -269,10 +271,10 @@ public class MainActivity extends ActionBarActivity implements
 		args.putString("album", album);
 		args.putInt("position", position);
 		args.putLong("album_id", album_id);
-		fragments.setArguments(args);
+		controlFragments.setArguments(args);
 
 		FragmentTransaction transaction = getSupportFragmentManager()
-				.beginTransaction().replace(R.id.content, fragments,
+				.beginTransaction().replace(R.id.content, controlFragments,
 						ASUtils.CONTROL_TAG);
 		nowPlaying.setVisibility(View.GONE);
 		transaction.addToBackStack(null);
@@ -309,7 +311,6 @@ public class MainActivity extends ActionBarActivity implements
 
 	@Override
 	protected void onResume() {
-
 		super.onResume();
 	}
 
@@ -392,8 +393,8 @@ public class MainActivity extends ActionBarActivity implements
 		// TODO Auto-generated method stub
 		AlbumSongsFragment fragment = new AlbumSongsFragment();
 		Bundle args = new Bundle();
-		args.putString("name", name);
-		args.putLong("artist_id", id);
+		args.putString(ASUtils.NAME_KEY, name);
+		args.putLong(ASUtils.ARTIST_ID_KEY, id);
 		fragment.setArguments(args);
 
 		FragmentTransaction transaction = getSupportFragmentManager()
@@ -412,8 +413,13 @@ public class MainActivity extends ActionBarActivity implements
 	public void seekTo(int progress) {
 
 		Intent intent = new Intent(MediaServiceContoller.SEEKTO_ACTION);
-		intent.putExtra("seekpos", progress);
+		intent.putExtra(SEEKKEY, progress);
 		sendBroadcast(intent);
+	}
+
+	@Override
+	public void setTag(String tag) {
+		serviceController.setTag(tag);
 	}
 
 	/**
@@ -473,7 +479,7 @@ public class MainActivity extends ActionBarActivity implements
 		@Override
 		public void onReceive(Context context, Intent intent) {
 
-			ControlsFragments controlFragments = (ControlsFragments) getSupportFragmentManager()
+			controlFragments = (ControlsFragments) getSupportFragmentManager()
 					.findFragmentByTag(ASUtils.CONTROL_TAG);
 			String action = intent.getAction();
 
@@ -512,43 +518,16 @@ public class MainActivity extends ActionBarActivity implements
 			}
 
 			if (action.equals(MediaServiceContoller.CONTROL_PLAY)) {
-				boolean isPlaying = intent.getBooleanExtra("isPlaying", false);
+				boolean isPlaying = intent.getBooleanExtra(ASUtils.IS_PLAYING,
+						false);
 				if (controlFragments != null) {
 					controlFragments.updateIcon(isPlaying);
 				}
 				updateIcon(isPlaying);
-				// slider.updateIcon(isPlaying);
-
 			}
 		}
 
 	};
-
-	// AsyncTask to load the initial presets from the database.
-	class AsyncLoader extends android.os.AsyncTask<Void, Void, Void> {
-
-		@Override
-		protected Void doInBackground(Void... params) {
-
-			if (!preferences.checkDataBase()) {
-				/**
-				 * INSERT MULTIPLE RECORDS AS THE SAME TIME USE TRANSACTIONS.
-				 * RECOMMENDED WAY TO PERFORM BULT TRANSACTION.
-				 * REFERENCE:-ACTIVEANDROID WIKI
-				 */
-				ActiveAndroid.beginTransaction();
-				try {
-					for (int i = 0; i < ASUtils.DEFAULT_PRESETS.length; i++) {
-						new PresetModel(ASUtils.DEFAULT_PRESETS[i]).save();
-					}
-					ActiveAndroid.setTransactionSuccessful();
-				} finally {
-					ActiveAndroid.endTransaction();
-				}
-			}
-			return null;
-		}
-	}
 
 	/**
 	 * Update the NOW-PLAYING WIDGET
@@ -591,7 +570,6 @@ public class MainActivity extends ActionBarActivity implements
 		case R.id.previous:
 			serviceController.previousSong();
 			break;
-
 		default:
 			break;
 		}

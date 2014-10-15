@@ -2,6 +2,7 @@ package com.akshay.protocol10.asplayer;
 
 import com.akshay.protocol10.asplayer.database.MediaManager;
 import com.akshay.protocol10.asplayer.service.MediaServiceContoller;
+import com.akshay.protocol10.asplayer.utils.ASUtils;
 
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
@@ -63,7 +64,8 @@ public class ASPlayerWidget extends AppWidgetProvider {
 
 			String title = intent
 					.getStringExtra(MediaServiceContoller.TITLE_KEY);
-			boolean isPlaying = intent.getBooleanExtra("isPlaying", false);
+			boolean isPlaying = intent.getBooleanExtra(ASUtils.IS_PLAYING,
+					false);
 			views.setTextViewText(R.id.title_text, title.toString());
 			views.setImageViewResource(R.id.play_pause,
 					isPlaying ? R.drawable.ic_pause : R.drawable.ic_play);

@@ -47,6 +47,8 @@ public class ASUtils {
 
 	public static final String ARTIST_KEY = "artist";
 
+	public static final String ARTIST_ID_KEY = "artist_id";
+
 	public static final String ALBUM_KEY = "album";
 
 	public static final String ALBUM_ID_KEY = "album_art";
@@ -78,4 +80,10 @@ public class ASUtils {
 	public static final String CURRENT_POSITION = "currentPosition";
 
 	public static final String ID_KEY = "id";
+
+	public static final String TRACKS_TAGS = "TRACKS";
+
+	public static final String OTHER_TAGS = "OTHERS";
+
+	public static final String IS_PLAYING = "isPlaying";
 }

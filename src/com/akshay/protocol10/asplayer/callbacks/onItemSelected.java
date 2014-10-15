@@ -25,4 +25,6 @@ public interface onItemSelected {
 	void updateArtistAlbum(String name, long id);
 
 	void updateGenreAlbum(long genreId);
+	
+	void setTag(String tag);
 }

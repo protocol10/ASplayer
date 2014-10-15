@@ -38,7 +38,6 @@ import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
-import android.util.Log;
 import android.widget.RemoteViews;
 
 public class MediaServiceContoller extends Service implements
@@ -55,6 +54,7 @@ public class MediaServiceContoller extends Service implements
 	private long album_id;
 	boolean wasPlaying = false;
 	boolean isPLaying = false;
+	boolean defaultLoaded = false;
 
 	/* INTENTFILTER ACTIONS FOR BROADCAST RECEIVER */
 	public static final String BROADCAST_ACTION = "com.akshay.protocol10.asplayer.UPDATE_TEXT";
@@ -76,11 +76,10 @@ public class MediaServiceContoller extends Service implements
 	public final static String NOTIFY_BACK = "com.akshay.protocol10.notify.BACK";
 
 	private final static String NOTIFICATION_ACTION = "com.akshay.protocol10.NOTIFICATION";
+
 	/* USED FOR APPWIDGET INTENTS */
 	private final String PACKAGE_NAME = "com.akshay.protocol10.asplayer";
 	private final String CLASS_NAME = "com.akshay.protocol10.asplayer.ASPlayerWidget";
-
-	private static final String TAG = "MEDIASERVICE CONTROLLER";
 
 	private static int playBackIndex = 0;
 
@@ -98,7 +97,7 @@ public class MediaServiceContoller extends Service implements
 	int db_condition;
 	SharedPreferences preferences;
 	Editor editor;
-
+	String tag;
 	// mBinder object which is responsible for interacting with client.
 	private final IBinder mbinder = new MediaBinder();
 
@@ -160,10 +159,18 @@ public class MediaServiceContoller extends Service implements
 
 	public void play(int index) {
 
+		checkForDefault();
 		try {
 			playBackIndex = index;
 			if (mediaplayer == null) {
 				mediaplayer = new MediaPlayer();
+				if (getTag().equals(ASUtils.TRACKS_TAGS) && !defaultLoaded) {
+					media_list.clear();
+					retriveContent();
+					defaultLoaded = true;
+				} else {
+					defaultLoaded = false;
+				}
 
 			} else {
 				mediaplayer.reset();
@@ -210,6 +217,22 @@ public class MediaServiceContoller extends Service implements
 
 	}
 
+	private void checkForDefault() {
+		// TODO Auto-generated method stub
+		if (getTag().equals(ASUtils.TRACKS_TAGS) && !defaultLoaded) {
+			media_list.clear();
+			retriveContent();
+			defaultLoaded = true;
+		} else {
+			defaultLoaded = false;
+		}
+	}
+
+	private void retriveContent() {
+		// TODO Auto-generated method stub
+		media_list = manager.retriveContent(getApplicationContext());
+	}
+
 	public void pauseSong() {
 
 		if (mediaplayer != null) {
@@ -222,7 +245,7 @@ public class MediaServiceContoller extends Service implements
 				isPLaying = true;
 			}
 			Intent i = new Intent(CONTROL_PLAY);
-			i.putExtra("isPlaying", isPLaying);
+			i.putExtra(ASUtils.IS_PLAYING, isPLaying);
 			sendBroadcast(i);
 		}
 	}
@@ -359,7 +382,7 @@ public class MediaServiceContoller extends Service implements
 		intent.setAction(APPWIDGET_UPDATE_TEXT);
 		if (wasPlaying) {
 			intent.putExtra(TITLE_KEY, getTitle());
-			intent.putExtra("isPlaying", mediaplayer.isPlaying());
+			intent.putExtra(ASUtils.IS_PLAYING, mediaplayer.isPlaying());
 		} else {
 			intent.putExtra(TITLE_KEY, context.getString(R.string.title));
 		}
@@ -550,6 +573,14 @@ public class MediaServiceContoller extends Service implements
 		}
 	}
 
+	public void setTag(String tag) {
+		this.tag = tag;
+	}
+
+	String getTag() {
+		return tag;
+	}
+
 	class DataAsync extends AsyncTask<Void, Void, Void> {
 
 		@Override
@@ -563,7 +594,6 @@ public class MediaServiceContoller extends Service implements
 	public void playFromPath(String path) {
 
 		try {
-
 			for (Map<String, Object> map : media_list) {
 
 				for (Map.Entry<String, Object> entry : map.entrySet()) {
@@ -574,7 +604,6 @@ public class MediaServiceContoller extends Service implements
 					}
 				}
 			}
-
 		} catch (IllegalArgumentException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
