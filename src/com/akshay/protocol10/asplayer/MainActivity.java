@@ -165,8 +165,8 @@ public class MainActivity extends ActionBarActivity implements
 
 					intent = new Intent(getApplicationContext(),
 							MediaServiceContoller.class);
-					intent.setAction("com.akshay.protocol10.PLAYPATH");
-					intent.putExtra("path", path);
+					intent.setAction(MediaServiceContoller.PLAY_PATH);
+					intent.putExtra(MediaServiceContoller.PATH, path);
 					startService(intent);
 				}
 

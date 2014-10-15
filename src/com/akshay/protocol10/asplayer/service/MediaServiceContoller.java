@@ -31,7 +31,6 @@ import android.media.AudioManager.OnAudioFocusChangeListener;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
 import android.media.audiofx.Equalizer;
-import android.os.AsyncTask;
 import android.os.Binder;
 import android.os.Handler;
 import android.os.IBinder;
@@ -81,7 +80,9 @@ public class MediaServiceContoller extends Service implements
 	private final String PACKAGE_NAME = "com.akshay.protocol10.asplayer";
 	private final String CLASS_NAME = "com.akshay.protocol10.asplayer.ASPlayerWidget";
 
+	public final static String PLAY_PATH = "com.akshay.protocol10.PLAYPATH";
 	private static int playBackIndex = 0;
+	public final static String PATH = "path";
 
 	List<HashMap<String, Object>> media_list;
 
@@ -116,6 +117,8 @@ public class MediaServiceContoller extends Service implements
 		manager = new MediaManager();
 		media_list = manager.retriveContent(this);
 		handler = new Handler();
+
+		// register intents for BroadCast Receivers
 		filter = new IntentFilter();
 		filter.addAction(SEEKBAR_ACTION);
 		filter.addAction(SEEKTO_ACTION);
@@ -146,10 +149,9 @@ public class MediaServiceContoller extends Service implements
 		 */
 		if (intent != null) {
 			String action = intent.getAction();
-			if (action != null
-					&& action.equals("com.akshay.protocol10.PLAYPATH")) {
+			if (action != null && action.equals(PLAY_PATH)) {
 
-				String path = intent.getStringExtra("path");
+				String path = intent.getStringExtra(PATH);
 				playFromPath(path);
 
 			}
@@ -164,20 +166,13 @@ public class MediaServiceContoller extends Service implements
 			playBackIndex = index;
 			if (mediaplayer == null) {
 				mediaplayer = new MediaPlayer();
-				if (getTag().equals(ASUtils.TRACKS_TAGS) && !defaultLoaded) {
-					media_list.clear();
-					retriveContent();
-					defaultLoaded = true;
-				} else {
-					defaultLoaded = false;
-				}
-
 			} else {
 				mediaplayer.reset();
 			}
 			if (playBackIndex > media_list.size()) {
 				media_list = manager.retriveContent(getApplicationContext());
 			}
+			// obtain the AudioFocus for our app
 			audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
 			result = audioManager.requestAudioFocus(this,
 					AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
@@ -470,6 +465,9 @@ public class MediaServiceContoller extends Service implements
 		Intent pauseIntent = new Intent(NOTIFY_PAUSE);
 		PendingIntent pendingPauseIntent = PendingIntent.getBroadcast(
 				getApplicationContext(), 0, pauseIntent, 0);
+		remoteViews.setImageViewResource(R.id.notify_pause, mediaplayer
+				.isPlaying() ? R.drawable.ic_notifypause
+				: R.drawable.ic_notifyplay);
 		remoteViews.setOnClickPendingIntent(R.id.notify_pause,
 				pendingPauseIntent);
 
@@ -579,16 +577,6 @@ public class MediaServiceContoller extends Service implements
 
 	String getTag() {
 		return tag;
-	}
-
-	class DataAsync extends AsyncTask<Void, Void, Void> {
-
-		@Override
-		protected Void doInBackground(Void... params) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
 	}
 
 	public void playFromPath(String path) {
