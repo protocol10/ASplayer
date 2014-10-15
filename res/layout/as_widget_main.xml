@@ -13,8 +13,10 @@
         <ImageView
             android:id="@+id/notify_icon"
             android:layout_width="64dip"
-            android:layout_height="64dip"
+            android:layout_height="72dip"
             android:contentDescription="@string/description_icon"
+            android:scaleType="fitXY"
+            android:paddingBottom="2dip"
             android:src="@drawable/ic_launcher" />
 
         <LinearLayout
@@ -26,62 +28,66 @@
                 android:id="@+id/notify_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:ellipsize="end"
                 android:gravity="center"
                 android:padding="4dip"
-                android:text="@string/title" />
+                android:singleLine="true"
+                android:text="@string/title"
+                android:textSize="18sp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:padding="4dip" >
+                android:paddingBottom="3dip"
+                android:paddingTop="4dip" >
 
                 <ImageButton
                     android:id="@+id/notify_previous"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="8dip"
-                    android:layout_marginRight="8dip"
+                    android:layout_marginLeft="4dip"
+                    android:layout_marginRight="4dip"
                     android:background="@null"
                     android:contentDescription="@string/pause"
-                    android:paddingLeft="8dip"
-                    android:paddingRight="8dip"
-                    android:src="@drawable/ic_back" />
+                    android:paddingLeft="4dip"
+                    android:paddingRight="4dip"
+                    android:src="@drawable/ic_notifybck" />
 
                 <ImageButton
                     android:id="@+id/notify_pause"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="8dip"
-                    android:layout_marginRight="8dip"
+                    android:layout_marginLeft="4dip"
+                    android:layout_marginRight="4dip"
                     android:background="@null"
                     android:contentDescription="@string/pause"
-                    android:paddingLeft="8dip"
-                    android:paddingRight="8dip"
-                    android:src="@drawable/ic_pause" />
+                    android:paddingLeft="4dip"
+                    android:paddingRight="4dip"
+                    android:src="@drawable/ic_notifypause" />
 
                 <ImageButton
                     android:id="@+id/notify_next"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="8dip"
-                    android:layout_marginRight="8dip"
+                    android:layout_marginLeft="4dip"
+                    android:layout_marginRight="4dip"
                     android:background="@null"
                     android:contentDescription="@string/Next"
-                    android:paddingLeft="8dip"
-                    android:paddingRight="8dip"
-                    android:src="@drawable/ic_forward" />
+                    android:paddingLeft="4dip"
+                    android:paddingRight="4dip"
+                    android:src="@drawable/ic_notifyfwd" />
 
                 <ImageButton
                     android:id="@+id/notify_exit"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="right"
-                    android:layout_marginLeft="8dip"
+                    android:layout_marginLeft="4dip"
                     android:background="@null"
                     android:contentDescription="@string/close"
-                    android:paddingLeft="8dip"
-                    android:paddingRight="8dip"
+                    android:paddingLeft="4dip"
+                    android:paddingRight="4dip"
                     android:src="@drawable/ic_close" />
             </LinearLayout>
         </LinearLayout>

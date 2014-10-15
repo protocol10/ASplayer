@@ -73,6 +73,7 @@ public class MediaServiceContoller extends Service implements
 	public final static String NOTIFY_PAUSE = "com.akshay.protocol10.notify.PLAYPAUSE";
 	public final static String NOTIFY_NEXT = "com.akshay.protocol10.notify.NEXT";
 	public final static String NOTIFY_CLOSE = "com.akshay.protocol10.notify.CLOSE";
+	public final static String NOTIFY_BACK = "com.akshay.protocol10.notify.BACK";
 
 	private final static String NOTIFICATION_ACTION = "com.akshay.protocol10.NOTIFICATION";
 	/* USED FOR APPWIDGET INTENTS */
@@ -133,6 +134,7 @@ public class MediaServiceContoller extends Service implements
 		filter.addAction(NOTIFY_CLOSE);
 		filter.addAction(NOTIFY_PAUSE);
 		filter.addAction(NOTIFY_NEXT);
+		filter.addAction(NOTIFY_BACK);
 		registerReceiver(receiver, filter);
 
 	}
@@ -314,7 +316,7 @@ public class MediaServiceContoller extends Service implements
 			if (action.equals(APPWIDGET_NEXT) || action.equals(NOTIFY_NEXT)) {
 				nextSong();
 			}
-			if (action.equals(APPWIDGET_BACK)) {
+			if (action.equals(APPWIDGET_BACK) || action.equals(NOTIFY_BACK)) {
 				previousSong();
 			}
 			if (action.equals(NOTIFY_CLOSE)) {
@@ -429,6 +431,14 @@ public class MediaServiceContoller extends Service implements
 		NotificationCompat.Builder builder = new NotificationCompat.Builder(
 				this).setSmallIcon(R.drawable.ic_launcher).setContent(
 				remoteViews);
+
+		if (bitmap != null) {
+			remoteViews.setImageViewBitmap(R.id.notify_icon, bitmap);
+		} else {
+			remoteViews.setImageViewResource(R.id.notify_icon,
+					R.drawable.ic_launcher);
+		}
+		remoteViews.setTextViewText(R.id.notify_title, title.toString());
 		/* Launch the App from Notification */
 		Intent intent = new Intent(this, MainActivity.class);
 		intent.setAction(NOTIFICATION_ACTION);
@@ -447,12 +457,20 @@ public class MediaServiceContoller extends Service implements
 		remoteViews
 				.setOnClickPendingIntent(R.id.notify_next, pendingNextIntent);
 
+		/* Close the media and stopForegroundService */
 		Intent closeIntent = new Intent(NOTIFY_CLOSE);
 		PendingIntent pendingCloseIntent = PendingIntent.getBroadcast(
 				getApplicationContext(), 0, closeIntent, 0);
 		remoteViews.setOnClickPendingIntent(R.id.notify_exit,
 				pendingCloseIntent);
-		/* Close the media and stopForegroundService */
+
+		/* Play the previous Track */
+		Intent backIntent = new Intent(NOTIFY_BACK);
+		PendingIntent pendingBackIntent = PendingIntent.getBroadcast(
+				getApplicationContext(), 0, backIntent, 0);
+		remoteViews.setOnClickPendingIntent(R.id.notify_previous,
+				pendingBackIntent);
+
 		TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
 		stackBuilder.addParentStack(MainActivity.class);
 		stackBuilder.addNextIntent(intent);

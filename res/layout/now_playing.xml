@@ -6,12 +6,11 @@
     android:focusable="true"
     android:orientation="vertical"
     android:paddingBottom="2dip"
-    android:paddingTop="3dip"
-    android:visibility="gone" >
+    android:paddingTop="3dip" >
 
     <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:baselineAligned="false"
         android:orientation="horizontal" >
 
@@ -29,6 +28,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
+                android:padding="4dip"
                 android:singleLine="true"
                 android:text="@string/title"
                 android:textAppearance="?android:attr/textAppearanceSmall"
@@ -40,6 +40,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
+                android:padding="4dip"
                 android:paddingTop="3dip"
                 android:singleLine="true"
                 android:text="@string/artist"
@@ -47,11 +48,11 @@
         </LinearLayout>
 
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="0dip"
             android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
+            android:layout_marginLeft="3dp"
+            android:layout_marginRight="2dp"
+            android:layout_weight="1"
             android:orientation="horizontal"
             android:paddingLeft="4dip"
             android:paddingRight="4dip"
@@ -62,7 +63,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="8dip"
-                android:layout_marginRight="16dip"
+                android:layout_marginRight="12dip"
                 android:background="@null"
                 android:contentDescription="@string/Back"
                 android:src="@drawable/ic_back" />
@@ -71,8 +72,8 @@
                 android:id="@+id/play_pause"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="16dip"
-                android:layout_marginRight="16dip"
+                android:layout_marginLeft="8dip"
+                android:layout_marginRight="12dip"
                 android:background="@null"
                 android:contentDescription="@string/play"
                 android:src="@drawable/ic_pause" />
@@ -81,8 +82,8 @@
                 android:id="@+id/next"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="16dip"
-                android:layout_marginRight="16dip"
+                android:layout_marginLeft="8dip"
+                android:layout_marginRight="12dip"
                 android:background="@null"
                 android:contentDescription="@string/Next"
                 android:src="@drawable/ic_forward" />
