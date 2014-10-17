@@ -9,7 +9,7 @@
     <ImageView
         android:id="@+id/album_cover"
         android:layout_width="125dip"
-        android:layout_height="100dip"
+        android:layout_height="125dip"
         android:contentDescription="@string/album_art"
         android:ellipsize="end"
         android:padding="4dip"
@@ -30,7 +30,7 @@
 
     <TextView
         android:id="@+id/album_artist_text_view"
-        android:layout_width="100dip"
+        android:layout_width="125dip"
         android:layout_height="wrap_content"
         android:ellipsize="end"
         android:maxLines="1"
