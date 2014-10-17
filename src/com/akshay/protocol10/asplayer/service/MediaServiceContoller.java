@@ -571,6 +571,7 @@ public class MediaServiceContoller extends Service implements
 		}
 	}
 
+	/* getter setter methods */
 	public void setTag(String tag) {
 		this.tag = tag;
 	}

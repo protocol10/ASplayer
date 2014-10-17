@@ -554,7 +554,6 @@ public class MainActivity extends ActionBarActivity implements
 		if (nowPlaying.getVisibility() != View.VISIBLE) {
 			nowPlaying.setVisibility(View.VISIBLE);
 		}
-
 	}
 
 	@Override

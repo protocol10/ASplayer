@@ -30,8 +30,14 @@
                 android:layout_height="wrap_content"
                 android:maxLines="1"
                 android:padding="8dp"
-                android:singleLine="true" />
+                android:singleLine="true"
+                android:textSize="16sp" />
         </LinearLayout>
     </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@android:color/darker_gray" />
 
 </LinearLayout>

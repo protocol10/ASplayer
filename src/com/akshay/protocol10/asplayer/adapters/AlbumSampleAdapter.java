@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import com.akshay.protocol10.asplayer.R;
-
 import com.akshay.protocol10.asplayer.utils.ASUtils;
 
 import android.content.Context;
@@ -25,6 +24,7 @@ public class AlbumSampleAdapter extends ArrayAdapter<HashMap<String, Object>> {
 	int textViewResourceId;
 	List<HashMap<String, Object>> objects;
 	Handler handler;
+	private Bitmap bitmap;
 
 	public AlbumSampleAdapter(Context context, int resource,
 			int textViewResourceId, List<HashMap<String, Object>> objects) {
@@ -56,17 +56,19 @@ public class AlbumSampleAdapter extends ArrayAdapter<HashMap<String, Object>> {
 				.toString();
 		String artist_name = objects.get(position).get(ASUtils.ARTIST_KEY)
 				.toString();
-		String coverPath = (String) objects.get(position)
-				.get(ASUtils.ALBUM_ART);
-		Bitmap bitmap = BitmapFactory.decodeFile(coverPath);
+		String coverPath = (String) objects.get(position).get(
+				ASUtils.ALBUM_ID_KEY);
 
-		if (bitmap != null)
-			holder.album_cover.setImageBitmap(bitmap);
-		else
+		if (coverPath != null) {
+			bitmap = BitmapFactory.decodeFile(coverPath);
+			if (bitmap != null)
+				holder.album_cover.setImageBitmap(bitmap);
+			else
+				holder.album_cover.setImageResource(R.drawable.ic_album_art);
+		} else
 			holder.album_cover.setImageResource(R.drawable.ic_album_art);
 		holder.textview.setText(album_name);
 		holder.artistTextView.setText(artist_name);
-
 		return view;
 	}
 
