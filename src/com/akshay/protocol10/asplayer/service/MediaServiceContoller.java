@@ -591,96 +591,100 @@ public class MediaServiceContoller extends Service implements
 	}
 
 	public void applyEffect(int pos) {
-		usePreset(pos);
-		int band1, band2, band3, band4, band5;
-		switch (pos) {
-		case 0:
-			band1 = 300;
-			band2 = 000;
-			band3 = 000;
-			band4 = 000;
-			band5 = 300;
-			applyPreset(band1, band2, band3, band4, band5);
-			break;
-		case 1:
-			band1 = 500;
-			band2 = 300;
-			band3 = -200;
-			band4 = 400;
-			band5 = 400;
-			applyPreset(band1, band2, band3, band4, band5);
-			break;
-		case 2:
-			band1 = 600;
-			band2 = 000;
-			band3 = 200;
-			band4 = 400;
-			band5 = 100;
-			applyPreset(band1, band2, band3, band4, band5);
-			break;
-		case 3:
-			band1 = 000;
-			band2 = 000;
-			band3 = 000;
-			band4 = 000;
-			band5 = 000;
-			applyPreset(band1, band2, band3, band4, band5);
-			break;
-		case 4:
-			band1 = 600;
-			band2 = 000;
-			band3 = 000;
-			band4 = 200;
-			band5 = -100;
-			applyPreset(band1, band2, band3, band4, band5);
-			break;
-		case 6:
-			band1 = 500;
-			band2 = 100;
-			band3 = 900;
-			band4 = 300;
-			band5 = -100;
-			applyPreset(band1, band2, band3, band4, band5);
-			break;
-		case 5:
-			band1 = 500;
-			band2 = 300;
-			band3 = 000;
-			band4 = 100;
-			band5 = 300;
-			applyPreset(band1, band2, band3, band4, band5);
-			break;
-		case 7:
-			band1 = 400;
-			band2 = 200;
-			band3 = -200;
-			band4 = 200;
-			band5 = 000;
-			applyPreset(band1, band2, band3, band4, band5);
-			break;
-		case 8:
-			band1 = -100;
-			band2 = 200;
-			band3 = 500;
-			band4 = 100;
-			band5 = -200;
-			applyPreset(band1, band2, band3, band4, band5);
-			break;
-		case 9:
-			band1 = 500;
-			band2 = 300;
-			band3 = -100;
-			band4 = 300;
-			band5 = 500;
-			applyPreset(band1, band2, band3, band4, band5);
-			break;
-		default:
-			break;
+		if (equalizer != null) {
+			usePreset(pos);
+			int band1, band2, band3, band4, band5;
+			switch (pos) {
+			case 0:
+				band1 = 300;
+				band2 = 000;
+				band3 = 000;
+				band4 = 000;
+				band5 = 300;
+				applyPreset(band1, band2, band3, band4, band5);
+				break;
+			case 1:
+				band1 = 500;
+				band2 = 300;
+				band3 = -200;
+				band4 = 400;
+				band5 = 400;
+				applyPreset(band1, band2, band3, band4, band5);
+				break;
+			case 2:
+				band1 = 600;
+				band2 = 000;
+				band3 = 200;
+				band4 = 400;
+				band5 = 100;
+				applyPreset(band1, band2, band3, band4, band5);
+				break;
+			case 3:
+				band1 = 000;
+				band2 = 000;
+				band3 = 000;
+				band4 = 000;
+				band5 = 000;
+				applyPreset(band1, band2, band3, band4, band5);
+				break;
+			case 4:
+				band1 = 600;
+				band2 = 000;
+				band3 = 000;
+				band4 = 200;
+				band5 = -100;
+				applyPreset(band1, band2, band3, band4, band5);
+				break;
+			case 6:
+				band1 = 500;
+				band2 = 100;
+				band3 = 900;
+				band4 = 300;
+				band5 = -100;
+				applyPreset(band1, band2, band3, band4, band5);
+				break;
+			case 5:
+				band1 = 500;
+				band2 = 300;
+				band3 = 000;
+				band4 = 100;
+				band5 = 300;
+				applyPreset(band1, band2, band3, band4, band5);
+				break;
+			case 7:
+				band1 = 400;
+				band2 = 200;
+				band3 = -200;
+				band4 = 200;
+				band5 = 000;
+				applyPreset(band1, band2, band3, band4, band5);
+				break;
+			case 8:
+				band1 = -100;
+				band2 = 200;
+				band3 = 500;
+				band4 = 100;
+				band5 = -200;
+				applyPreset(band1, band2, band3, band4, band5);
+				break;
+			case 9:
+				band1 = 500;
+				band2 = 300;
+				band3 = -100;
+				band4 = 300;
+				band5 = 500;
+				applyPreset(band1, band2, band3, band4, band5);
+				break;
+			default:
+				break;
+			}
 		}
+
 	}
 
 	private void usePreset(int preset) {
 		equalizer.usePreset((short) preset);
+
 	}
 
 	private void applyPreset(int band1, int band2, int band3, int band4,

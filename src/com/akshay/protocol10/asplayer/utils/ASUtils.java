@@ -17,7 +17,7 @@ public class ASUtils {
 
 	/* OPTIONS FOR NAVIGATION DRAWER */
 	public static final String[] options = { OPTION_HOME, OPTION_EQUALIZER,
-			OPTION_SETTINGS, OPTION_ABOUT };
+			OPTION_ABOUT };
 
 	/* ICONS FOR LIST IN NAVIGATION DRAWER */
 	public static final int[] options_image = { R.drawable.ic_action_home,
