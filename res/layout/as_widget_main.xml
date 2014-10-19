@@ -3,7 +3,6 @@
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:layout_marginTop="3dip"
-    android:background="#FF6A07"
     android:orientation="vertical" >
 
     <LinearLayout
@@ -41,6 +40,7 @@
                 android:id="@+id/control_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_margin="8dip"
                 android:orientation="horizontal" >
 
                 <ImageButton
@@ -48,6 +48,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="left"
+                    android:layout_marginLeft="3dip"
+                    android:layout_marginRight="3dip"
                     android:background="@null"
                     android:contentDescription="@string/pause"
                     android:paddingLeft="12dip"
@@ -59,6 +61,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
+                    android:layout_marginLeft="3dip"
+                    android:layout_marginRight="3dip"
                     android:background="@null"
                     android:contentDescription="@string/pause"
                     android:paddingLeft="12dip"
@@ -70,6 +74,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="right"
+                    android:layout_marginLeft="3dip"
+                    android:layout_marginRight="3dip"
                     android:background="@null"
                     android:contentDescription="@string/Next"
                     android:paddingLeft="12dip"
@@ -81,6 +87,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="right"
+                    android:layout_marginLeft="3dip"
+                    android:layout_marginRight="3dip"
                     android:background="@null"
                     android:contentDescription="@string/close"
                     android:paddingLeft="12dip"
