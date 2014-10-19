@@ -26,14 +26,18 @@
             <LinearLayout
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="3dip"
+                android:layout_marginBottom="4dip"
+                android:layout_marginLeft="6dip"
+                android:layout_marginRight="6dip"
+                android:layout_marginTop="4dip"
                 android:orientation="horizontal" >
 
                 <SeekBar
                     android:id="@+id/equalizer_band1"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1" />
+                    android:layout_weight="1"
+                    android:max="@integer/max" />
 
                 <TextView
                     android:id="@+id/bandFrequency_1"
@@ -46,14 +50,18 @@
             <LinearLayout
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="3dip"
+                android:layout_marginBottom="4dip"
+                android:layout_marginLeft="6dip"
+                android:layout_marginRight="6dip"
+                android:layout_marginTop="4dip"
                 android:orientation="horizontal" >
 
                 <SeekBar
                     android:id="@+id/equalizer_band2"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1" />
+                    android:layout_weight="1"
+                    android:max="@integer/max" />
 
                 <TextView
                     android:id="@+id/bandFrequency_2"
@@ -66,14 +74,18 @@
             <LinearLayout
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="3dip"
+                android:layout_marginBottom="4dip"
+                android:layout_marginLeft="6dip"
+                android:layout_marginRight="6dip"
+                android:layout_marginTop="4dip"
                 android:orientation="horizontal" >
 
                 <SeekBar
                     android:id="@+id/equalizer_band3"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1" />
+                    android:layout_weight="1"
+                    android:max="@integer/max" />
 
                 <TextView
                     android:id="@+id/bandFrequency_3"
@@ -86,14 +98,18 @@
             <LinearLayout
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="3dip"
+                android:layout_marginBottom="4dip"
+                android:layout_marginLeft="6dip"
+                android:layout_marginRight="6dip"
+                android:layout_marginTop="4dip"
                 android:orientation="horizontal" >
 
                 <SeekBar
                     android:id="@+id/equalizer_band4"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1" />
+                    android:layout_weight="1"
+                    android:max="@integer/max" />
 
                 <TextView
                     android:id="@+id/bandFrequency_4"
@@ -106,14 +122,18 @@
             <LinearLayout
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="3dip"
+                android:layout_marginBottom="4dip"
+                android:layout_marginLeft="6dip"
+                android:layout_marginRight="6dip"
+                android:layout_marginTop="4dip"
                 android:orientation="horizontal" >
 
                 <SeekBar
                     android:id="@+id/equalizer_band5"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1" />
+                    android:layout_weight="1"
+                    android:max="@integer/max" />
 
                 <TextView
                     android:id="@+id/bandFrequency_5"
@@ -126,6 +146,10 @@
             <LinearLayout
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="4dip"
+                android:layout_marginLeft="6dip"
+                android:layout_marginRight="6dip"
+                android:layout_marginTop="16dip"
                 android:orientation="horizontal" >
 
                 <TextView
@@ -147,6 +171,10 @@
             <LinearLayout
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="4dip"
+                android:layout_marginLeft="6dip"
+                android:layout_marginRight="6dip"
+                android:layout_marginTop="4dip"
                 android:orientation="horizontal" >
 
                 <TextView
@@ -154,6 +182,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
+                    android:layout_marginRight="8dip"
                     android:text="@string/effect"
                     android:textSize="16sp" />
 

@@ -20,7 +20,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             layout="@layout/now_playing"
-            android:visibility="visible" />
+            android:visibility="gone" />
     </RelativeLayout>
 
     <ListView

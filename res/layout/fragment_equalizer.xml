@@ -26,7 +26,8 @@
             android:id="@+id/equalizer_band1"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            android:max="@integer/max" />
 
         <TextView
             android:id="@+id/bandFrequency_1"
@@ -47,7 +48,8 @@
             android:id="@+id/equalizer_band2"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            android:max="@integer/max" />
 
         <TextView
             android:id="@+id/bandFrequency_2"
@@ -68,7 +70,8 @@
             android:id="@+id/equalizer_band3"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            android:max="@integer/max" />
 
         <TextView
             android:id="@+id/bandFrequency_3"
@@ -89,7 +92,8 @@
             android:id="@+id/equalizer_band4"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            android:max="@integer/max" />
 
         <TextView
             android:id="@+id/bandFrequency_4"
@@ -110,7 +114,8 @@
             android:id="@+id/equalizer_band5"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            android:max="@integer/max" />
 
         <TextView
             android:id="@+id/bandFrequency_5"

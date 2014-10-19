@@ -423,6 +423,15 @@ public class MainActivity extends ActionBarActivity implements
 	}
 
 	/**
+	 * Select Preset available
+	 */
+	@Override
+	public void selectPreset(int position) {
+		// TODO Auto-generated method stub
+		serviceController.applyEffect(position);
+	}
+
+	/**
 	 * Establish a connection with the service. We use an explicit class name
 	 * because we want a specific service implementation that we know will be
 	 * running in our own process (and thus won't be supporting component
@@ -573,4 +582,5 @@ public class MainActivity extends ActionBarActivity implements
 			break;
 		}
 	}
+
 }
