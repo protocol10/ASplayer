@@ -25,7 +25,7 @@ public class Preferences {
 	public void setName(String title, String artist, String album) {
 
 		editor.putString(MediaServiceContoller.TITLE_KEY, title);
-		editor.putString(MediaServiceContoller.ALBUM_KEY, artist);
+		editor.putString(MediaServiceContoller.ARTIST_KEY, artist);
 		editor.putString(MediaServiceContoller.ALBUM_KEY, album);
 		editor.commit();
 	}

@@ -27,79 +27,70 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/details"
-        android:layout_marginTop="12dp"
-        android:gravity="center_vertical"
+        android:layout_marginTop="12dip"
+        android:gravity="center_horizontal"
         android:orientation="horizontal" >
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:orientation="horizontal"
-            android:paddingLeft="4dp"
-            android:paddingRight="4dp" >
+        <ImageButton
+            android:id="@+id/rewind_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="14dip"
+            android:layout_marginRight="12dip"
+            android:background="@null"
+            android:clickable="true"
+            android:contentDescription="@string/rewind"
+            android:focusable="true"
+            android:src="@drawable/ic_rewind" >
+        </ImageButton>
 
-            <ImageButton
-                android:id="@+id/rewind_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
-                android:background="@null"
-                android:clickable="true"
-                android:contentDescription="@string/rewind"
-                android:focusable="true"
-                android:src="@drawable/ic_rewind" >
-            </ImageButton>
+        <ImageButton
+            android:id="@+id/back_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="14dip"
+            android:layout_marginRight="12dip"
+            android:background="@null"
+            android:clickable="true"
+            android:contentDescription="@string/back_btn"
+            android:focusable="true"
+            android:src="@drawable/ic_back" />
 
-            <ImageButton
-                android:id="@+id/back_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
-                android:background="@null"
-                android:clickable="true"
-                android:contentDescription="@string/back_btn"
-                android:focusable="true"
-                android:src="@drawable/ic_back" />
+        <ImageButton
+            android:id="@+id/play_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="14dip"
+            android:layout_marginRight="12dip"
+            android:background="@null"
+            android:clickable="true"
+            android:contentDescription="@string/play_btn"
+            android:focusable="true"
+            android:src="@drawable/ic_pause" />
 
-            <ImageButton
-                android:id="@+id/play_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
-                android:background="@null"
-                android:clickable="true"
-                android:contentDescription="@string/play_btn"
-                android:focusable="true"
-                android:src="@drawable/ic_pause" />
+        <ImageButton
+            android:id="@+id/next_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="14dip"
+            android:layout_marginRight="12dip"
+            android:background="@null"
+            android:clickable="true"
+            android:contentDescription="@string/next_btn"
+            android:focusable="true"
+            android:src="@drawable/ic_forward" />
 
-            <ImageButton
-                android:id="@+id/next_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
-                android:background="@null"
-                android:clickable="true"
-                android:contentDescription="@string/next_btn"
-                android:focusable="true"
-                android:src="@drawable/ic_forward" />
-
-            <ImageButton
-                android:id="@+id/fast_forward"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
-                android:background="@null"
-                android:clickable="true"
-                android:contentDescription="@string/Forward"
-                android:focusable="true"
-                android:src="@drawable/ic_fast" />
-        </LinearLayout>
+        <ImageButton
+            android:id="@+id/fast_forward"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="14dip"
+            android:layout_marginRight="12dip"
+            android:background="@null"
+            android:clickable="true"
+            android:contentDescription="@string/Forward"
+            android:focusable="true"
+            android:src="@drawable/ic_fast" />
     </LinearLayout>
 
     <LinearLayout
@@ -107,7 +98,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/img_thumbnail"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="4dip"
         android:orientation="vertical" >
 
         <TextView
@@ -145,14 +136,15 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/controls"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="20dp" />
+        android:layout_marginBottom="8dip" />
 
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/progress_Bar"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp" >
+        android:layout_marginBottom="4dip"
+        android:layout_marginLeft="10dip"
+        android:layout_marginRight="10dip" >
 
         <TextView
             android:id="@+id/current_pos"

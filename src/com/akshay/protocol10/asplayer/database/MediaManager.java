@@ -24,7 +24,6 @@ import android.provider.MediaStore.Audio.Albums;
 import android.provider.MediaStore.Audio.Artists;
 import android.provider.MediaStore.Audio.Genres;
 import android.provider.MediaStore.Audio.Media;
-import android.util.Log;
 import android.widget.Toast;
 
 public class MediaManager {

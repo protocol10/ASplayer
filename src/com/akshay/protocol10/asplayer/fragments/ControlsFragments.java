@@ -180,7 +180,7 @@ public class ControlsFragments extends Fragment implements OnClickListener,
 
 		preferences.setName(name, artist, album);
 		title_view.setText(preferences.getTitle());
-		artist_view.setVisibility(View.GONE);
+		artist_view.setText(preferences.getArtist());
 		album_view.setText(preferences.getAlbum());
 		final long album_id = id;
 		handler.post(new Runnable() {

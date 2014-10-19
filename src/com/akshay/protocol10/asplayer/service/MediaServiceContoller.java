@@ -169,9 +169,7 @@ public class MediaServiceContoller extends Service implements
 			} else {
 				mediaplayer.reset();
 			}
-			if (playBackIndex > media_list.size()) {
-				media_list = manager.retriveContent(getApplicationContext());
-			}
+
 			// obtain the AudioFocus for our app
 			audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
 			result = audioManager.requestAudioFocus(this,
@@ -214,7 +212,8 @@ public class MediaServiceContoller extends Service implements
 
 	private void checkForDefault() {
 		// TODO Auto-generated method stub
-		if (getTag().equals(ASUtils.TRACKS_TAGS) && !defaultLoaded) {
+		if (getTag() != null && getTag().equals(ASUtils.TRACKS_TAGS)
+				&& !defaultLoaded) {
 			media_list.clear();
 			retriveContent();
 			defaultLoaded = true;
@@ -274,7 +273,6 @@ public class MediaServiceContoller extends Service implements
 	private void updateView() {
 		title_text = media_list.get(playBackIndex).get(TITLE_KEY).toString();
 		artist_text = media_list.get(playBackIndex).get(ARTIST_KEY).toString();
-
 		album_text = media_list.get(playBackIndex).get(ALBUM_KEY).toString();
 		album_id = (Long) media_list.get(playBackIndex).get(ASUtils.ALBUM_ART);
 		sendBroadCastToView(title_text, album_text, artist_text, album_id);
