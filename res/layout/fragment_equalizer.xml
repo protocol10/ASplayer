@@ -14,26 +14,12 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1" />
-
-        <ImageButton
-            android:id="@+id/savePreset"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@null"
-            android:contentDescription="@string/savePreset"
-            android:src="@drawable/ic_play" />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp" >
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="4dp"
+        android:layout_margin="8dp"
         android:orientation="horizontal" >
 
         <SeekBar
@@ -46,13 +32,15 @@
             android:id="@+id/bandFrequency_1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/band_frequency_1" />
+            android:layout_gravity="center_vertical"
+            android:text="@string/band_frequency_1"
+            android:textSize="16sp" />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="4dp"
+        android:layout_margin="8dp"
         android:orientation="horizontal" >
 
         <SeekBar
@@ -65,13 +53,15 @@
             android:id="@+id/bandFrequency_2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/band_frequency_2" />
+            android:layout_gravity="center_vertical"
+            android:text="@string/band_frequency_2"
+            android:textSize="16sp" />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="4dp"
+        android:layout_margin="8dp"
         android:orientation="horizontal" >
 
         <SeekBar
@@ -84,13 +74,15 @@
             android:id="@+id/bandFrequency_3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/band_frequency_3" />
+            android:layout_gravity="center_vertical"
+            android:text="@string/band_frequency_3"
+            android:textSize="16sp" />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="4dp"
+        android:layout_margin="8dp"
         android:orientation="horizontal" >
 
         <SeekBar
@@ -103,13 +95,15 @@
             android:id="@+id/bandFrequency_4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/band_frequency_4" />
+            android:layout_gravity="center_vertical"
+            android:text="@string/band_frequency_4"
+            android:textSize="16sp" />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="4dp"
+        android:layout_margin="8dp"
         android:orientation="horizontal" >
 
         <SeekBar
@@ -122,7 +116,57 @@
             android:id="@+id/bandFrequency_5"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/band_frequency_5" />
+            android:layout_gravity="center_vertical"
+            android:text="@string/band_frequency_5"
+            android:textSize="16sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dip"
+        android:layout_marginRight="8dip"
+        android:layout_marginTop="16dip"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:id="@+id/boost"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginRight="8dip"
+            android:text="@string/bass_boost"
+            android:textSize="16sp" />
+
+        <SeekBar
+            android:id="@+id/bass_progress"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dip"
+        android:layout_marginRight="8dip"
+        android:layout_marginTop="16dip"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:id="@+id/threeeffect"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginRight="8dip"
+            android:text="@string/effect"
+            android:textSize="16sp" />
+
+        <SeekBar
+            android:id="@+id/effect_3d"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
     </LinearLayout>
 
 </LinearLayout>

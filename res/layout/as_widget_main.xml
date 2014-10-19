@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:layout_marginTop="3dip"
+    android:background="#FF6A07"
     android:orientation="vertical" >
 
     <LinearLayout
@@ -23,7 +24,6 @@
             android:id="@+id/details_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="4dip"
             android:orientation="vertical" >
 
             <TextView
@@ -32,12 +32,10 @@
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
                 android:gravity="center"
-                android:padding="4dip"
                 android:paddingLeft="16dip"
                 android:paddingRight="16dip"
                 android:singleLine="true"
-                android:text="@string/title"
-                android:textSize="18sp" />
+                android:text="@string/title" />
 
             <LinearLayout
                 android:id="@+id/control_layout"
@@ -52,8 +50,8 @@
                     android:layout_gravity="left"
                     android:background="@null"
                     android:contentDescription="@string/pause"
-                    android:paddingLeft="16dip"
-                    android:paddingRight="16dip"
+                    android:paddingLeft="12dip"
+                    android:paddingRight="12dip"
                     android:src="@drawable/ic_notifybck" />
 
                 <ImageButton
@@ -63,8 +61,8 @@
                     android:layout_gravity="center"
                     android:background="@null"
                     android:contentDescription="@string/pause"
-                    android:paddingLeft="16dip"
-                    android:paddingRight="16dip"
+                    android:paddingLeft="12dip"
+                    android:paddingRight="12dip"
                     android:src="@drawable/ic_notifypause" />
 
                 <ImageButton
@@ -74,8 +72,8 @@
                     android:layout_gravity="right"
                     android:background="@null"
                     android:contentDescription="@string/Next"
-                    android:paddingLeft="16dip"
-                    android:paddingRight="16dip"
+                    android:paddingLeft="12dip"
+                    android:paddingRight="12dip"
                     android:src="@drawable/ic_notifyfwd" />
 
                 <ImageButton
@@ -85,8 +83,8 @@
                     android:layout_gravity="right"
                     android:background="@null"
                     android:contentDescription="@string/close"
-                    android:paddingLeft="16dip"
-                    android:paddingRight="16dip"
+                    android:paddingLeft="12dip"
+                    android:paddingRight="12dip"
                     android:src="@drawable/ic_close" />
             </LinearLayout>
         </LinearLayout>
