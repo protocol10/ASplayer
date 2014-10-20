@@ -168,15 +168,8 @@ public class MainActivity extends ActionBarActivity implements
 
 				if (path != null) {
 
-					// intent = new Intent(getApplicationContext(),
-					// MediaServiceContoller.class);
-					// intent.setAction(MediaServiceContoller.PLAY_PATH);
-					// intent.putExtra(MediaServiceContoller.PATH, path);
-
 					ASPlayer.getAppContext().bindService(intent, mConnection,
 							Context.BIND_AUTO_CREATE);
-
-					// startService(intent);
 				}
 
 			}
@@ -495,8 +488,9 @@ public class MainActivity extends ActionBarActivity implements
 			MediaServiceContoller.MediaBinder bind = (MediaBinder) service;
 			serviceController = bind.getService();
 			isBound = true;
-			if (path != null) {
+			if (path != null && !path.equals(preferences.getPath())) {
 				serviceController.playFromPath(path);
+				preferences.setPath(path);
 
 			}
 		}

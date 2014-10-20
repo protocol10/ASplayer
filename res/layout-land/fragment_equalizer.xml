@@ -183,12 +183,12 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_marginRight="8dip"
-                    android:text="@string/effect"
+                    android:text="@string/preset"
                     android:textSize="16sp" />
 
-                <SeekBar
-                    android:id="@+id/effect_3d"
-                    android:layout_width="0dp"
+                <Spinner
+                    android:id="@+id/presetReverb"
+                    android:layout_width="0dip"
                     android:layout_height="wrap_content"
                     android:layout_weight="1" />
             </LinearLayout>

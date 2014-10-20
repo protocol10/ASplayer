@@ -119,9 +119,9 @@ public class MediaServiceContoller extends Service implements
 		media_list = new ArrayList<HashMap<String, Object>>();
 		preferences = PreferenceManager.getDefaultSharedPreferences(this);
 		manager = new MediaManager();
+		reverb = new PresetReverb(1, 0);
 		media_list = manager.retriveContent(this);
 		handler = new Handler();
-		// reverb = new PresetReverb(1, 0);
 		// register intents for BroadCast Receivers
 		filter = new IntentFilter();
 		filter.addAction(SEEKBAR_ACTION);
@@ -185,14 +185,7 @@ public class MediaServiceContoller extends Service implements
 			mediaplayer.setDataSource(media_list.get(playBackIndex)
 					.get(PATH_KEY).toString());
 
-			bassBoost = new BassBoost(1, mediaplayer.getAudioSessionId());
-			mediaplayer.attachAuxEffect(bassBoost.getId());
-			bassBoost.setEnabled(true);
-			bassBoost.setStrength((short) 1000);
-			mediaplayer.setAuxEffectSendLevel(1.0f);
-			
 			/* Apply presetReverb */
-			reverb = new PresetReverb(1, 0);
 			mediaplayer.attachAuxEffect(reverb.getId());
 			reverb.setPreset(defaultReverb);
 			reverb.setEnabled(true);
@@ -594,8 +587,7 @@ public class MediaServiceContoller extends Service implements
 	public void playFromPath(String path) {
 
 		try {
-			Log.i("PATH", path);
-
+			Log.i("SIZE", "" + media_list.size());
 			for (Map<String, Object> map : media_list) {
 
 				for (Map.Entry<String, Object> entry : map.entrySet()) {
@@ -614,29 +606,31 @@ public class MediaServiceContoller extends Service implements
 
 	public void applyReverb(int position) {
 
-		switch (position) {
-		case 0:
-			defaultReverb = PresetReverb.PRESET_LARGEHALL;
-			break;
-		case 1:
-			defaultReverb = PresetReverb.PRESET_LARGEROOM;
-			break;
-		case 2:
-			defaultReverb = PresetReverb.PRESET_MEDIUMHALL;
-			break;
-		case 3:
-			defaultReverb = PresetReverb.PRESET_MEDIUMROOM;
-			break;
-		case 4:
-			defaultReverb = PresetReverb.PRESET_NONE;
-			break;
-		case 5:
-			defaultReverb = PresetReverb.PRESET_PLATE;
-			break;
-		case 6:
-			defaultReverb = PresetReverb.PRESET_SMALLROOM;
+		if (reverb != null) {
+			switch (position) {
+			case 0:
+				defaultReverb = PresetReverb.PRESET_LARGEHALL;
+				break;
+			case 1:
+				defaultReverb = PresetReverb.PRESET_LARGEROOM;
+				break;
+			case 2:
+				defaultReverb = PresetReverb.PRESET_MEDIUMHALL;
+				break;
+			case 3:
+				defaultReverb = PresetReverb.PRESET_MEDIUMROOM;
+				break;
+			case 4:
+				defaultReverb = PresetReverb.PRESET_NONE;
+				break;
+			case 5:
+				defaultReverb = PresetReverb.PRESET_PLATE;
+				break;
+			case 6:
+				defaultReverb = PresetReverb.PRESET_SMALLROOM;
+			}
+			setReverb(defaultReverb);
 		}
-		setReverb(defaultReverb);
 	}
 
 	private void setReverb(short m) {

@@ -40,6 +40,6 @@
     <string name="band_frequency_5">14 kHz</string>
     <string name="genre_text">Genre Icon</string>
     <string name="bass_boost">BassBoost</string>
-    <string name="effect">3D Effect</string>
+    <string name="preset">Preset Reverb</string>
 
 </resources>

@@ -13,6 +13,7 @@ public class Preferences {
 	private static final String PREF_NAME = "Settings";
 	private static final String DATABASE = "DATABASE_KEY";
 	public static final String UPDATE_NOWPLAYING = "NOW_PLAYING";
+	private static final String PATH_KEY = "path";
 
 	public Preferences(Context context) {
 		// TODO Auto-generated constructor stub
@@ -65,4 +66,12 @@ public class Preferences {
 		editor.commit();
 	}
 
+	public void setPath(String path) {
+		editor.putString(PATH_KEY, path);
+		editor.commit();
+	}
+
+	public String getPath() {
+		return settings.getString(PATH_KEY, "/");
+	}
 }
