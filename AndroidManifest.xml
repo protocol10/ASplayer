@@ -60,7 +60,9 @@
             </intent-filter>
         </activity>
         <!-- SERVICE -->
-        <service android:name="com.akshay.protocol10.asplayer.service.MediaServiceContoller" >
+        <service
+            android:name="com.akshay.protocol10.asplayer.service.MediaServiceContoller"
+            android:enabled="true" >
         </service>
 
         <!-- READ PHONE STATE -->

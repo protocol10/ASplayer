@@ -86,4 +86,22 @@ public class ASUtils {
 	public static final String OTHER_TAGS = "OTHERS";
 
 	public static final String IS_PLAYING = "isPlaying";
+
+	private static final String REVERB_LARGEHALL = "Large Hall";
+
+	private static final String REVERB_LARGEROOM = "Large Room";
+
+	private static final String REVERB_MEDIUMHALL = "Medium Hall";
+
+	private static final String REVERB_MEDIUMROOM = "Medium Room";
+
+	private static final String REVERB_NONE = "None";
+
+	private static final String REVERB_PLATE = "Plate";
+
+	private static final String REVERB_SMALLROOM = "Small Room";
+
+	public static final String[] PRESET_REVERBS = { REVERB_LARGEHALL,
+			REVERB_LARGEROOM, REVERB_MEDIUMHALL, REVERB_MEDIUMROOM,
+			REVERB_NONE, REVERB_PLATE, REVERB_SMALLROOM };
 }

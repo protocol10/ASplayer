@@ -29,4 +29,8 @@ public interface onItemSelected {
 	void setTag(String tag);
 
 	void selectPreset(int position);
+
+	void playFromPath(String path);
+
+	void setPresetReverb(int position);
 }

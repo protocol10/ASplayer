@@ -89,4 +89,8 @@ public class PageSlider extends Fragment {
 
 	}
 
+	public void playFromPath(String path) {
+		mcallBack.playFromPath(path);
+	}
+
 }

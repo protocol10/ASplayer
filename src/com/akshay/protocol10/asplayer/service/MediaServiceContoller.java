@@ -30,13 +30,16 @@ import android.media.AudioManager;
 import android.media.AudioManager.OnAudioFocusChangeListener;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
+import android.media.audiofx.BassBoost;
 import android.media.audiofx.Equalizer;
+import android.media.audiofx.PresetReverb;
 import android.os.Binder;
 import android.os.Handler;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
+import android.util.Log;
 import android.widget.RemoteViews;
 
 public class MediaServiceContoller extends Service implements
@@ -85,13 +88,13 @@ public class MediaServiceContoller extends Service implements
 	public final static String PATH = "path";
 
 	List<HashMap<String, Object>> media_list;
-
+	short defaultReverb = PresetReverb.PRESET_NONE;
 	int result;
 	static MediaPlayer mediaplayer;
 	MediaManager manager;
 	AudioManager audioManager;
 	Equalizer equalizer;
-
+	BassBoost bassBoost;
 	Handler handler;
 	Intent intent;
 	IntentFilter filter;
@@ -99,6 +102,7 @@ public class MediaServiceContoller extends Service implements
 	SharedPreferences preferences;
 	Editor editor;
 	String tag;
+	PresetReverb reverb;
 	// mBinder object which is responsible for interacting with client.
 	private final IBinder mbinder = new MediaBinder();
 
@@ -117,7 +121,7 @@ public class MediaServiceContoller extends Service implements
 		manager = new MediaManager();
 		media_list = manager.retriveContent(this);
 		handler = new Handler();
-
+		// reverb = new PresetReverb(1, 0);
 		// register intents for BroadCast Receivers
 		filter = new IntentFilter();
 		filter.addAction(SEEKBAR_ACTION);
@@ -180,9 +184,25 @@ public class MediaServiceContoller extends Service implements
 			mediaplayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
 			mediaplayer.setDataSource(media_list.get(playBackIndex)
 					.get(PATH_KEY).toString());
+
+			bassBoost = new BassBoost(1, mediaplayer.getAudioSessionId());
+			mediaplayer.attachAuxEffect(bassBoost.getId());
+			bassBoost.setEnabled(true);
+			bassBoost.setStrength((short) 1000);
+			mediaplayer.setAuxEffectSendLevel(1.0f);
+			
+			/* Apply presetReverb */
+			reverb = new PresetReverb(1, 0);
+			mediaplayer.attachAuxEffect(reverb.getId());
+			reverb.setPreset(defaultReverb);
+			reverb.setEnabled(true);
+			mediaplayer.setAuxEffectSendLevel(1.0f);
+
 			mediaplayer.prepare();
 			mediaplayer.setOnCompletionListener(this);
 			mediaplayer.start();
+
+			;
 			updatewidget(this);
 			setUpHandlers();
 			updateView();
@@ -574,6 +594,8 @@ public class MediaServiceContoller extends Service implements
 	public void playFromPath(String path) {
 
 		try {
+			Log.i("PATH", path);
+
 			for (Map<String, Object> map : media_list) {
 
 				for (Map.Entry<String, Object> entry : map.entrySet()) {
@@ -588,6 +610,39 @@ public class MediaServiceContoller extends Service implements
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+
+	public void applyReverb(int position) {
+
+		switch (position) {
+		case 0:
+			defaultReverb = PresetReverb.PRESET_LARGEHALL;
+			break;
+		case 1:
+			defaultReverb = PresetReverb.PRESET_LARGEROOM;
+			break;
+		case 2:
+			defaultReverb = PresetReverb.PRESET_MEDIUMHALL;
+			break;
+		case 3:
+			defaultReverb = PresetReverb.PRESET_MEDIUMROOM;
+			break;
+		case 4:
+			defaultReverb = PresetReverb.PRESET_NONE;
+			break;
+		case 5:
+			defaultReverb = PresetReverb.PRESET_PLATE;
+			break;
+		case 6:
+			defaultReverb = PresetReverb.PRESET_SMALLROOM;
+		}
+		setReverb(defaultReverb);
+	}
+
+	private void setReverb(short m) {
+		reverb.setPreset(m);
+		mediaplayer.setAuxEffectSendLevel(1.0f);
+
 	}
 
 	public void applyEffect(int pos) {
@@ -684,7 +739,6 @@ public class MediaServiceContoller extends Service implements
 
 	private void usePreset(int preset) {
 		equalizer.usePreset((short) preset);
-
 	}
 
 	private void applyPreset(int band1, int band2, int band3, int band4,

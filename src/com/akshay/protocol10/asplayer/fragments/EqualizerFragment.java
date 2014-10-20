@@ -18,21 +18,23 @@ import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.Spinner;
 
 public class EqualizerFragment extends Fragment implements
-		OnItemSelectedListener, OnSeekBarChangeListener {
+		OnSeekBarChangeListener {
 
-	Spinner presestSpinner;
+	Spinner presestSpinner, reverbSpinner;
 
-	ArrayAdapter<String> adapter;
+	ArrayAdapter<String> adapter, reverbAdapter;
 	String[] defaultPresets;
 
 	SeekBar frequency1, frequency2, frequency3, frequency4, frequency5;
 	int progressBand1, progressBand2, progressBand3, progressBand4,
 			progressBand5;
 	onItemSelected mcallback;
+	String[] defaultReverbs;
 
 	public EqualizerFragment() {
 		// TODO Auto-generated constructor stub
 		defaultPresets = ASUtils.DEFAULT_PRESETS;
+		defaultReverbs = ASUtils.PRESET_REVERBS;
 	}
 
 	@Override
@@ -58,6 +60,10 @@ public class EqualizerFragment extends Fragment implements
 		adapter = new ArrayAdapter<String>(getActivity(),
 				android.R.layout.simple_list_item_1, defaultPresets);
 		presestSpinner.setAdapter(adapter);
+		reverbSpinner = (Spinner) view.findViewById(R.id.presetReverb);
+		reverbAdapter = new ArrayAdapter<String>(getActivity(),
+				android.R.layout.simple_list_item_1, defaultReverbs);
+		reverbSpinner.setAdapter(reverbAdapter);
 
 		frequency1 = (SeekBar) view.findViewById(R.id.equalizer_band1);
 		frequency2 = (SeekBar) view.findViewById(R.id.equalizer_band2);
@@ -70,14 +76,38 @@ public class EqualizerFragment extends Fragment implements
 		frequency3.setOnSeekBarChangeListener(this);
 		frequency4.setOnSeekBarChangeListener(this);
 		frequency5.setOnSeekBarChangeListener(this);
-		presestSpinner.setOnItemSelectedListener(this);
+		presestSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
+
+			@Override
+			public void onItemSelected(AdapterView<?> parent, View view,
+					int position, long id) {
+				// TODO Auto-generated method stub
+				selectPreset(position);
+				mcallback.selectPreset(position);
+			}
+
+			@Override
+			public void onNothingSelected(AdapterView<?> parent) {
+				// TODO Auto-generated method stub
+
+			}
+		});
+		reverbSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
+
+			@Override
+			public void onItemSelected(AdapterView<?> parent, View view,
+					int position, long id) {
+				// TODO Auto-generated method stub
+				mcallback.setPresetReverb(position);
+			}
+
+			@Override
+			public void onNothingSelected(AdapterView<?> parent) {
+				// TODO Auto-generated method stub
+				mcallback.setPresetReverb(5);
+			}
+		});
 		return view;
-	}
-
-	@Override
-	public void onNothingSelected(AdapterView<?> parent) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
@@ -91,14 +121,6 @@ public class EqualizerFragment extends Fragment implements
 		// TODO Auto-generated method stub
 		super.onAttach(activity);
 		mcallback = (onItemSelected) activity;
-	}
-
-	@Override
-	public void onItemSelected(AdapterView<?> parent, View view, int position,
-			long id) {
-		// TODO Auto-generated method stub
-		selectPreset(position);
-		mcallback.selectPreset(position);
 	}
 
 	/**

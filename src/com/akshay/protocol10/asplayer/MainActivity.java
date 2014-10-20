@@ -9,6 +9,7 @@ import java.util.List;
 
 import com.akshay.protocol10.asplayer.adapters.DrawerAdapter;
 import com.akshay.protocol10.asplayer.callbacks.onItemSelected;
+import com.akshay.protocol10.asplayer.database.MediaManager;
 import com.akshay.protocol10.asplayer.database.Preferences;
 import com.akshay.protocol10.asplayer.fragments.AboutFragment;
 import com.akshay.protocol10.asplayer.fragments.AlbumSongsFragment;
@@ -36,6 +37,7 @@ import android.content.ServiceConnection;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -64,7 +66,7 @@ public class MainActivity extends ActionBarActivity implements
 
 	MediaServiceContoller serviceController;
 	MediaBinder binder;
-
+	MediaManager manager;
 	IntentFilter filter;
 	Fragment fragment;
 	Preferences preferences;
@@ -73,7 +75,7 @@ public class MainActivity extends ActionBarActivity implements
 	TextView titleText, artistText;
 	ImageButton previous, play, next;
 	ControlsFragments controlFragments;
-
+	String path;
 	private static final String SEEKKEY = "seekpos";
 
 	@Override
@@ -99,6 +101,7 @@ public class MainActivity extends ActionBarActivity implements
 		next.setOnClickListener(this);
 		previous.setOnClickListener(this);
 
+		manager = new MediaManager();
 		drawerAdapter = new DrawerAdapter(this, R.layout.drawer_list_row,
 				R.id.option_text, drawer_options);
 
@@ -154,20 +157,26 @@ public class MainActivity extends ActionBarActivity implements
 		filter.addAction(MediaServiceContoller.CONTROL_PLAY);
 		Intent intent = getIntent();
 		// bind service
-		doBindService();
 
 		if (intent != null) {
 			String action = intent.getAction();
 			// open file from file manager and action to check if blank
 			if (action.equals("android.intent.action.VIEW") && action != null) {
-				String path = intent.getData().getPath();
+				path = intent.getData().getPath();
+				Log.i("path", path);
+				intent = new Intent(this, MediaServiceContoller.class);
+
 				if (path != null) {
 
-					intent = new Intent(getApplicationContext(),
-							MediaServiceContoller.class);
-					intent.setAction(MediaServiceContoller.PLAY_PATH);
-					intent.putExtra(MediaServiceContoller.PATH, path);
-					startService(intent);
+					// intent = new Intent(getApplicationContext(),
+					// MediaServiceContoller.class);
+					// intent.setAction(MediaServiceContoller.PLAY_PATH);
+					// intent.putExtra(MediaServiceContoller.PATH, path);
+
+					ASPlayer.getAppContext().bindService(intent, mConnection,
+							Context.BIND_AUTO_CREATE);
+
+					// startService(intent);
 				}
 
 			}
@@ -306,6 +315,7 @@ public class MainActivity extends ActionBarActivity implements
 	protected void onStart() {
 
 		super.onStart();
+		doBindService();
 		registerReceiver(broadcastReceiver, filter);
 	}
 
@@ -363,6 +373,11 @@ public class MainActivity extends ActionBarActivity implements
 
 		serviceController.setSongs(list);
 	}
+
+	@Override
+	public void setPresetReverb(int position) {
+		serviceController.applyReverb(position);
+	};
 
 	/**
 	 * Pass the ARTIST ID to retrieve the album w.r.t to Artist
@@ -480,6 +495,10 @@ public class MainActivity extends ActionBarActivity implements
 			MediaServiceContoller.MediaBinder bind = (MediaBinder) service;
 			serviceController = bind.getService();
 			isBound = true;
+			if (path != null) {
+				serviceController.playFromPath(path);
+
+			}
 		}
 	};
 
@@ -581,6 +600,12 @@ public class MainActivity extends ActionBarActivity implements
 		default:
 			break;
 		}
+	}
+
+	@Override
+	public void playFromPath(String path) {
+		// TODO Auto-generated method stub
+
 	}
 
 }
