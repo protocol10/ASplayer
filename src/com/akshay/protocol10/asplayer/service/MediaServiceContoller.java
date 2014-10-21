@@ -8,11 +8,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import com.akshay.protocol10.asplayer.ASPlayer;
 import com.akshay.protocol10.asplayer.MainActivity;
 import com.akshay.protocol10.asplayer.R;
 import com.akshay.protocol10.asplayer.database.MediaManager;
+import com.akshay.protocol10.asplayer.database.Preferences;
 import com.akshay.protocol10.asplayer.utils.ASUtils;
 
 import android.app.NotificationManager;
@@ -22,8 +24,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.AudioManager;
@@ -36,7 +36,6 @@ import android.media.audiofx.PresetReverb;
 import android.os.Binder;
 import android.os.Handler;
 import android.os.IBinder;
-import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.util.Log;
@@ -55,7 +54,7 @@ public class MediaServiceContoller extends Service implements
 	private String title_text, artist_text, album_text;
 	private long album_id;
 	boolean wasPlaying = false;
-	boolean isPLaying = false;
+	boolean isPLaying = false, isRepeat, isShuffle;
 	boolean defaultLoaded = false;
 
 	/* INTENTFILTER ACTIONS FOR BROADCAST RECEIVER */
@@ -90,6 +89,7 @@ public class MediaServiceContoller extends Service implements
 	List<HashMap<String, Object>> media_list;
 	short defaultReverb = PresetReverb.PRESET_NONE;
 	int result;
+	String tag;
 	static MediaPlayer mediaplayer;
 	MediaManager manager;
 	AudioManager audioManager;
@@ -99,9 +99,8 @@ public class MediaServiceContoller extends Service implements
 	Intent intent;
 	IntentFilter filter;
 	int db_condition;
-	SharedPreferences preferences;
-	Editor editor;
-	String tag;
+	Preferences preferences;
+	Random random;
 	PresetReverb reverb;
 	RemoteViews remoteViews;
 	// mBinder object which is responsible for interacting with client.
@@ -118,10 +117,13 @@ public class MediaServiceContoller extends Service implements
 		// TODO Auto-generated method stub
 		super.onCreate();
 		media_list = new ArrayList<HashMap<String, Object>>();
-		preferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+		preferences = new Preferences(getApplicationContext());
+
 		manager = new MediaManager();
 		reverb = new PresetReverb(1, 0);
 		media_list = manager.retriveContent(this);
+		random = new Random();
 		handler = new Handler();
 		// register intents for BroadCast Receivers
 		filter = new IntentFilter();
@@ -201,6 +203,10 @@ public class MediaServiceContoller extends Service implements
 			updatewidget(this);
 			setUpHandlers();
 			updateView();
+
+			intent = new Intent(CONTROL_PLAY);
+			intent.putExtra(ASUtils.IS_PLAYING, mediaplayer.isPlaying());
+			sendBroadcast(intent);
 
 		} catch (IllegalArgumentException e) {
 			// TODO Auto-generated catch block
@@ -556,7 +562,17 @@ public class MediaServiceContoller extends Service implements
 	@Override
 	public void onCompletion(MediaPlayer mp) {
 		// TODO Auto-generated method stub
-		nextSong();
+		isRepeat = preferences.getRepeat();
+		isShuffle = preferences.getShuffle();
+		if (isRepeat) {
+			play(playBackIndex);
+		} else if (isShuffle) {
+			playBackIndex = random.nextInt(media_list.size() - 1);
+			play(playBackIndex);
+		} else {
+			nextSong();
+		}
+
 	}
 
 	@Override

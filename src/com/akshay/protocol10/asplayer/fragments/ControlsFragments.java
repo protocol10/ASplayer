@@ -35,14 +35,15 @@ public class ControlsFragments extends Fragment implements OnClickListener,
 	ImageView album_art_view;
 	TextView title_view, artist_view, album_view;
 
-	ImageButton play_button, next_button, back_button;
+	ImageButton play_button, next_button, back_button, repeatButton,
+			shuffle_button;
 	TextView current_time, total_duration;
 	View view;
 	SeekBar seekbar;
 	LinearLayout layout;
 	Handler handler;
 	onItemSelected mCallBack;
-
+	boolean isRepeat, isShuffle;
 	Preferences preferences;
 
 	@Override
@@ -63,6 +64,8 @@ public class ControlsFragments extends Fragment implements OnClickListener,
 		next_button = (ImageButton) view.findViewById(R.id.next_button);
 		back_button = (ImageButton) view.findViewById(R.id.back_button);
 
+		shuffle_button = (ImageButton) view.findViewById(R.id.shuffle);
+		repeatButton = (ImageButton) view.findViewById(R.id.repeat);
 		title_view = (TextView) view.findViewById(R.id.song_title_text_view);
 		album_view = (TextView) view.findViewById(R.id.album_name_text_view);
 		artist_view = (TextView) view.findViewById(R.id.artist_text_view);
@@ -93,6 +96,12 @@ public class ControlsFragments extends Fragment implements OnClickListener,
 		title_view.setText(preferences.getTitle());
 		artist_view.setText(preferences.getArtist());
 		album_view.setText(preferences.getAlbum());
+		isRepeat = preferences.getRepeat();
+		isShuffle = preferences.getShuffle();
+		if (isRepeat)
+			repeatButton.setImageResource(R.drawable.ic_repeatstate);
+		if (isShuffle)
+			shuffle_button.setImageResource(R.drawable.ic_shufflestate);
 		updateAlbumArt();
 		setUpListeners();
 
@@ -119,6 +128,8 @@ public class ControlsFragments extends Fragment implements OnClickListener,
 		play_button.setOnClickListener(this);
 		next_button.setOnClickListener(this);
 		back_button.setOnClickListener(this);
+		shuffle_button.setOnClickListener(this);
+		repeatButton.setOnClickListener(this);
 		seekbar.setOnSeekBarChangeListener(this);
 	}
 
@@ -147,6 +158,32 @@ public class ControlsFragments extends Fragment implements OnClickListener,
 			break;
 		case R.id.back_button:
 			mCallBack.previousPlayBack();
+			break;
+		case R.id.shuffle:
+			if (isShuffle) {
+				isShuffle = false;
+				shuffle_button.setImageResource(R.drawable.ic_shuffle);
+			} else {
+				isShuffle = true;
+				shuffle_button.setImageResource(R.drawable.ic_shufflestate);
+				repeatButton.setImageResource(R.drawable.ic_repeat);
+				isRepeat = false;
+			}
+			preferences.setRepeat(isRepeat);
+			preferences.setShuffle(isShuffle);
+			break;
+		case R.id.repeat:
+			if (isRepeat) {
+				isRepeat = false;
+				repeatButton.setImageResource(R.drawable.ic_repeat);
+			} else {
+				isRepeat = true;
+				repeatButton.setImageResource(R.drawable.ic_repeatstate);
+				shuffle_button.setImageResource(R.drawable.ic_shuffle);
+				isShuffle = false;
+			}
+			preferences.setRepeat(isRepeat);
+			preferences.setShuffle(isShuffle);
 			break;
 		default:
 			break;

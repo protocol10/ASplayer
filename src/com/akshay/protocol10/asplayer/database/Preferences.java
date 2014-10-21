@@ -15,6 +15,8 @@ public class Preferences {
 	public static final String UPDATE_NOWPLAYING = "NOW_PLAYING";
 	private static final String PATH_KEY = "path";
 	private static final String ALBUM_ID = "album_art";
+	private static final String REPEAT = "isRepeat";
+	private static final String SHUFFLE = "isShuffle";
 
 	public Preferences(Context context) {
 		// TODO Auto-generated constructor stub
@@ -83,5 +85,23 @@ public class Preferences {
 
 	public long getId() {
 		return settings.getLong(ALBUM_ID, 0);
+	}
+
+	public void setRepeat(boolean isRepeat) {
+		editor.putBoolean(REPEAT, isRepeat);
+		editor.commit();
+	}
+
+	public boolean getRepeat() {
+		return settings.getBoolean(REPEAT, false);
+	}
+
+	public void setShuffle(boolean isShuffle) {
+		editor.putBoolean(SHUFFLE, isShuffle);
+		editor.commit();
+	}
+
+	public boolean getShuffle() {
+		return settings.getBoolean(SHUFFLE, false);
 	}
 }

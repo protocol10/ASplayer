@@ -32,7 +32,7 @@
         android:orientation="horizontal" >
 
         <ImageButton
-            android:id="@+id/rewind_button"
+            android:id="@+id/repeat"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="14dip"
@@ -81,7 +81,7 @@
             android:src="@drawable/ic_forward" />
 
         <ImageButton
-            android:id="@+id/fast_forward"
+            android:id="@+id/shuffle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="14dip"
@@ -154,7 +154,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:gravity="left" />
+            android:gravity="left" />Button
 
         <TextView
             android:id="@+id/total_duration"
