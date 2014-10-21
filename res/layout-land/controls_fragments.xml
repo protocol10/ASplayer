@@ -27,42 +27,47 @@
             android:layout_marginBottom="2dip"
             android:layout_marginLeft="4dip"
             android:layout_marginRight="4dip"
-            android:layout_marginTop="3dip"
             android:orientation="vertical" >
 
             <TextView
                 android:id="@+id/song_title_text_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="8dip"
                 android:gravity="center"
                 android:padding="4dip"
                 android:singleLine="true"
-                android:text="@string/title" />
+                android:text="@string/title"
+                android:textSize="17sp" />
 
             <TextView
                 android:id="@+id/album_name_text_view"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="left"
+                android:layout_marginTop="8dip"
                 android:gravity="center"
                 android:padding="4dp"
-                android:text="@string/album" />
+                android:text="@string/album"
+                android:textSize="15sp" />
 
             <TextView
                 android:id="@+id/artist_text_view"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="left"
+                android:layout_marginTop="8dip"
                 android:gravity="center"
                 android:padding="4dp"
-                android:text="@string/artist" />
+                android:text="@string/artist"
+                android:textSize="14sp" />
 
             <LinearLayout
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
-                android:layout_marginTop="45dp"
+                android:layout_marginTop="20dp"
                 android:orientation="horizontal" >
 
                 <TextView
@@ -84,7 +89,9 @@
                 android:id="@+id/progress_Bar"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="8dip" />
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginTop="8dip" />
 
             <LinearLayout
                 android:id="@+id/controls"
@@ -106,6 +113,7 @@
                     android:clickable="true"
                     android:contentDescription="@string/back_btn"
                     android:focusable="true"
+                    android:padding="4dip"
                     android:src="@drawable/ic_back" />
 
                 <ImageButton
@@ -118,6 +126,7 @@
                     android:clickable="true"
                     android:contentDescription="@string/play_btn"
                     android:focusable="true"
+                    android:padding="4dip"
                     android:src="@drawable/ic_pause" />
 
                 <ImageButton
@@ -130,6 +139,7 @@
                     android:clickable="true"
                     android:contentDescription="@string/next_btn"
                     android:focusable="true"
+                    android:padding="4dip"
                     android:src="@drawable/ic_forward" />
             </LinearLayout>
         </LinearLayout>

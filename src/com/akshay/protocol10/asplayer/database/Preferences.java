@@ -14,6 +14,7 @@ public class Preferences {
 	private static final String DATABASE = "DATABASE_KEY";
 	public static final String UPDATE_NOWPLAYING = "NOW_PLAYING";
 	private static final String PATH_KEY = "path";
+	private static final String ALBUM_ID = "album_art";
 
 	public Preferences(Context context) {
 		// TODO Auto-generated constructor stub
@@ -73,5 +74,14 @@ public class Preferences {
 
 	public String getPath() {
 		return settings.getString(PATH_KEY, "/");
+	}
+
+	public void setId(long id) {
+		editor.putLong(ALBUM_ID, id);
+		editor.commit();
+	}
+
+	public long getId() {
+		return settings.getLong(ALBUM_ID, 0);
 	}
 }

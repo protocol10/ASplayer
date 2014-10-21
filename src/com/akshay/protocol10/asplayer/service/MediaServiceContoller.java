@@ -103,6 +103,7 @@ public class MediaServiceContoller extends Service implements
 	Editor editor;
 	String tag;
 	PresetReverb reverb;
+	RemoteViews remoteViews;
 	// mBinder object which is responsible for interacting with client.
 	private final IBinder mbinder = new MediaBinder();
 
@@ -178,7 +179,9 @@ public class MediaServiceContoller extends Service implements
 			audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
 			result = audioManager.requestAudioFocus(this,
 					AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
-			equalizer = new Equalizer(1, mediaplayer.getAudioSessionId());
+			if (equalizer == null) {
+				equalizer = new Equalizer(1, mediaplayer.getAudioSessionId());
+			}
 			equalizer.setEnabled(true);
 
 			mediaplayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
@@ -195,7 +198,6 @@ public class MediaServiceContoller extends Service implements
 			mediaplayer.setOnCompletionListener(this);
 			mediaplayer.start();
 
-			;
 			updatewidget(this);
 			setUpHandlers();
 			updateView();
@@ -240,10 +242,15 @@ public class MediaServiceContoller extends Service implements
 				mediaplayer.pause();
 				wasPlaying = true;
 				isPLaying = false;
+				remoteViews.setImageViewResource(R.id.notify_pause,
+						R.drawable.ic_notifypause);
 			} else {
 				mediaplayer.start();
 				isPLaying = true;
+				remoteViews.setImageViewResource(R.id.notify_pause,
+						R.drawable.ic_notifyplay);
 			}
+
 			Intent i = new Intent(CONTROL_PLAY);
 			i.putExtra(ASUtils.IS_PLAYING, isPLaying);
 			sendBroadcast(i);
@@ -309,13 +316,17 @@ public class MediaServiceContoller extends Service implements
 				updatewidget(context);
 			}
 
-			if (action.equals(APPWIDGET_PLAY) || action.equals(NOTIFY_PAUSE)) {
-				if (mediaplayer.isPlaying())
-					mediaplayer.pause();
-				else if (!mediaplayer.isPlaying()) {
-					mediaplayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-					mediaplayer.start();
-				}
+			if (action.equals(APPWIDGET_PLAY)) {
+				// if (mediaplayer.isPlaying())
+				// mediaplayer.pause();
+				// else if (!mediaplayer.isPlaying()) {
+				// mediaplayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+				// mediaplayer.start();
+				// remoteViews.setImageViewResource(R.id.notify_pause,
+				// isPLaying ? R.drawable.ic_notifypause
+				// : R.drawable.ic_notifyplay);
+				// }
+				// pauseSong();
 			}
 			if (action.equals(Intent.ACTION_HEADSET_PLUG)) {
 
@@ -343,6 +354,9 @@ public class MediaServiceContoller extends Service implements
 			}
 			if (action.equals(NOTIFY_CLOSE)) {
 				stopForeground(true);
+				pauseSong();
+			}
+			if (action.equals(NOTIFY_PAUSE)) {
 				pauseSong();
 			}
 		}
@@ -447,8 +461,7 @@ public class MediaServiceContoller extends Service implements
 
 		Bitmap bitmap = getCover(id);
 
-		RemoteViews remoteViews = new RemoteViews(getPackageName(),
-				R.layout.as_widget_main);
+		remoteViews = new RemoteViews(getPackageName(), R.layout.as_widget_main);
 
 		NotificationCompat.Builder builder = new NotificationCompat.Builder(
 				this).setSmallIcon(R.drawable.ic_launcher).setContent(
@@ -469,9 +482,8 @@ public class MediaServiceContoller extends Service implements
 		Intent pauseIntent = new Intent(NOTIFY_PAUSE);
 		PendingIntent pendingPauseIntent = PendingIntent.getBroadcast(
 				getApplicationContext(), 0, pauseIntent, 0);
-		remoteViews.setImageViewResource(R.id.notify_pause, mediaplayer
-				.isPlaying() ? R.drawable.ic_notifypause
-				: R.drawable.ic_notifyplay);
+		remoteViews.setImageViewResource(R.id.notify_pause,
+				R.drawable.ic_notifypause);
 		remoteViews.setOnClickPendingIntent(R.id.notify_pause,
 				pendingPauseIntent);
 

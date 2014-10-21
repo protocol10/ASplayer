@@ -20,6 +20,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
@@ -38,7 +39,7 @@ public class ControlsFragments extends Fragment implements OnClickListener,
 	TextView current_time, total_duration;
 	View view;
 	SeekBar seekbar;
-
+	LinearLayout layout;
 	Handler handler;
 	onItemSelected mCallBack;
 
@@ -66,7 +67,8 @@ public class ControlsFragments extends Fragment implements OnClickListener,
 		album_view = (TextView) view.findViewById(R.id.album_name_text_view);
 		artist_view = (TextView) view.findViewById(R.id.artist_text_view);
 		album_art_view = (ImageView) view.findViewById(R.id.album_art);
-
+		layout = (LinearLayout) getActivity().findViewById(R.id.nowPlayingMain);
+		layout.setVisibility(View.GONE);
 		current_time = (TextView) view.findViewById(R.id.current_pos);
 		total_duration = (TextView) view.findViewById(R.id.total_duration);
 		seekbar = (SeekBar) view.findViewById(R.id.progress_Bar);
@@ -80,31 +82,18 @@ public class ControlsFragments extends Fragment implements OnClickListener,
 			position = bundle.getInt(ASUtils.POSITION_KEY);
 			album_id = bundle.getLong(ASUtils.ALBUM_ID_KEY);
 
-			handler.post(new Runnable() {
-
-				@Override
-				public void run() {
-					// TODO Auto-generated method stub
-					Bitmap bitmap = MediaManager.getAlbumArt(album_id,
-							getActivity());
-					if (bitmap != null)
-						album_art_view.setImageBitmap(bitmap);
-					else
-						album_art_view
-								.setImageResource(R.drawable.ic_album_art);
-				}
-			});
 		}
 
 		if (savedInstanceState == null) {
 			mCallBack.startPlayBack(position);
 			preferences.setName(title_text, artist_text, album_text);
+			preferences.setId(album_id);
 
 		}
 		title_view.setText(preferences.getTitle());
 		artist_view.setText(preferences.getArtist());
 		album_view.setText(preferences.getAlbum());
-
+		updateAlbumArt();
 		setUpListeners();
 
 		return view;
@@ -179,16 +168,23 @@ public class ControlsFragments extends Fragment implements OnClickListener,
 	public void updateView(String name, String artist, String album, long id) {
 
 		preferences.setName(name, artist, album);
+		preferences.setId(id);
 		title_view.setText(preferences.getTitle());
 		artist_view.setText(preferences.getArtist());
 		album_view.setText(preferences.getAlbum());
-		final long album_id = id;
+		long album_id = id;
+		updateAlbumArt();
+
+	}
+
+	private void updateAlbumArt() {
+		// TODO Auto-generated method stub
 		handler.post(new Runnable() {
 
 			@Override
 			public void run() {
 				// TODO Auto-generated method stub
-				Bitmap bitmap = MediaManager.getAlbumArt(album_id,
+				Bitmap bitmap = MediaManager.getAlbumArt(preferences.getId(),
 						getActivity());
 
 				if (bitmap != null)

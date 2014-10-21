@@ -52,7 +52,7 @@ import android.widget.TextView;
 public class MainActivity extends ActionBarActivity implements
 		OnItemClickListener, onItemSelected, OnClickListener {
 
-	boolean isBound;
+	boolean isBound, visible;
 	String name, artist, album;
 	String[] drawer_options = {};
 	CharSequence title;
@@ -148,6 +148,7 @@ public class MainActivity extends ActionBarActivity implements
 		} else {
 			titleText.setText(preferences.getTitle());
 			artistText.setText(preferences.getArtist());
+			nowPlaying.setVisibility(View.VISIBLE);
 		}
 
 		// IntentFilter for BroadCastReceiver
@@ -155,12 +156,14 @@ public class MainActivity extends ActionBarActivity implements
 		filter.addAction(MediaServiceContoller.BROADCAST_ACTION);
 		filter.addAction(MediaServiceContoller.SEEKBAR_ACTION);
 		filter.addAction(MediaServiceContoller.CONTROL_PLAY);
+
 		Intent intent = getIntent();
 		// bind service
 
 		if (intent != null) {
 			String action = intent.getAction();
-			// open file from file manager and action to check if blank
+			// open file fnowPlayingrom file manager and action to check if
+			// blank
 			if (action.equals("android.intent.action.VIEW") && action != null) {
 				path = intent.getData().getPath();
 				Log.i("path", path);
@@ -171,7 +174,6 @@ public class MainActivity extends ActionBarActivity implements
 					ASPlayer.getAppContext().bindService(intent, mConnection,
 							Context.BIND_AUTO_CREATE);
 				}
-
 			}
 		}
 	}
@@ -575,6 +577,7 @@ public class MainActivity extends ActionBarActivity implements
 		super.onBackPressed();
 		if (nowPlaying.getVisibility() != View.VISIBLE) {
 			nowPlaying.setVisibility(View.VISIBLE);
+			visible = true;
 		}
 	}
 
