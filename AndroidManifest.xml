@@ -23,13 +23,6 @@
         android:theme="@style/Theme.As_player" >
 
         <!-- value for ActiveAndroid library -->
-        <meta-data
-            android:name="effects_player"
-            android:value="effects.db" />
-        <meta-data
-            android:name="effects_version"
-            android:value="1" />
-
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name" >

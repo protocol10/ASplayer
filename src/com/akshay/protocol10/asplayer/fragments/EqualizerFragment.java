@@ -245,7 +245,7 @@ public class EqualizerFragment extends Fragment implements
 		// TODO Auto-generated method stub
 		int value = 0;
 		if (fromUser) {
-			presestSpinner.setSelection(defaultPresets.length-1);
+			presestSpinner.setSelection(defaultPresets.length - 1);
 			switch (seekBar.getId()) {
 			case R.id.equalizer_band1:
 				value = progress - index;

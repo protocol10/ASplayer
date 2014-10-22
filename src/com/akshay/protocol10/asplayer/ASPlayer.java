@@ -5,7 +5,6 @@ package com.akshay.protocol10.asplayer;
  * Application Class for Initializing the ActiveAndroidLibrary.
  * Also for retriving the BaseContext of the Application
  */
-import com.activeandroid.ActiveAndroid;
 
 import android.app.Application;
 import android.content.Context;
@@ -20,7 +19,6 @@ public class ASPlayer extends Application {
 	public void onCreate() {
 		// TODO Auto-generated method stub
 		super.onCreate();
-		ActiveAndroid.initialize(this);
 		instance = this;
 	}
 

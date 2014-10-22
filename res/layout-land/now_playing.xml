@@ -75,7 +75,7 @@
                 android:layout_marginRight="16dip"
                 android:background="@null"
                 android:contentDescription="@string/play"
-                android:src="@drawable/ic_pause" />
+                android:src="@drawable/ic_play" />
 
             <ImageButton
                 android:id="@+id/next"

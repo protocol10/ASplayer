@@ -39,7 +39,6 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
-import android.util.Log;
 import android.widget.RemoteViews;
 
 public class MediaServiceContoller extends Service implements
@@ -178,7 +177,6 @@ public class MediaServiceContoller extends Service implements
 					AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
 			if (equalizer == null) {
 				equalizer = new Equalizer(1, mediaplayer.getAudioSessionId());
-				reverb = new PresetReverb(1, 0);
 			}
 			equalizer.setEnabled(true);
 
@@ -187,11 +185,12 @@ public class MediaServiceContoller extends Service implements
 					.get(PATH_KEY).toString());
 
 			/* Apply presetReverb */
-			mediaplayer.attachAuxEffect(reverb.getId());
-			reverb.setPreset(defaultReverb);
-			reverb.setEnabled(true);
-			mediaplayer.setAuxEffectSendLevel(1.0f);
-
+			if (reverb != null) {
+				mediaplayer.attachAuxEffect(reverb.getId());
+				reverb.setPreset(defaultReverb);
+				reverb.setEnabled(true);
+				mediaplayer.setAuxEffectSendLevel(1.0f);
+			}
 			mediaplayer.prepare();
 			mediaplayer.setOnCompletionListener(this);
 			mediaplayer.start();
@@ -621,7 +620,6 @@ public class MediaServiceContoller extends Service implements
 	public void playFromPath(String path) {
 
 		try {
-			Log.i("SIZE", "" + media_list.size());
 			for (Map<String, Object> map : media_list) {
 
 				for (Map.Entry<String, Object> entry : map.entrySet()) {

@@ -106,7 +106,7 @@ public class Preferences {
 	}
 
 	public void clearData() {
-		editor.clear();
+		settings.edit().clear().commit();
 	}
 
 	public void setDuration(int duration) {

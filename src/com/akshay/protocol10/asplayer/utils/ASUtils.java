@@ -9,10 +9,6 @@ public class ASUtils {
 
 	private final static String OPTION_EQUALIZER = "Equalizer";
 
-	// private final static String OPTION_PLAYLIST = "Playlist";
-
-	private final static String OPTION_SETTINGS = "Settings";
-
 	private final static String OPTION_ABOUT = "About";
 
 	/* OPTIONS FOR NAVIGATION DRAWER */
