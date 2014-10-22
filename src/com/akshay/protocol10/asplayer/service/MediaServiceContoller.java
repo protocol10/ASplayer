@@ -17,6 +17,7 @@ import com.akshay.protocol10.asplayer.database.MediaManager;
 import com.akshay.protocol10.asplayer.database.Preferences;
 import com.akshay.protocol10.asplayer.utils.ASUtils;
 
+import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
@@ -103,6 +104,8 @@ public class MediaServiceContoller extends Service implements
 	Random random;
 	PresetReverb reverb;
 	RemoteViews remoteViews;
+	NotificationManager notifiactioManager;
+	Notification notification;
 	// mBinder object which is responsible for interacting with client.
 	private final IBinder mbinder = new MediaBinder();
 
@@ -145,7 +148,8 @@ public class MediaServiceContoller extends Service implements
 		filter.addAction(NOTIFY_NEXT);
 		filter.addAction(NOTIFY_BACK);
 		registerReceiver(receiver, filter);
-
+		remoteViews = new RemoteViews(getPackageName(), R.layout.as_widget_main);
+		notification = new Notification();
 	}
 
 	@Override
@@ -154,15 +158,6 @@ public class MediaServiceContoller extends Service implements
 		/**
 		 * We want this service to continue until it is explicitly stopped.
 		 */
-		if (intent != null) {
-			String action = intent.getAction();
-			if (action != null && action.equals(PLAY_PATH)) {
-
-				String path = intent.getStringExtra(PATH);
-				playFromPath(path);
-
-			}
-		}
 		return START_STICKY;
 	}
 
@@ -249,13 +244,9 @@ public class MediaServiceContoller extends Service implements
 				mediaplayer.pause();
 				wasPlaying = true;
 				isPLaying = false;
-				remoteViews.setImageViewResource(R.id.notify_pause,
-						R.drawable.ic_notifypause);
 			} else {
 				mediaplayer.start();
 				isPLaying = true;
-				remoteViews.setImageViewResource(R.id.notify_pause,
-						R.drawable.ic_notifyplay);
 			}
 
 			Intent i = new Intent(CONTROL_PLAY);
@@ -267,6 +258,7 @@ public class MediaServiceContoller extends Service implements
 	public void nextSong() {
 		if (playBackIndex < (media_list.size() - 1)) {
 			playBackIndex += 1;
+
 			play(playBackIndex);
 		} else {
 			playBackIndex = 0;
@@ -325,16 +317,16 @@ public class MediaServiceContoller extends Service implements
 			}
 
 			if (action.equals(APPWIDGET_PLAY)) {
-				// if (mediaplayer.isPlaying())
-				// mediaplayer.pause();
-				// else if (!mediaplayer.isPlaying()) {
-				// mediaplayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-				// mediaplayer.start();
-				// remoteViews.setImageViewResource(R.id.notify_pause,
-				// isPLaying ? R.drawable.ic_notifypause
-				// : R.drawable.ic_notifyplay);
-				// }
-				// pauseSong();
+				if (mediaplayer.isPlaying())
+					mediaplayer.pause();
+				else if (!mediaplayer.isPlaying()) {
+					mediaplayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+					mediaplayer.start();
+					remoteViews.setImageViewResource(R.id.notify_pause,
+							isPLaying ? R.drawable.ic_notifypause
+									: R.drawable.ic_notifyplay);
+				}
+				pauseSong();
 			}
 			if (action.equals(Intent.ACTION_HEADSET_PLUG)) {
 
@@ -362,10 +354,21 @@ public class MediaServiceContoller extends Service implements
 			}
 			if (action.equals(NOTIFY_CLOSE)) {
 				stopForeground(true);
-				pauseSong();
+				if (mediaplayer.isPlaying()) {
+					pauseSong();
+				}
+				NotificationManager notificationManager = (NotificationManager) getApplicationContext()
+						.getSystemService(NOTIFICATION_SERVICE);
+				notificationManager.cancel(ASUtils.NOTIFICATION_ID);
 			}
 			if (action.equals(NOTIFY_PAUSE)) {
 				pauseSong();
+				remoteViews.setImageViewResource(R.id.notify_pause, mediaplayer
+						.isPlaying() ? R.drawable.ic_notifypause
+						: R.drawable.ic_notifyplay);
+				/* Use to update the icon for pause button. weird android bug */
+				notifiactioManager
+						.notify(ASUtils.NOTIFICATION_ID, notification);
 			}
 		}
 	};
@@ -469,8 +472,6 @@ public class MediaServiceContoller extends Service implements
 
 		Bitmap bitmap = getCover(id);
 
-		remoteViews = new RemoteViews(getPackageName(), R.layout.as_widget_main);
-
 		NotificationCompat.Builder builder = new NotificationCompat.Builder(
 				this).setSmallIcon(R.drawable.ic_launcher).setContent(
 				remoteViews);
@@ -522,10 +523,12 @@ public class MediaServiceContoller extends Service implements
 		PendingIntent pendingIntent = stackBuilder.getPendingIntent(0,
 				PendingIntent.FLAG_UPDATE_CURRENT);
 		builder.setContentIntent(pendingIntent);
-		NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-		manager.notify(ASUtils.NOTIFICATION_ID, builder.build());
+		notification = builder.build();
+		notifiactioManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+		notifiactioManager.notify(ASUtils.NOTIFICATION_ID, notification);
+
 		startService(new Intent(this, MediaServiceContoller.class));
-		startForeground(ASUtils.NOTIFICATION_ID, builder.build());
+		startForeground(ASUtils.NOTIFICATION_ID, notification);
 	}
 
 	private Bitmap getCover(long id) {
@@ -672,10 +675,10 @@ public class MediaServiceContoller extends Service implements
 
 	public void applyEffect(int pos) {
 		if (equalizer != null) {
-			if(pos<equalizer.getNumberOfPresets()){
+			if (pos < equalizer.getNumberOfPresets()) {
 				usePreset(pos);
 			}
-			
+
 			int band1, band2, band3, band4, band5;
 			switch (pos) {
 			case 0:
