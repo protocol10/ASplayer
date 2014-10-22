@@ -133,21 +133,6 @@
         android:layout_marginRight="8dip"
         android:layout_marginTop="16dip"
         android:orientation="horizontal" >
-
-        <TextView
-            android:id="@+id/boost"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_marginRight="8dip"
-            android:text="@string/bass_boost"
-            android:textSize="16sp" />
-
-        <SeekBar
-            android:id="@+id/bass_progress"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1" />
     </LinearLayout>
 
     <LinearLayout

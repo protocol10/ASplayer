@@ -31,7 +31,7 @@ public class ControlsFragments extends Fragment implements OnClickListener,
 	int position;
 	long album_id;
 	String title_text, album_text, artist_text;
-
+	boolean play;
 	ImageView album_art_view;
 	TextView title_view, artist_view, album_view;
 
@@ -84,11 +84,15 @@ public class ControlsFragments extends Fragment implements OnClickListener,
 			artist_text = bundle.getString(ASUtils.ARTIST_KEY);
 			position = bundle.getInt(ASUtils.POSITION_KEY);
 			album_id = bundle.getLong(ASUtils.ALBUM_ID_KEY);
+			play = bundle.getBoolean("NoPlay");
 
 		}
 
 		if (savedInstanceState == null) {
-			mCallBack.startPlayBack(position);
+
+			if (!play) {
+				mCallBack.startPlayBack(position);
+			}
 			preferences.setName(title_text, artist_text, album_text);
 			preferences.setId(album_id);
 
@@ -98,6 +102,7 @@ public class ControlsFragments extends Fragment implements OnClickListener,
 		album_view.setText(preferences.getAlbum());
 		isRepeat = preferences.getRepeat();
 		isShuffle = preferences.getShuffle();
+		total_duration.setText(updateText(preferences.getDuration()));
 		if (isRepeat)
 			repeatButton.setImageResource(R.drawable.ic_repeatstate);
 		if (isShuffle)

@@ -30,6 +30,7 @@ public class EqualizerFragment extends Fragment implements
 			progressBand5;
 	onItemSelected mcallback;
 	String[] defaultReverbs;
+	int index = 15;
 
 	public EqualizerFragment() {
 		// TODO Auto-generated constructor stub
@@ -242,8 +243,33 @@ public class EqualizerFragment extends Fragment implements
 	public void onProgressChanged(SeekBar seekBar, int progress,
 			boolean fromUser) {
 		// TODO Auto-generated method stub
+		int value = 0;
 		if (fromUser) {
-
+			presestSpinner.setSelection(defaultPresets.length-1);
+			switch (seekBar.getId()) {
+			case R.id.equalizer_band1:
+				value = progress - index;
+				mcallback.setEqualizer(0, value);
+				break;
+			case R.id.equalizer_band2:
+				value = progress - index;
+				mcallback.setEqualizer(1, value);
+				break;
+			case R.id.equalizer_band3:
+				value = progress - index;
+				mcallback.setEqualizer(2, value);
+				break;
+			case R.id.equalizer_band4:
+				value = progress - index;
+				mcallback.setEqualizer(3, value);
+				break;
+			case R.id.equalizer_band5:
+				value = progress - index;
+				mcallback.setEqualizer(4, value);
+				break;
+			default:
+				break;
+			}
 		}
 	}
 

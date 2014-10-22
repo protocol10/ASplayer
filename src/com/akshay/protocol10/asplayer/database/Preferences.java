@@ -104,4 +104,17 @@ public class Preferences {
 	public boolean getShuffle() {
 		return settings.getBoolean(SHUFFLE, false);
 	}
+
+	public void clearData() {
+		editor.clear();
+	}
+
+	public void setDuration(int duration) {
+		editor.putInt("duration", duration);
+		editor.commit();
+	}
+
+	public int getDuration() {
+		return settings.getInt("duration", 0);
+	}
 }

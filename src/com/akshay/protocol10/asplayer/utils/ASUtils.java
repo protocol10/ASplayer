@@ -34,11 +34,12 @@ public class ASUtils {
 	private final static String JAZZ_PRESET = "Jazz";
 	private final static String POP_PRESET = "Pop";
 	private final static String ROCK_PRESET = "Rock";
+	private static final String CUSTOM = "Custom";
 
 	public final static String[] DEFAULT_PRESETS = { NORMAL_PRESET,
 			CLASSIC_PRESET, DANCE_PRESET, FLAT_PRESET, FOLK_PRESET,
 			HEAVYMETAL_PRESET, HIP_HOP_PRESET, JAZZ_PRESET, POP_PRESET,
-			ROCK_PRESET };
+			ROCK_PRESET, CUSTOM };
 
 	/* KEYS FOR BUNDLE ELEMENTS */
 	public static final String TITLE_KEY = "title";

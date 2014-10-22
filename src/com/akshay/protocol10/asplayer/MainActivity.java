@@ -70,12 +70,12 @@ public class MainActivity extends ActionBarActivity implements
 	IntentFilter filter;
 	Fragment fragment;
 	Preferences preferences;
-
-	LinearLayout nowPlaying;
+	ControlsFragments controlsFragments;
+	LinearLayout nowPlaying, detailLayout;
 	TextView titleText, artistText;
 	ImageButton previous, play, next;
-	ControlsFragments controlFragments;
 	String path;
+
 	private static final String SEEKKEY = "seekpos";
 
 	@Override
@@ -97,11 +97,15 @@ public class MainActivity extends ActionBarActivity implements
 		play = (ImageButton) findViewById(R.id.play_pause);
 		next = (ImageButton) findViewById(R.id.next);
 
+		detailLayout = (LinearLayout) findViewById(R.id.detail_layout);
+
 		play.setOnClickListener(this);
 		next.setOnClickListener(this);
 		previous.setOnClickListener(this);
+		detailLayout.setOnClickListener(this);
 
 		manager = new MediaManager();
+		controlsFragments = new ControlsFragments();
 		drawerAdapter = new DrawerAdapter(this, R.layout.drawer_list_row,
 				R.id.option_text, drawer_options);
 
@@ -266,19 +270,17 @@ public class MainActivity extends ActionBarActivity implements
 	@Override
 	public void updateView(String title, String artist, String album,
 			int position, long album_id) {
-
-		controlFragments = new ControlsFragments();
-
+		controlsFragments = new ControlsFragments();
 		Bundle args = new Bundle();
 		args.putString("title", title);
 		args.putString("artist", artist);
 		args.putString("album", album);
 		args.putInt("position", position);
 		args.putLong("album_id", album_id);
-		controlFragments.setArguments(args);
+		controlsFragments.setArguments(args);
 
 		FragmentTransaction transaction = getSupportFragmentManager()
-				.beginTransaction().replace(R.id.content, controlFragments,
+				.beginTransaction().replace(R.id.content, controlsFragments,
 						ASUtils.CONTROL_TAG);
 		nowPlaying.setVisibility(View.GONE);
 		transaction.addToBackStack(null);
@@ -428,6 +430,11 @@ public class MainActivity extends ActionBarActivity implements
 	}
 
 	@Override
+	public void setEqualizer(int band, int level) {
+		serviceController.setEqManual(band, level);
+	}
+
+	@Override
 	public void setTag(String tag) {
 		serviceController.setTag(tag);
 	}
@@ -503,7 +510,7 @@ public class MainActivity extends ActionBarActivity implements
 		@Override
 		public void onReceive(Context context, Intent intent) {
 
-			controlFragments = (ControlsFragments) getSupportFragmentManager()
+			controlsFragments = (ControlsFragments) getSupportFragmentManager()
 					.findFragmentByTag(ASUtils.CONTROL_TAG);
 			String action = intent.getAction();
 
@@ -515,14 +522,15 @@ public class MainActivity extends ActionBarActivity implements
 
 				updateNowPlaying(name, artist);
 
+				album = intent.getStringExtra(MediaServiceContoller.ALBUM_KEY);
+				long id = intent
+						.getLongExtra(MediaServiceContoller.ALBUM_ID, 0);
+				preferences.setName(name, artist, album);
+				preferences.setId(id);
 				// Check whether fragment is in ONE-PAYNE layout
-				if (controlFragments != null) {
+				if (controlsFragments != null) {
 
-					album = intent
-							.getStringExtra(MediaServiceContoller.ALBUM_KEY);
-					long id = intent.getLongExtra(
-							MediaServiceContoller.ALBUM_ID, 0);
-					controlFragments.updateView(name, artist, album, id);
+					controlsFragments.updateView(name, artist, album, id);
 
 				}
 			}
@@ -531,21 +539,21 @@ public class MainActivity extends ActionBarActivity implements
 			 * Update the SeekBar from BroadCast Receiver
 			 */
 			if (action.equals(MediaServiceContoller.SEEKBAR_ACTION)) {
-				if (controlFragments != null) {
+				if (controlsFragments != null) {
 					int maxDuration = intent.getIntExtra(ASUtils.MAX_DURATION,
 							0);
 					int currentDuration = intent.getIntExtra(
 							ASUtils.CURRENT_POSITION, 0);
-					controlFragments
-							.updateSeekBar(maxDuration, currentDuration);
+					controlsFragments.updateSeekBar(maxDuration,
+							currentDuration);
 				}
 			}
 
 			if (action.equals(MediaServiceContoller.CONTROL_PLAY)) {
 				boolean isPlaying = intent.getBooleanExtra(ASUtils.IS_PLAYING,
 						false);
-				if (controlFragments != null) {
-					controlFragments.updateIcon(isPlaying);
+				if (controlsFragments != null) {
+					controlsFragments.updateIcon(isPlaying);
 				}
 				updateIcon(isPlaying);
 			}
@@ -593,6 +601,20 @@ public class MainActivity extends ActionBarActivity implements
 			break;
 		case R.id.previous:
 			serviceController.previousSong();
+			break;
+		case R.id.detail_layout:
+			controlsFragments = new ControlsFragments();
+			Bundle bundle = new Bundle();
+			bundle.putBoolean("NoPlay", true);
+			bundle.putString("title", preferences.getTitle());
+			bundle.putString("artist", preferences.getArtist());
+			bundle.putString("album", preferences.getArtist());
+			bundle.putLong(ASUtils.ALBUM_ID_KEY, preferences.getId());
+			controlsFragments.setArguments(bundle);
+			getSupportFragmentManager()
+					.beginTransaction()
+					.replace(R.id.content, controlsFragments,
+							ASUtils.CONTROL_TAG).addToBackStack(null).commit();
 			break;
 		default:
 			break;

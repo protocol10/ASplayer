@@ -33,4 +33,6 @@ public interface onItemSelected {
 	void playFromPath(String path);
 
 	void setPresetReverb(int position);
+
+	void setEqualizer(int band, int level);
 }

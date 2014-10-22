@@ -121,7 +121,7 @@ public class MediaServiceContoller extends Service implements
 		preferences = new Preferences(getApplicationContext());
 
 		manager = new MediaManager();
-		reverb = new PresetReverb(1, 0);
+
 		media_list = manager.retriveContent(this);
 		random = new Random();
 		handler = new Handler();
@@ -183,6 +183,7 @@ public class MediaServiceContoller extends Service implements
 					AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
 			if (equalizer == null) {
 				equalizer = new Equalizer(1, mediaplayer.getAudioSessionId());
+				reverb = new PresetReverb(1, 0);
 			}
 			equalizer.setEnabled(true);
 
@@ -295,6 +296,7 @@ public class MediaServiceContoller extends Service implements
 		album_text = media_list.get(playBackIndex).get(ALBUM_KEY).toString();
 		album_id = (Long) media_list.get(playBackIndex).get(ASUtils.ALBUM_ART);
 		sendBroadCastToView(title_text, album_text, artist_text, album_id);
+		preferences.setDuration(mediaplayer.getDuration());
 	}
 
 	BroadcastReceiver receiver = new BroadcastReceiver() {
@@ -544,6 +546,7 @@ public class MediaServiceContoller extends Service implements
 		handler.removeCallbacks(sendUpdatesToUI);
 		unregisterReceiver(receiver);
 		wasPlaying = false;
+
 	}
 
 	/**
@@ -669,7 +672,10 @@ public class MediaServiceContoller extends Service implements
 
 	public void applyEffect(int pos) {
 		if (equalizer != null) {
-			usePreset(pos);
+			if(pos<equalizer.getNumberOfPresets()){
+				usePreset(pos);
+			}
+			
 			int band1, band2, band3, band4, band5;
 			switch (pos) {
 			case 0:
@@ -770,6 +776,14 @@ public class MediaServiceContoller extends Service implements
 		equalizer.setBandLevel((short) 2, (short) band3);
 		equalizer.setBandLevel((short) 3, (short) band4);
 		equalizer.setBandLevel((short) 4, (short) band5);
+	}
+
+	public void setEqManual(int band, int level) {
+		if (equalizer != null) {
+			level = level * 100;
+			equalizer.usePreset((short) 5);
+			equalizer.setBandLevel((short) band, (short) level);
+		}
 	}
 
 }
