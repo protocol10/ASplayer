@@ -1,5 +1,8 @@
 package com.akshay.protocol10.asplayer.fragments;
 
+/**
+ * @author akshay
+ */
 import android.app.Activity;
 import android.graphics.Color;
 import android.net.Uri;

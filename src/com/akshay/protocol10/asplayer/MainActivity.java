@@ -37,8 +37,6 @@ import android.content.ServiceConnection;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -90,6 +88,9 @@ public class MainActivity extends ActionBarActivity implements
 		drawer_layout = (DrawerLayout) findViewById(R.id.drawer);
 		nowPlaying = (LinearLayout) findViewById(R.id.nowPlayingMain);
 
+		if (!preferences.getNowPlaying()) {
+			nowPlaying.setVisibility(View.GONE);
+		}
 		titleText = (TextView) findViewById(R.id.title);
 		artistText = (TextView) findViewById(R.id.artist);
 
@@ -170,7 +171,6 @@ public class MainActivity extends ActionBarActivity implements
 			// blank
 			if (action.equals("android.intent.action.VIEW") && action != null) {
 				path = intent.getData().getPath();
-				Log.i("path", path);
 				intent = new Intent(this, MediaServiceContoller.class);
 
 				if (path != null) {
@@ -178,6 +178,14 @@ public class MainActivity extends ActionBarActivity implements
 					ASPlayer.getAppContext().bindService(intent, mConnection,
 							Context.BIND_AUTO_CREATE);
 				}
+			}
+			if (action.equals(MediaServiceContoller.NOTIFICATION_ACTION)
+					&& action != null) {
+				boolean check = intent.getBooleanExtra("playing", false);
+				if (check)
+					play.setImageResource(R.drawable.ic_pause);
+				else
+					play.setImageResource(R.drawable.ic_play);
 			}
 		}
 	}
@@ -246,13 +254,6 @@ public class MainActivity extends ActionBarActivity implements
 	}
 
 	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.main, menu);
-		return true;
-	}
-
-	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// Handle action bar item clicks here. The action bar will
 		// automatically handle clicks on the Home/Up button, so long
@@ -306,6 +307,7 @@ public class MainActivity extends ActionBarActivity implements
 		super.onDestroy();
 		doUnbindService();
 		unregisterReceiver(broadcastReceiver);
+		preferences.clearData();
 	}
 
 	@Override
@@ -583,9 +585,11 @@ public class MainActivity extends ActionBarActivity implements
 	public void onBackPressed() {
 		// TODO Auto-generated method stub
 		super.onBackPressed();
-		if (nowPlaying.getVisibility() != View.VISIBLE) {
-			nowPlaying.setVisibility(View.VISIBLE);
-			visible = true;
+		if (preferences.getNowPlaying()) {
+			if (nowPlaying.getVisibility() != View.VISIBLE) {
+				nowPlaying.setVisibility(View.VISIBLE);
+				visible = true;
+			}
 		}
 	}
 

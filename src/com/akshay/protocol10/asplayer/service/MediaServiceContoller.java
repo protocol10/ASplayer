@@ -31,7 +31,6 @@ import android.media.AudioManager;
 import android.media.AudioManager.OnAudioFocusChangeListener;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
-import android.media.audiofx.BassBoost;
 import android.media.audiofx.Equalizer;
 import android.media.audiofx.PresetReverb;
 import android.os.Binder;
@@ -76,7 +75,7 @@ public class MediaServiceContoller extends Service implements
 	public final static String NOTIFY_CLOSE = "com.akshay.protocol10.notify.CLOSE";
 	public final static String NOTIFY_BACK = "com.akshay.protocol10.notify.BACK";
 
-	private final static String NOTIFICATION_ACTION = "com.akshay.protocol10.NOTIFICATION";
+	public final static String NOTIFICATION_ACTION = "com.akshay.protocol10.NOTIFICATION";
 
 	/* USED FOR APPWIDGET INTENTS */
 	private final String PACKAGE_NAME = "com.akshay.protocol10.asplayer";
@@ -94,11 +93,9 @@ public class MediaServiceContoller extends Service implements
 	MediaManager manager;
 	AudioManager audioManager;
 	Equalizer equalizer;
-	BassBoost bassBoost;
 	Handler handler;
 	Intent intent;
 	IntentFilter filter;
-	int db_condition;
 	Preferences preferences;
 	Random random;
 	PresetReverb reverb;
@@ -275,12 +272,20 @@ public class MediaServiceContoller extends Service implements
 		}
 	}
 
+	/**
+	 * Clear data from list
+	 * 
+	 * @param list
+	 */
 	public void setSongs(List<HashMap<String, Object>> list) {
 
 		media_list.clear();
 		media_list.addAll(list);
 	}
 
+	/**
+	 * BroadCast to update the view
+	 */
 	private void updateView() {
 		title_text = media_list.get(playBackIndex).get(TITLE_KEY).toString();
 		artist_text = media_list.get(playBackIndex).get(ARTIST_KEY).toString();
@@ -388,7 +393,7 @@ public class MediaServiceContoller extends Service implements
 
 	private void updateWidgetCover(Context context) {
 		// TODO Auto-generated method stub
-		Intent intent = new Intent();
+		intent = new Intent();
 		intent.setClassName(PACKAGE_NAME, CLASS_NAME);
 		intent.setAction(APPWIDGET_UPDATE_COVER);
 		if (wasPlaying) {
@@ -400,7 +405,7 @@ public class MediaServiceContoller extends Service implements
 	private void updateWidgetText(Context context) {
 		// TODO Auto-generated method stub
 
-		Intent intent = new Intent();
+		intent = new Intent();
 		intent.setClassName(PACKAGE_NAME, CLASS_NAME);
 		intent.setAction(APPWIDGET_UPDATE_TEXT);
 		if (wasPlaying) {
@@ -483,8 +488,9 @@ public class MediaServiceContoller extends Service implements
 		}
 		remoteViews.setTextViewText(R.id.notify_title, title.toString());
 		/* Launch the App from Notification */
-		Intent intent = new Intent(this, MainActivity.class);
+		intent = new Intent(this, MainActivity.class);
 		intent.setAction(NOTIFICATION_ACTION);
+		intent.putExtra("playing", mediaplayer.isPlaying());
 
 		/* Play/Pause a media through notification */
 		Intent pauseIntent = new Intent(NOTIFY_PAUSE);
@@ -530,6 +536,12 @@ public class MediaServiceContoller extends Service implements
 		startForeground(ASUtils.NOTIFICATION_ID, notification);
 	}
 
+	/**
+	 * Fetch the album art thubmnail
+	 * 
+	 * @param id
+	 * @return
+	 */
 	private Bitmap getCover(long id) {
 		// TODO Auto-generated method stub
 		Bitmap bitmap = MediaManager.getAlbumArt(id, getApplicationContext());
@@ -548,6 +560,7 @@ public class MediaServiceContoller extends Service implements
 		handler.removeCallbacks(sendUpdatesToUI);
 		unregisterReceiver(receiver);
 		wasPlaying = false;
+		preferences.clearData();
 
 	}
 
@@ -617,6 +630,11 @@ public class MediaServiceContoller extends Service implements
 		return tag;
 	}
 
+	/**
+	 * Fetch the index of the tracks that belongs to path
+	 * 
+	 * @param path
+	 */
 	public void playFromPath(String path) {
 
 		try {
@@ -671,6 +689,11 @@ public class MediaServiceContoller extends Service implements
 
 	}
 
+	/**
+	 * Temporary fix for equalizer.More finetunning in next update
+	 * 
+	 * @param pos
+	 */
 	public void applyEffect(int pos) {
 		if (equalizer != null) {
 			if (pos < equalizer.getNumberOfPresets()) {

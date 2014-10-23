@@ -1,5 +1,8 @@
 package com.akshay.protocol10.asplayer.adapters;
 
+/**
+ * @author akshay
+ */
 import com.akshay.protocol10.asplayer.fragments.Albums;
 import com.akshay.protocol10.asplayer.fragments.ArtistFragment;
 import com.akshay.protocol10.asplayer.fragments.GenreFragment;

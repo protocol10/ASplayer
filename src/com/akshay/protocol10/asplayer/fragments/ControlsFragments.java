@@ -283,6 +283,15 @@ public class ControlsFragments extends Fragment implements OnClickListener,
 
 	}
 
+	/**
+	 * 
+	 * Update the seekbar
+	 * 
+	 * @param maxDuration
+	 *            total duration of the track
+	 * @param progress
+	 *            currentPosition of the track
+	 */
 	public void updateSeekBar(int maxDuration, int progress) {
 
 		seekbar.setMax(maxDuration);
@@ -291,6 +300,12 @@ public class ControlsFragments extends Fragment implements OnClickListener,
 		total_duration.setText(updateText(maxDuration));
 	}
 
+	/**
+	 * Used for conversion for proper time format
+	 * 
+	 * @param milliseconds
+	 * @return
+	 */
 	public static String updateText(long milliseconds) {
 		String finalTimeString = "";
 		String secondsString = "";
@@ -312,6 +327,11 @@ public class ControlsFragments extends Fragment implements OnClickListener,
 		return finalTimeString;
 	}
 
+	/**
+	 * Change the icon for play/pause button
+	 * 
+	 * @param isPlaying
+	 */
 	public void updateIcon(boolean isPlaying) {
 		play_button.setImageResource(isPlaying ? R.drawable.ic_pause
 				: R.drawable.ic_play);

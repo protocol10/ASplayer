@@ -22,6 +22,11 @@ public class ASPlayer extends Application {
 		instance = this;
 	}
 
+	/**
+	 * Retreive the global context of Application
+	 * 
+	 * @return
+	 */
 	public static Context getAppContext() {
 		return instance;
 	}

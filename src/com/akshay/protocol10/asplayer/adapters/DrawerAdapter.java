@@ -1,5 +1,8 @@
 package com.akshay.protocol10.asplayer.adapters;
 
+/**
+ * @author akshay
+ */
 import com.akshay.protocol10.asplayer.R;
 import com.akshay.protocol10.asplayer.utils.ASUtils;
 

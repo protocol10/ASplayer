@@ -1,5 +1,8 @@
 package com.akshay.protocol10.asplayer.fragments;
 
+/**
+ * @author akshay
+ */
 import com.akshay.protocol10.asplayer.R;
 import com.akshay.protocol10.asplayer.callbacks.onItemSelected;
 import com.akshay.protocol10.asplayer.utils.ASUtils;
@@ -13,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.Spinner;
@@ -31,6 +35,7 @@ public class EqualizerFragment extends Fragment implements
 	onItemSelected mcallback;
 	String[] defaultReverbs;
 	int index = 15;
+	LinearLayout detailLayout;
 
 	public EqualizerFragment() {
 		// TODO Auto-generated constructor stub
@@ -48,6 +53,9 @@ public class EqualizerFragment extends Fragment implements
 	public void onSaveInstanceState(Bundle outState) {
 		// TODO Auto-generated method stub
 		super.onSaveInstanceState(outState);
+		detailLayout = (LinearLayout) getActivity().findViewById(
+				R.id.nowPlaying);
+		detailLayout.setVisibility(View.GONE);
 	}
 
 	@Override

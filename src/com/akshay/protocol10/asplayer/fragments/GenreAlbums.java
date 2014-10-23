@@ -1,5 +1,8 @@
 package com.akshay.protocol10.asplayer.fragments;
 
+/**
+ * @author akshay
+ */
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -68,6 +71,7 @@ public class GenreAlbums extends Fragment implements OnItemClickListener {
 				.toString();
 		mcallBack.updateArtistAlbum(albumName, artistId);
 	}
+
 	@Override
 	public void onAttach(Activity activity) {
 		// TODO Auto-generated method stub

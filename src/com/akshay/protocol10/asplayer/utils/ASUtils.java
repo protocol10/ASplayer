@@ -17,8 +17,7 @@ public class ASUtils {
 
 	/* ICONS FOR LIST IN NAVIGATION DRAWER */
 	public static final int[] options_image = { R.drawable.ic_action_home,
-			R.drawable.ic_action_equalizer, R.drawable.ic_action_settings,
-			R.drawable.ic_about };
+			R.drawable.ic_action_equalizer, R.drawable.ic_about };
 
 	private final static String NORMAL_PRESET = "Normal";
 	private final static String CLASSIC_PRESET = "Classic";

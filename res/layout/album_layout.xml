@@ -9,8 +9,10 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
+        android:layout_margin="5dp"
         android:focusable="true"
-        android:numColumns="auto_fit" >
+        android:numColumns="auto_fit"
+        android:padding="5dp" >
     </GridView>
 
 </RelativeLayout>
