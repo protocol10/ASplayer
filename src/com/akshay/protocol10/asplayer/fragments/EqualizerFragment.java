@@ -53,9 +53,6 @@ public class EqualizerFragment extends Fragment implements
 	public void onSaveInstanceState(Bundle outState) {
 		// TODO Auto-generated method stub
 		super.onSaveInstanceState(outState);
-		detailLayout = (LinearLayout) getActivity().findViewById(
-				R.id.nowPlaying);
-		detailLayout.setVisibility(View.GONE);
 	}
 
 	@Override
@@ -64,6 +61,10 @@ public class EqualizerFragment extends Fragment implements
 		// TODO Auto-generated method stub
 		View view = inflater.inflate(R.layout.fragment_equalizer, container,
 				false);
+
+		detailLayout = (LinearLayout) getActivity().findViewById(
+				R.id.nowPlayingMain);
+		detailLayout.setVisibility(View.GONE);
 
 		presestSpinner = (Spinner) view.findViewById(R.id.equalizer_preset);
 		adapter = new ArrayAdapter<String>(getActivity(),

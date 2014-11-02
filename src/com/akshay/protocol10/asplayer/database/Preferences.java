@@ -29,6 +29,13 @@ public class Preferences {
 
 	}
 
+	/**
+	 * STORE THE TITLE, ARTIST, ALBUM TO MANAGE THE ROTATIONAL CHANGES
+	 * 
+	 * @param title
+	 * @param artist
+	 * @param album
+	 */
 	public void setName(String title, String artist, String album) {
 
 		editor.putString(MediaServiceContoller.TITLE_KEY, title);
@@ -37,19 +44,39 @@ public class Preferences {
 		editor.commit();
 	}
 
+	/**
+	 * CHECK FOR DATABASE EXIST. FUTURE UPDATE
+	 * 
+	 * @param check
+	 */
 	public void setDataBase(boolean check) {
 		editor.putBoolean(DATABASE, check);
 		editor.commit();
 	}
 
+	/**
+	 * RETRIEVE THE TITLE
+	 * 
+	 * @return
+	 */
 	public String getTitle() {
 		return settings.getString(MediaServiceContoller.TITLE_KEY, "");
 	}
 
+	/**
+	 * RETRIEVE THE ALBUM
+	 * 
+	 * @return
+	 */
 	public String getAlbum() {
 		return settings.getString(MediaServiceContoller.ALBUM_KEY, "");
 	}
 
+	/**
+	 * RETRIEVE THE ARTIST
+	 * 
+	 * @return
+	 */
 	public String getArtist() {
 		return settings.getString(MediaServiceContoller.ARTIST_KEY, "");
 	}
@@ -58,6 +85,12 @@ public class Preferences {
 		return settings.getBoolean(DATABASE, false);
 	}
 
+	/**
+	 * SET THE CONDITION FOR ENABLE/DISABLE NOW PLAYING WIDGET
+	 * 
+	 * @param condition
+	 *            true/false
+	 */
 	public void updateWidget(boolean condition) {
 		editor.putBoolean(UPDATE_NOWPLAYING, condition).commit();
 	}
@@ -72,11 +105,21 @@ public class Preferences {
 		editor.commit();
 	}
 
+	/**
+	 * IF THE APP STARTS FROM FILE MANAGER STORE THE PATH OF THE FILE
+	 * 
+	 * @param path
+	 */
 	public void setPath(String path) {
 		editor.putString(PATH_KEY, path);
 		editor.commit();
 	}
 
+	/**
+	 * RETRIEVE THE PATH
+	 * 
+	 * @return
+	 */
 	public String getPath() {
 		return settings.getString(PATH_KEY, "/");
 	}
@@ -99,6 +142,12 @@ public class Preferences {
 		return settings.getBoolean(REPEAT, false);
 	}
 
+	/**
+	 * SET THE SHUFFLE PROPERTY
+	 * 
+	 * @param isShuffle
+	 *            true
+	 */
 	public void setShuffle(boolean isShuffle) {
 		editor.putBoolean(SHUFFLE, isShuffle);
 		editor.commit();
@@ -108,10 +157,18 @@ public class Preferences {
 		return settings.getBoolean(SHUFFLE, false);
 	}
 
+	/**
+	 * CLEAR PREFERENCES
+	 */
 	public void clearData() {
 		settings.edit().clear().commit();
 	}
 
+	/**
+	 * SET THE DURATION OF TRACK.
+	 * 
+	 * @param duration
+	 */
 	public void setDuration(int duration) {
 		editor.putInt("duration", duration);
 		editor.commit();

@@ -16,7 +16,6 @@ import com.akshay.protocol10.asplayer.utils.ASUtils;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -82,7 +81,6 @@ public class TracksFragment extends Fragment implements OnItemClickListener {
 				.toString();
 		String artist = tracks_list_data.get(position).get(ASUtils.ARTIST_KEY)
 				.toString();
-		Log.i("ARTIST", "" + artist);
 		long album_id = (Long) tracks_list_data.get(position).get(
 				ASUtils.ALBUM_ART);
 		mcallback.setTag(ASUtils.TRACKS_TAGS);

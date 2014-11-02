@@ -21,6 +21,8 @@ public class ASPlayerWidget extends AppWidgetProvider {
 	public final static String APPWIDGET_PLAY = "com.akshay.protocol10.widget.PLAY";
 	public final static String APPWIDGET_BACK = "com.akshay.protocol10.widget.PREVIOUS";
 	public final static String APPWIDGET_NEXT = "com.akshay.protocol10.widget.NEXT";
+	public final static String APPWIDGET_UPDATE_ICON = "com.akshay.protocol10.widget.ICONS";
+	boolean isPlaying;
 
 	@Override
 	public void onUpdate(Context context, AppWidgetManager appWidgetManager,
@@ -64,12 +66,12 @@ public class ASPlayerWidget extends AppWidgetProvider {
 
 			String title = intent
 					.getStringExtra(MediaServiceContoller.TITLE_KEY);
-			boolean isPlaying = intent.getBooleanExtra(ASUtils.IS_PLAYING,
-					false);
+			isPlaying = intent.getBooleanExtra(ASUtils.IS_PLAYING, false);
 			views.setTextViewText(R.id.title_text, title.toString());
 			views.setImageViewResource(R.id.play_pause,
 					isPlaying ? R.drawable.ic_pause : R.drawable.ic_play);
-		} else if (action.equals(APPWIDGET_UPDATE_COVER)) {
+		}
+		if (action.equals(APPWIDGET_UPDATE_COVER)) {
 			long album_id = intent.getLongExtra(MediaServiceContoller.ALBUM_ID,
 					0);
 			Bitmap bitmap = MediaManager.getAlbumArt(album_id, context);
@@ -77,8 +79,14 @@ public class ASPlayerWidget extends AppWidgetProvider {
 				views.setImageViewBitmap(R.id.cover_art, bitmap);
 			} else {
 				views.setImageViewResource(R.id.cover_art,
-						R.drawable.ic_action_home);
+						R.drawable.ic_launcher);
 			}
+		}
+		if (action.equals(APPWIDGET_UPDATE_ICON)) {
+			isPlaying = intent.getBooleanExtra(ASUtils.IS_PLAYING, false);
+			views.setImageViewResource(R.id.play_pause,
+					isPlaying ? R.drawable.ic_pause : R.drawable.ic_play);
+
 		}
 		ComponentName widget = new ComponentName(context, ASPlayerWidget.class);
 		AppWidgetManager manager = AppWidgetManager.getInstance(context);

@@ -341,7 +341,7 @@ public class ControlsFragments extends Fragment implements OnClickListener,
 	public void onDestroyView() {
 		// TODO Auto-generated method stub
 		super.onDestroyView();
-		preferences.updateWidget(true);
+		preferences.updateWidget(preferences.getNowPlaying());
 	}
 
 }

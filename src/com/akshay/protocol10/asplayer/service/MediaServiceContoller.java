@@ -39,6 +39,7 @@ import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.widget.RemoteViews;
+import android.widget.Toast;
 
 public class MediaServiceContoller extends Service implements
 		OnCompletionListener, OnAudioFocusChangeListener {
@@ -74,6 +75,7 @@ public class MediaServiceContoller extends Service implements
 	public final static String NOTIFY_NEXT = "com.akshay.protocol10.notify.NEXT";
 	public final static String NOTIFY_CLOSE = "com.akshay.protocol10.notify.CLOSE";
 	public final static String NOTIFY_BACK = "com.akshay.protocol10.notify.BACK";
+	public final static String APPWIDGET_UPDATE_ICON = "com.akshay.protocol10.widget.ICONS";
 
 	public final static String NOTIFICATION_ACTION = "com.akshay.protocol10.NOTIFICATION";
 
@@ -102,6 +104,7 @@ public class MediaServiceContoller extends Service implements
 	RemoteViews remoteViews;
 	NotificationManager notifiactioManager;
 	Notification notification;
+	boolean isForeground;
 	// mBinder object which is responsible for interacting with client.
 	private final IBinder mbinder = new MediaBinder();
 
@@ -191,7 +194,7 @@ public class MediaServiceContoller extends Service implements
 			mediaplayer.prepare();
 			mediaplayer.setOnCompletionListener(this);
 			mediaplayer.start();
-
+			preferences.updateWidget(true);
 			updatewidget(this);
 			setUpHandlers();
 			updateView();
@@ -243,12 +246,51 @@ public class MediaServiceContoller extends Service implements
 			} else {
 				mediaplayer.start();
 				isPLaying = true;
+				if (!preferences.getNowPlaying()) {
+					preferences.updateWidget(true);
+					startForeground(ASUtils.NOTIFICATION_ID, notification);
+				} else {
+				}
 			}
+			controlBroadCast();
+			widgetBroadCast();
 
-			Intent i = new Intent(CONTROL_PLAY);
-			i.putExtra(ASUtils.IS_PLAYING, isPLaying);
-			sendBroadcast(i);
+			updateNotification();
 		}
+	}
+
+	/**
+	 * Update the notifications
+	 */
+	private void updateNotification() {
+		// TODO Auto-generated method stub
+		remoteViews.setImageViewResource(R.id.notify_pause, mediaplayer
+				.isPlaying() ? R.drawable.ic_notifypause
+				: R.drawable.ic_notifyplay);
+		/* Use to update the icon for pause button. weird android bug */
+		notifiactioManager.notify(ASUtils.NOTIFICATION_ID, notification);
+	}
+
+	/**
+	 * update the icons in appwidget
+	 * */
+	private void widgetBroadCast() {
+		// TODO Auto-generated method stub
+		intent = new Intent();
+		intent.setClassName(PACKAGE_NAME, CLASS_NAME);
+		intent.setAction(APPWIDGET_UPDATE_ICON);
+		intent.putExtra(ASUtils.IS_PLAYING, isPLaying);
+		sendBroadcast(intent);
+	}
+
+	/**
+	 * update the icons in controls widget
+	 */
+	private void controlBroadCast() {
+		// TODO Auto-generated method stub
+		intent = new Intent(CONTROL_PLAY);
+		intent.putExtra(ASUtils.IS_PLAYING, isPLaying);
+		sendBroadcast(intent);
 	}
 
 	public void nextSong() {
@@ -314,23 +356,26 @@ public class MediaServiceContoller extends Service implements
 			}
 			/* BroadCastReciever Action for TELEPHONE STATE */
 			if (action.equals(ASPlayer.CALL_ENDED_INTENT) && wasPlaying) {
-				mediaplayer.start();
+				if (mediaplayer != null) {
+					mediaplayer.start();
+				}
+
 			}
 			if (action.equals(APPWIDGET_INIT)) {
 				updatewidget(context);
 			}
 
 			if (action.equals(APPWIDGET_PLAY)) {
-				if (mediaplayer.isPlaying())
-					mediaplayer.pause();
-				else if (!mediaplayer.isPlaying()) {
-					mediaplayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-					mediaplayer.start();
-					remoteViews.setImageViewResource(R.id.notify_pause,
-							isPLaying ? R.drawable.ic_notifypause
-									: R.drawable.ic_notifyplay);
-				}
+
+				// if (mediaplayer.isPlaying()) mediaplayer.pause(); else if
+				// (!mediaplayer.isPlaying()) {
+				// mediaplayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+				// mediaplayer.start();
+				// remoteViews.setImageViewResource(R.id.notify_pause, isPLaying
+				// ? R.drawable.ic_notifypause : R.drawable.ic_notifyplay); }
+
 				pauseSong();
+
 			}
 			if (action.equals(Intent.ACTION_HEADSET_PLUG)) {
 
@@ -358,21 +403,20 @@ public class MediaServiceContoller extends Service implements
 			}
 			if (action.equals(NOTIFY_CLOSE)) {
 				stopForeground(true);
+				isForeground = false;
 				if (mediaplayer.isPlaying()) {
 					pauseSong();
+					preferences.updateWidget(false);
 				}
 				NotificationManager notificationManager = (NotificationManager) getApplicationContext()
 						.getSystemService(NOTIFICATION_SERVICE);
 				notificationManager.cancel(ASUtils.NOTIFICATION_ID);
+				Intent i = new Intent(CONTROL_PLAY);
+				i.putExtra(ASUtils.IS_PLAYING, mediaplayer.isPlaying());
+				sendBroadcast(i);
 			}
 			if (action.equals(NOTIFY_PAUSE)) {
 				pauseSong();
-				remoteViews.setImageViewResource(R.id.notify_pause, mediaplayer
-						.isPlaying() ? R.drawable.ic_notifypause
-						: R.drawable.ic_notifyplay);
-				/* Use to update the icon for pause button. weird android bug */
-				notifiactioManager
-						.notify(ASUtils.NOTIFICATION_ID, notification);
 			}
 		}
 	};
@@ -396,8 +440,10 @@ public class MediaServiceContoller extends Service implements
 		intent = new Intent();
 		intent.setClassName(PACKAGE_NAME, CLASS_NAME);
 		intent.setAction(APPWIDGET_UPDATE_COVER);
-		if (wasPlaying) {
+		if (mediaplayer != null) {
 			intent.putExtra(ALBUM_ID, album_id());
+		} else {
+
 		}
 		sendBroadcast(intent);
 	}
@@ -408,10 +454,16 @@ public class MediaServiceContoller extends Service implements
 		intent = new Intent();
 		intent.setClassName(PACKAGE_NAME, CLASS_NAME);
 		intent.setAction(APPWIDGET_UPDATE_TEXT);
-		if (wasPlaying) {
-			intent.putExtra(TITLE_KEY, getTitle());
-			intent.putExtra(ASUtils.IS_PLAYING, mediaplayer.isPlaying());
+		if (mediaplayer != null) {
+			if (mediaplayer.isPlaying()) {
+				Toast.makeText(getApplicationContext(),
+						"is Playing " + isPLaying, Toast.LENGTH_SHORT).show();
+				intent.putExtra(TITLE_KEY, getTitle());
+				intent.putExtra(ASUtils.IS_PLAYING, mediaplayer.isPlaying());
+			}
 		} else {
+			Toast.makeText(getApplicationContext(),
+					"is else Playing " + isPLaying, Toast.LENGTH_SHORT).show();
 			intent.putExtra(TITLE_KEY, context.getString(R.string.title));
 		}
 
@@ -529,11 +581,14 @@ public class MediaServiceContoller extends Service implements
 				PendingIntent.FLAG_UPDATE_CURRENT);
 		builder.setContentIntent(pendingIntent);
 		notification = builder.build();
+		notification.contentView = remoteViews;
+		notification.flags |= Notification.FLAG_ONGOING_EVENT;
 		notifiactioManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 		notifiactioManager.notify(ASUtils.NOTIFICATION_ID, notification);
 
 		startService(new Intent(this, MediaServiceContoller.class));
 		startForeground(ASUtils.NOTIFICATION_ID, notification);
+		isForeground = true;
 	}
 
 	/**
@@ -636,7 +691,8 @@ public class MediaServiceContoller extends Service implements
 	 * @param path
 	 */
 	public void playFromPath(String path) {
-
+		media_list.clear();
+		media_list = manager.retriveContent(this);
 		try {
 			for (Map<String, Object> map : media_list) {
 

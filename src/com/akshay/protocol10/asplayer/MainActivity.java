@@ -37,6 +37,7 @@ import android.content.ServiceConnection;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.IBinder;
+
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -80,7 +81,6 @@ public class MainActivity extends ActionBarActivity implements
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-
 		preferences = new Preferences(this);
 
 		drawer_options = ASUtils.options;
@@ -303,16 +303,13 @@ public class MainActivity extends ActionBarActivity implements
 
 	@Override
 	protected void onDestroy() {
-
 		super.onDestroy();
 		doUnbindService();
 		unregisterReceiver(broadcastReceiver);
-		preferences.clearData();
 	}
 
 	@Override
 	protected void onStart() {
-
 		super.onStart();
 		doBindService();
 		registerReceiver(broadcastReceiver, filter);
@@ -321,6 +318,15 @@ public class MainActivity extends ActionBarActivity implements
 	@Override
 	protected void onResume() {
 		super.onResume();
+	}
+
+	@Override
+	protected void onRestart() {
+		// TODO Auto-generated method stub
+		super.onRestart();
+		if (!preferences.getNowPlaying()) {
+			nowPlaying.setVisibility(View.GONE);
+		}
 	}
 
 	/**
@@ -566,10 +572,11 @@ public class MainActivity extends ActionBarActivity implements
 	/**
 	 * Update the NOW-PLAYING WIDGET
 	 * 
-	 * @param title
+	 * @param titleupdateNowPlaying
 	 * @param artist
 	 */
 	private void updateNowPlaying(String title, String artist) {
+
 		preferences.setName(title, artist);
 		titleText.setText(preferences.getTitle().toString());
 		artistText.setText(preferences.getArtist().toString());
