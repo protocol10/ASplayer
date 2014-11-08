@@ -45,7 +45,7 @@
         android:paddingTop="4dp" >
 
         <TextView
-            android:id="@+id/artist_text_view"
+            android:id="@+id/artist_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"

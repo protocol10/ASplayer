@@ -86,7 +86,7 @@ public class TrackAdapters extends ArrayAdapter<HashMap<String, Object>> {
 			album_text_view = (TextView) view
 					.findViewById(R.id.album_text_view);
 			artist__text_view = (TextView) view
-					.findViewById(R.id.artist_text_view);
+					.findViewById(R.id.artist_name);
 		}
 	}
 
