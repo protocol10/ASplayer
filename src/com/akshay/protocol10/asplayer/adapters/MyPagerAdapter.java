@@ -3,7 +3,7 @@ package com.akshay.protocol10.asplayer.adapters;
 /**
  * @author akshay
  */
-import com.akshay.protocol10.asplayer.fragments.Albums;
+import com.akshay.protocol10.asplayer.fragments.AlbumsFragment;
 import com.akshay.protocol10.asplayer.fragments.ArtistFragment;
 import com.akshay.protocol10.asplayer.fragments.GenreFragment;
 import com.akshay.protocol10.asplayer.fragments.TracksFragment;
@@ -32,7 +32,7 @@ public class MyPagerAdapter extends FragmentPagerAdapter {
 		// TODO Auto-generated method stub
 		Fragment fragment = null;
 		if (index == 0) {
-			fragment = new Albums();
+			fragment = new AlbumsFragment();
 		} else if (index == 1) {
 			fragment = new ArtistFragment();
 		} else if (index == 2) {

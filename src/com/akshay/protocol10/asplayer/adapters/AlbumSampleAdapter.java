@@ -48,7 +48,7 @@ public class AlbumSampleAdapter extends ArrayAdapter<HashMap<String, Object>> {
 		if (view == null) {
 			LayoutInflater inflater = (LayoutInflater) context
 					.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-			view = inflater.inflate(R.layout.album_new_row, parent, false);
+			view = inflater.inflate(R.layout.album_row, parent, false);
 			holder = new AlbumHolder(view);
 			view.setTag(holder);
 

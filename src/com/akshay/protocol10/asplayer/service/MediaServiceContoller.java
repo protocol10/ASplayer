@@ -147,7 +147,7 @@ public class MediaServiceContoller extends Service implements
 		filter.addAction(NOTIFY_NEXT);
 		filter.addAction(NOTIFY_BACK);
 		registerReceiver(receiver, filter);
-		remoteViews = new RemoteViews(getPackageName(), R.layout.as_widget_main);
+		remoteViews = new RemoteViews(getPackageName(), R.layout.player_notification);
 		notification = new Notification();
 	}
 

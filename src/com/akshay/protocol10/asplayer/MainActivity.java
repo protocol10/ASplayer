@@ -13,14 +13,15 @@ import com.akshay.protocol10.asplayer.database.MediaManager;
 import com.akshay.protocol10.asplayer.database.Preferences;
 import com.akshay.protocol10.asplayer.fragments.AboutFragment;
 import com.akshay.protocol10.asplayer.fragments.AlbumSongsFragment;
-import com.akshay.protocol10.asplayer.fragments.ArtistAlbum;
+import com.akshay.protocol10.asplayer.fragments.ArtistAlbumFragments;
 import com.akshay.protocol10.asplayer.fragments.ControlsFragments;
 import com.akshay.protocol10.asplayer.fragments.EqualizerFragment;
-import com.akshay.protocol10.asplayer.fragments.GenreAlbums;
-import com.akshay.protocol10.asplayer.fragments.PageSlider;
+import com.akshay.protocol10.asplayer.fragments.GenreAlbumsFragment;
+import com.akshay.protocol10.asplayer.fragments.PageSliderFragment;
 import com.akshay.protocol10.asplayer.service.MediaServiceContoller;
 import com.akshay.protocol10.asplayer.service.MediaServiceContoller.MediaBinder;
 import com.akshay.protocol10.asplayer.utils.ASUtils;
+import com.akshay.protocol10.asplayer.widget.SlidingUpPanelLayout;
 
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
@@ -35,21 +36,26 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
-
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.SeekBar;
+import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 
 public class MainActivity extends ActionBarActivity implements
-		OnItemClickListener, onItemSelected, OnClickListener {
+		OnItemClickListener, onItemSelected, OnClickListener,
+		OnSeekBarChangeListener {
 
 	boolean isBound, visible;
 	String name, artist, album;
@@ -59,8 +65,9 @@ public class MainActivity extends ActionBarActivity implements
 
 	DrawerLayout drawer_layout;
 	ListView list_view;
-
+	boolean isShuffle, isRepeat;
 	ActionBarDrawerToggle drawer_toggle;
+	SlidingUpPanelLayout slidingUpPanelLayout;
 	DrawerAdapter drawerAdapter;
 
 	MediaServiceContoller serviceController;
@@ -71,8 +78,10 @@ public class MainActivity extends ActionBarActivity implements
 	Preferences preferences;
 	ControlsFragments controlsFragments;
 	LinearLayout nowPlaying, detailLayout;
-	TextView titleText, artistText;
-	ImageButton previous, play, next;
+	TextView titleText, artistText, currentTime, totalTime;
+	ImageView albumArtImage;
+	ImageView previousBtn, nextBtn, playBtn, repeatBtn, shuffleBtn;
+	SeekBar slideSeekbar;
 	String path;
 
 	private static final String SEEKKEY = "seekpos";
@@ -86,24 +95,34 @@ public class MainActivity extends ActionBarActivity implements
 		drawer_options = ASUtils.options;
 		list_view = (ListView) findViewById(R.id.list_drawer_view);
 		drawer_layout = (DrawerLayout) findViewById(R.id.drawer);
-		nowPlaying = (LinearLayout) findViewById(R.id.nowPlayingMain);
 
+		/* Slide-Up Panel View Initialization */
+		slidingUpPanelLayout = (SlidingUpPanelLayout) findViewById(R.id.sliding_layout);
+		titleText = (TextView) findViewById(R.id.slide_title);
+		artistText = (TextView) findViewById(R.id.slide_artist);
+		currentTime = (TextView) findViewById(R.id.slide_currenttime);
+		totalTime = (TextView) findViewById(R.id.slide_totalduration);
+		albumArtImage = (ImageView) findViewById(R.id.slide_art);
+
+		playBtn = (ImageView) findViewById(R.id.slide_play);
+		nextBtn = (ImageView) findViewById(R.id.slide_next);
+		previousBtn = (ImageView) findViewById(R.id.slide_previous);
+		repeatBtn = (ImageView) findViewById(R.id.slide_repeat);
+		shuffleBtn = (ImageView) findViewById(R.id.slide_shuffle);
+
+		slideSeekbar = (SeekBar) findViewById(R.id.slide_progress);
+
+		playBtn.setOnClickListener(this);
+		nextBtn.setOnClickListener(this);
+		previousBtn.setOnClickListener(this);
+		repeatBtn.setOnClickListener(this);
+		shuffleBtn.setOnClickListener(this);
+		slideSeekbar.setOnSeekBarChangeListener(this);
 		if (!preferences.getNowPlaying()) {
-			nowPlaying.setVisibility(View.GONE);
+			slidingUpPanelLayout.hidePanel();
 		}
-		titleText = (TextView) findViewById(R.id.title);
-		artistText = (TextView) findViewById(R.id.artist);
-
-		previous = (ImageButton) findViewById(R.id.previous);
-		play = (ImageButton) findViewById(R.id.play_pause);
-		next = (ImageButton) findViewById(R.id.next);
 
 		detailLayout = (LinearLayout) findViewById(R.id.detail_layout);
-
-		play.setOnClickListener(this);
-		next.setOnClickListener(this);
-		previous.setOnClickListener(this);
-		detailLayout.setOnClickListener(this);
 
 		manager = new MediaManager();
 		controlsFragments = new ControlsFragments();
@@ -142,18 +161,16 @@ public class MainActivity extends ActionBarActivity implements
 		getSupportActionBar().setHomeButtonEnabled(true);
 
 		if (savedInstanceState == null) {
-			fragment = new PageSlider();
+			fragment = new PageSliderFragment();
 			this.fragment.setRetainInstance(true);
 			FragmentManager manager = getSupportFragmentManager();
 			manager.beginTransaction()
 					.replace(R.id.content, fragment, ASUtils.PAGE_SLIDER_TAG)
 					.commit();
-			titleText.setText(preferences.getTitle());
-			artistText.setText(preferences.getArtist());
+
 		} else {
 			titleText.setText(preferences.getTitle());
 			artistText.setText(preferences.getArtist());
-			nowPlaying.setVisibility(View.VISIBLE);
 		}
 
 		// IntentFilter for BroadCastReceiver
@@ -183,9 +200,9 @@ public class MainActivity extends ActionBarActivity implements
 					&& action != null) {
 				boolean check = intent.getBooleanExtra("playing", false);
 				if (check)
-					play.setImageResource(R.drawable.ic_pause);
+					playBtn.setImageResource(R.drawable.ic_pause);
 				else
-					play.setImageResource(R.drawable.ic_play);
+					playBtn.setImageResource(R.drawable.ic_play);
 			}
 		}
 	}
@@ -211,13 +228,15 @@ public class MainActivity extends ActionBarActivity implements
 				FragmentManager.POP_BACK_STACK_INCLUSIVE);
 		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 		Fragment f = null;
+
 		if (select_fragments.equals("Home")) {
-			f = new PageSlider();
+			f = new PageSliderFragment();
 		} else if (select_fragments.equals("Equalizer")) {
 			f = new EqualizerFragment();
 		} else if (select_fragments.equals("About")) {
 			f = new AboutFragment();
 		}
+
 		f.setRetainInstance(true);
 		ft.replace(R.id.content, f, select_fragments).commit();
 		current.setUserVisibleHint(false);
@@ -255,9 +274,7 @@ public class MainActivity extends ActionBarActivity implements
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		// Handle action bar item clicks here. The action bar will
-		// automatically handle clicks on the Home/Up button, so long
-		// as you specify a parent activity in AndroidManifest.xml.
+
 		if (drawer_toggle.onOptionsItemSelected(item))
 			return true;
 
@@ -271,27 +288,16 @@ public class MainActivity extends ActionBarActivity implements
 	@Override
 	public void updateView(String title, String artist, String album,
 			int position, long album_id) {
-		controlsFragments = new ControlsFragments();
-		Bundle args = new Bundle();
-		args.putString("title", title);
-		args.putString("artist", artist);
-		args.putString("album", album);
-		args.putInt("position", position);
-		args.putLong("album_id", album_id);
-		controlsFragments.setArguments(args);
 
-		FragmentTransaction transaction = getSupportFragmentManager()
-				.beginTransaction().replace(R.id.content, controlsFragments,
-						ASUtils.CONTROL_TAG);
-		nowPlaying.setVisibility(View.GONE);
-		transaction.addToBackStack(null);
-		transaction.commit();
+		serviceController.play(position);
+		updateNowPlaying(title, artist);
+		if (slidingUpPanelLayout.isPanelHidden())
+			slidingUpPanelLayout.showPanel();
 	}
 
 	@Override
 	public void updateGenreAlbum(long genreId) {
-		// TODO Auto-generated method stub
-		GenreAlbums fragment = new GenreAlbums();
+		GenreAlbumsFragment fragment = new GenreAlbumsFragment();
 		Bundle bundle = new Bundle();
 		bundle.putLong("genre_id", genreId);
 		fragment.setArguments(bundle);
@@ -322,10 +328,9 @@ public class MainActivity extends ActionBarActivity implements
 
 	@Override
 	protected void onRestart() {
-		// TODO Auto-generated method stub
 		super.onRestart();
 		if (!preferences.getNowPlaying()) {
-			nowPlaying.setVisibility(View.GONE);
+			// nowPlaying.setVisibility(View.GONE);
 		}
 	}
 
@@ -391,7 +396,7 @@ public class MainActivity extends ActionBarActivity implements
 	 */
 	@Override
 	public void selectArtist(long artist_id) {
-		ArtistAlbum fragment = new ArtistAlbum();
+		ArtistAlbumFragments fragment = new ArtistAlbumFragments();
 		Bundle args = new Bundle();
 		args.putLong("artist_id", artist_id);
 		fragment.setArguments(args);
@@ -410,7 +415,6 @@ public class MainActivity extends ActionBarActivity implements
 	 */
 	@Override
 	public void updateArtistAlbum(String name, long id) {
-		// TODO Auto-generated method stub
 		AlbumSongsFragment fragment = new AlbumSongsFragment();
 		Bundle args = new Bundle();
 		args.putString(ASUtils.NAME_KEY, name);
@@ -452,7 +456,6 @@ public class MainActivity extends ActionBarActivity implements
 	 */
 	@Override
 	public void selectPreset(int position) {
-		// TODO Auto-generated method stub
 		serviceController.applyEffect(position);
 	}
 
@@ -528,18 +531,15 @@ public class MainActivity extends ActionBarActivity implements
 				artist = intent
 						.getStringExtra(MediaServiceContoller.ARTIST_KEY);
 
-				updateNowPlaying(name, artist);
-
 				album = intent.getStringExtra(MediaServiceContoller.ALBUM_KEY);
 				long id = intent
 						.getLongExtra(MediaServiceContoller.ALBUM_ID, 0);
 				preferences.setName(name, artist, album);
 				preferences.setId(id);
-				// Check whether fragment is in ONE-PAYNE layout
-				if (controlsFragments != null) {
-
-					controlsFragments.updateView(name, artist, album, id);
-
+				// Check whether Slide-Panel is Hidden.
+				if (!slidingUpPanelLayout.isPanelHidden()) {
+					updateNowPlaying(name, artist);
+					updateAlbumArt();
 				}
 			}
 
@@ -547,30 +547,59 @@ public class MainActivity extends ActionBarActivity implements
 			 * Update the SeekBar from BroadCast Receiver
 			 */
 			if (action.equals(MediaServiceContoller.SEEKBAR_ACTION)) {
-				if (controlsFragments != null) {
+				if (!slidingUpPanelLayout.isPanelHidden()) {
 					int maxDuration = intent.getIntExtra(ASUtils.MAX_DURATION,
 							0);
 					int currentDuration = intent.getIntExtra(
 							ASUtils.CURRENT_POSITION, 0);
-					controlsFragments.updateSeekBar(maxDuration,
-							currentDuration);
+					updateSeekBar(maxDuration, currentDuration);
+
 				}
 			}
 
 			if (action.equals(MediaServiceContoller.CONTROL_PLAY)) {
 				boolean isPlaying = intent.getBooleanExtra(ASUtils.IS_PLAYING,
 						false);
-				if (controlsFragments != null) {
-					controlsFragments.updateIcon(isPlaying);
+
+				if (!slidingUpPanelLayout.isPanelHidden()) {
+					updateAlbumArt();
 				}
 				updateIcon(isPlaying);
 			}
 		}
 
+		private void updateSeekBar(int maxDuration, int progress) {
+			slideSeekbar.setMax(maxDuration);
+			slideSeekbar.setProgress(progress);
+			currentTime.setText(ASUtils.updateText(progress));
+			totalTime.setText(ASUtils.updateText(maxDuration));
+		}
+
+		/**
+		 * Update the Album Art in Sliding Pane Layout
+		 * 
+		 * @param id
+		 */
+		private void updateAlbumArt() {
+			new Handler().post(new Runnable() {
+
+				@Override
+				public void run() {
+					Bitmap bitmap = MediaManager.getAlbumArt(
+							preferences.getId(), getApplicationContext());
+					if (bitmap != null) {
+						albumArtImage.setImageBitmap(bitmap);
+					} else {
+						albumArtImage.setImageResource(R.drawable.ic_album_art);
+					}
+				}
+			});
+		}
+
 	};
 
 	/**
-	 * Update the NOW-PLAYING WIDGET
+	 * Update the SlideUpPanel Widget
 	 * 
 	 * @param titleupdateNowPlaying
 	 * @param artist
@@ -578,40 +607,66 @@ public class MainActivity extends ActionBarActivity implements
 	private void updateNowPlaying(String title, String artist) {
 
 		preferences.setName(title, artist);
-		titleText.setText(preferences.getTitle().toString());
-		artistText.setText(preferences.getArtist().toString());
+		titleText.setText(title.toString());
+		artistText.setText(artist.toString());
 	}
 
 	protected void updateIcon(boolean isPlaying) {
-		// TODO Auto-generated method stub
-		play.setImageResource(isPlaying ? R.drawable.ic_pause
+
+		playBtn.setImageResource(isPlaying ? R.drawable.ic_pause
 				: R.drawable.ic_play);
 	}
 
 	@Override
 	public void onBackPressed() {
-		// TODO Auto-generated method stub
+
 		super.onBackPressed();
 		if (preferences.getNowPlaying()) {
-			if (nowPlaying.getVisibility() != View.VISIBLE) {
-				nowPlaying.setVisibility(View.VISIBLE);
-				visible = true;
+			if (slidingUpPanelLayout.isPanelHidden()) {
+				slidingUpPanelLayout.showPanel();
 			}
 		}
 	}
 
 	@Override
 	public void onClick(View v) {
-		// TODO Auto-generated method stub
+
 		switch (v.getId()) {
-		case R.id.play_pause:
+		case R.id.slide_play:
 			serviceController.pauseSong();
 			break;
-		case R.id.next:
+		case R.id.slide_next:
 			serviceController.nextSong();
 			break;
-		case R.id.previous:
+		case R.id.slide_previous:
 			serviceController.previousSong();
+			break;
+		case R.id.slide_repeat:
+			if (isRepeat) {
+				isRepeat = false;
+				repeatBtn.setImageResource(R.drawable.ic_repeat);
+			} else {
+				isRepeat = true;
+				repeatBtn.setImageResource(R.drawable.ic_repeatstate);
+				shuffleBtn.setImageResource(R.drawable.ic_shuffle);
+				isShuffle = false;
+			}
+			preferences.setRepeat(isRepeat);
+			preferences.setShuffle(isShuffle);
+
+			break;
+		case R.id.slide_shuffle:
+			if (isShuffle) {
+				isShuffle = false;
+				shuffleBtn.setImageResource(R.drawable.ic_shuffle);
+			} else {
+				isShuffle = true;
+				shuffleBtn.setImageResource(R.drawable.ic_shufflestate);
+				repeatBtn.setImageResource(R.drawable.ic_repeat);
+				isRepeat = false;
+			}
+			preferences.setRepeat(isRepeat);
+			preferences.setShuffle(isShuffle);
 			break;
 		case R.id.detail_layout:
 			controlsFragments = new ControlsFragments();
@@ -634,7 +689,24 @@ public class MainActivity extends ActionBarActivity implements
 
 	@Override
 	public void playFromPath(String path) {
-		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void onProgressChanged(SeekBar seekBar, int progress,
+			boolean fromUser) {
+		if (fromUser) {
+			seekTo(progress);
+		}
+	}
+
+	@Override
+	public void onStartTrackingTouch(SeekBar seekBar) {
+
+	}
+
+	@Override
+	public void onStopTrackingTouch(SeekBar seekBar) {
 
 	}
 

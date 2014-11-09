@@ -24,7 +24,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.GridView;
 
-public class Albums extends Fragment implements OnItemClickListener {
+public class AlbumsFragment extends Fragment implements OnItemClickListener {
 
 	View view;
 	List<HashMap<String, Object>> album_list;

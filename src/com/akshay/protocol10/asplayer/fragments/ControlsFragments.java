@@ -78,14 +78,12 @@ public class ControlsFragments extends Fragment implements OnClickListener,
 
 		Bundle bundle = getArguments();
 		if (bundle != null) {
-
 			title_text = bundle.getString(ASUtils.TITLE_KEY);
 			album_text = bundle.getString(ASUtils.ALBUM_KEY);
 			artist_text = bundle.getString(ASUtils.ARTIST_KEY);
 			position = bundle.getInt(ASUtils.POSITION_KEY);
 			album_id = bundle.getLong(ASUtils.ALBUM_ID_KEY);
 			play = bundle.getBoolean("NoPlay");
-
 		}
 
 		if (savedInstanceState == null) {
@@ -245,7 +243,6 @@ public class ControlsFragments extends Fragment implements OnClickListener,
 
 	@Override
 	public void onPause() {
-		// TODO Auto-generated method stub
 		super.onPause();
 	}
 
@@ -279,7 +276,6 @@ public class ControlsFragments extends Fragment implements OnClickListener,
 
 	@Override
 	public void onStopTrackingTouch(SeekBar seekBar) {
-		// TODO Auto-generated method stub
 
 	}
 

@@ -100,4 +100,32 @@ public class ASUtils {
 	public static final String[] PRESET_REVERBS = { REVERB_LARGEHALL,
 			REVERB_LARGEROOM, REVERB_MEDIUMHALL, REVERB_MEDIUMROOM,
 			REVERB_NONE, REVERB_PLATE, REVERB_SMALLROOM };
+
+	/**
+	 * Used for conversion for proper time format
+	 * 
+	 * @param milliseconds
+	 * @return
+	 */
+	public static String updateText(long milliseconds) {
+		String finalTimeString = "";
+		String secondsString = "";
+
+		int hours = (int) (milliseconds / (1000 * 60 * 60));
+		int minutes = (int) ((milliseconds % (1000 * 60 * 60)) / (1000 * 60));
+		int seconds = (int) ((milliseconds % (1000 * 60 * 60)) % (1000 * 60) / 1000);
+
+		if (hours > 0)
+			finalTimeString = hours + ":";
+
+		if (seconds < 10)
+			secondsString = "0" + seconds;
+		else
+			secondsString = "" + seconds;
+
+		finalTimeString = finalTimeString + minutes + ":" + secondsString;
+
+		return finalTimeString;
+	}
+
 }

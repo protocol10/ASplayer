@@ -48,5 +48,6 @@
     <string name="ack">Mr.Abhay Bhave\nMr.Azhar Bandri\nMs.Nupoor Roy</string>
     <string name="note_title">Note*:</string>
     <string name="support">Support this app </string>
+    <string name="image_description">Image Description</string>
 
 </resources>

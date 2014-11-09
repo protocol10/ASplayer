@@ -18,11 +18,11 @@ import com.akshay.protocol10.asplayer.adapters.MyPagerAdapter;
 import com.akshay.protocol10.asplayer.callbacks.onItemSelected;
 import com.astuetz.PagerSlidingTabStrip;
 
-public class PageSlider extends Fragment {
+public class PageSliderFragment extends Fragment {
 
 	onItemSelected mcallBack;
 
-	public PageSlider() {
+	public PageSliderFragment() {
 		// Required empty public constructor
 	}
 
