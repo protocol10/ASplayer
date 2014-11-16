@@ -39,7 +39,6 @@ import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.widget.RemoteViews;
-import android.widget.Toast;
 
 public class MediaServiceContoller extends Service implements
 		OnCompletionListener, OnAudioFocusChangeListener {
@@ -110,13 +109,11 @@ public class MediaServiceContoller extends Service implements
 
 	@Override
 	public IBinder onBind(Intent intent) {
-		// TODO Auto-generated method stubLO
 		return mbinder;
 	}
 
 	@Override
 	public void onCreate() {
-		// TODO Auto-generated method stub
 		super.onCreate();
 		media_list = new ArrayList<HashMap<String, Object>>();
 
@@ -147,19 +144,24 @@ public class MediaServiceContoller extends Service implements
 		filter.addAction(NOTIFY_NEXT);
 		filter.addAction(NOTIFY_BACK);
 		registerReceiver(receiver, filter);
-		remoteViews = new RemoteViews(getPackageName(), R.layout.player_notification);
+		remoteViews = new RemoteViews(getPackageName(),
+				R.layout.player_notification);
 		notification = new Notification();
 	}
 
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
-		// TODO Auto-generated method stub
 		/**
 		 * We want this service to continue until it is explicitly stopped.
 		 */
 		return START_STICKY;
 	}
 
+	/**
+	 * Method to play the media track
+	 *
+	 * @param index
+	 */
 	public void play(int index) {
 
 		checkForDefault();
@@ -204,23 +206,18 @@ public class MediaServiceContoller extends Service implements
 			sendBroadcast(intent);
 
 		} catch (IllegalArgumentException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (SecurityException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IllegalStateException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
 	}
 
 	private void checkForDefault() {
-		// TODO Auto-generated method stub
 		if (getTag() != null && getTag().equals(ASUtils.TRACKS_TAGS)
 				&& !defaultLoaded) {
 			media_list.clear();
@@ -232,10 +229,12 @@ public class MediaServiceContoller extends Service implements
 	}
 
 	private void retriveContent() {
-		// TODO Auto-generated method stub
 		media_list = manager.retriveContent(getApplicationContext());
 	}
 
+	/**
+	 * Method to pause the songs
+	 */
 	public void pauseSong() {
 
 		if (mediaplayer != null) {
@@ -263,7 +262,6 @@ public class MediaServiceContoller extends Service implements
 	 * Update the notifications
 	 */
 	private void updateNotification() {
-		// TODO Auto-generated method stub
 		remoteViews.setImageViewResource(R.id.notify_pause, mediaplayer
 				.isPlaying() ? R.drawable.ic_notifypause
 				: R.drawable.ic_notifyplay);
@@ -275,7 +273,6 @@ public class MediaServiceContoller extends Service implements
 	 * update the icons in appwidget
 	 * */
 	private void widgetBroadCast() {
-		// TODO Auto-generated method stub
 		intent = new Intent();
 		intent.setClassName(PACKAGE_NAME, CLASS_NAME);
 		intent.setAction(APPWIDGET_UPDATE_ICON);
@@ -287,12 +284,14 @@ public class MediaServiceContoller extends Service implements
 	 * update the icons in controls widget
 	 */
 	private void controlBroadCast() {
-		// TODO Auto-generated method stub
 		intent = new Intent(CONTROL_PLAY);
 		intent.putExtra(ASUtils.IS_PLAYING, isPLaying);
 		sendBroadcast(intent);
 	}
 
+	/**
+	 * Method to play the next tracks
+	 */
 	public void nextSong() {
 		if (playBackIndex < (media_list.size() - 1)) {
 			playBackIndex += 1;
@@ -304,6 +303,9 @@ public class MediaServiceContoller extends Service implements
 		}
 	}
 
+	/**
+	 * Method to play the previous track.
+	 */
 	public void previousSong() {
 		if (playBackIndex > 0) {
 			playBackIndex -= 1;
@@ -316,7 +318,7 @@ public class MediaServiceContoller extends Service implements
 
 	/**
 	 * Clear data from list
-	 * 
+	 *
 	 * @param list
 	 */
 	public void setSongs(List<HashMap<String, Object>> list) {
@@ -341,8 +343,8 @@ public class MediaServiceContoller extends Service implements
 
 		@Override
 		public void onReceive(Context context, Intent intent) {
-			// TODO Auto-generated method stub
 			String action = intent.getAction();
+
 			/* BroadCastReciever Action SEEKBAR */
 			if (action.equals(SEEKTO_ACTION)) {
 				int seekTo = intent.getIntExtra("seekpos", 0);
@@ -351,7 +353,7 @@ public class MediaServiceContoller extends Service implements
 			}
 			/* BroadCastReciever Action for INCOMING CALL */
 			if (action.equals(ASPlayer.INCOMING_CALL_INTENT)) {
-				if (mediaplayer.isPlaying())
+				if (mediaplayer != null && mediaplayer.isPlaying())
 					mediaplayer.pause();
 			}
 			/* BroadCastReciever Action for TELEPHONE STATE */
@@ -421,22 +423,32 @@ public class MediaServiceContoller extends Service implements
 		}
 	};
 
+	/**
+	 * Method to setup handlers for updating seekbar
+	 */
 	private void setUpHandlers() {
-		// TODO Auto-generated method stub
 		handler.removeCallbacks(sendUpdatesToUI);
 		handler.postDelayed(sendUpdatesToUI, 1000);
 
 	}
 
+	/**
+	 * Method to upadte the ASPlayer widget
+	 *
+	 * @param context
+	 */
 	protected void updatewidget(Context context) {
-		// TODO Auto-generated method stub
 
 		updateWidgetText(context);
 		updateWidgetCover(context);
 	}
 
+	/**
+	 * Method to update the widgetCover
+	 *
+	 * @param context
+	 */
 	private void updateWidgetCover(Context context) {
-		// TODO Auto-generated method stub
 		intent = new Intent();
 		intent.setClassName(PACKAGE_NAME, CLASS_NAME);
 		intent.setAction(APPWIDGET_UPDATE_COVER);
@@ -448,28 +460,32 @@ public class MediaServiceContoller extends Service implements
 		sendBroadcast(intent);
 	}
 
+	/**
+	 * Method to update the shortcut widget
+	 *
+	 * @param context
+	 */
 	private void updateWidgetText(Context context) {
-		// TODO Auto-generated method stub
 
 		intent = new Intent();
 		intent.setClassName(PACKAGE_NAME, CLASS_NAME);
 		intent.setAction(APPWIDGET_UPDATE_TEXT);
 		if (mediaplayer != null) {
 			if (mediaplayer.isPlaying()) {
-				Toast.makeText(getApplicationContext(),
-						"is Playing " + isPLaying, Toast.LENGTH_SHORT).show();
 				intent.putExtra(TITLE_KEY, getTitle());
 				intent.putExtra(ASUtils.IS_PLAYING, mediaplayer.isPlaying());
 			}
 		} else {
-			Toast.makeText(getApplicationContext(),
-					"is else Playing " + isPLaying, Toast.LENGTH_SHORT).show();
 			intent.putExtra(TITLE_KEY, context.getString(R.string.title));
 		}
-
 		sendBroadcast(intent);
 	}
 
+	/**
+	 * method to retrieve the album art id
+	 *
+	 * @return
+	 */
 	private long album_id() {
 		return (Long) media_list.get(playBackIndex).get(ASUtils.ALBUM_ART);
 	}
@@ -478,16 +494,24 @@ public class MediaServiceContoller extends Service implements
 
 		@Override
 		public void run() {
-			// TODO Auto-generated method stub
 			logMediaPosition();
 			handler.postDelayed(this, 1000);
 		}
 	};
 
+	/**
+	 * fetch the title of current playing track1 1 *
+	 *
+	 * @return
+	 */
 	private String getTitle() {
 		return media_list.get(playBackIndex).get(TITLE_KEY).toString();
 	}
 
+	/**
+	 * Method to send progress of the current playing track using broadcast
+	 * event
+	 */
 	private void logMediaPosition() {
 		if (mediaplayer.isPlaying()) {
 			int currentPosition = mediaplayer.getCurrentPosition();
@@ -501,6 +525,7 @@ public class MediaServiceContoller extends Service implements
 	}
 
 	/**
+	 * Method to send broadcast event to update UI and notification
 	 *
 	 * @param title
 	 *            Title of the MediaTrack
@@ -523,6 +548,14 @@ public class MediaServiceContoller extends Service implements
 		showNotification(title, album, artist, album_id);
 	}
 
+	/**
+	 * Method to display current Playing track in Notification
+	 *
+	 * @param title
+	 * @param album
+	 * @param artist
+	 * @param id
+	 */
 	private void showNotification(String title, String album, String artist,
 			long id) {
 
@@ -593,12 +626,11 @@ public class MediaServiceContoller extends Service implements
 
 	/**
 	 * Fetch the album art thubmnail
-	 * 
+	 *
 	 * @param id
 	 * @return
 	 */
 	private Bitmap getCover(long id) {
-		// TODO Auto-generated method stub
 		Bitmap bitmap = MediaManager.getAlbumArt(id, getApplicationContext());
 
 		if (bitmap == null)
@@ -610,7 +642,6 @@ public class MediaServiceContoller extends Service implements
 
 	@Override
 	public void onDestroy() {
-		// TODO Auto-generated method stub
 		super.onDestroy();
 		handler.removeCallbacks(sendUpdatesToUI);
 		unregisterReceiver(receiver);
@@ -620,7 +651,7 @@ public class MediaServiceContoller extends Service implements
 	}
 
 	/**
-	 * 
+	 *
 	 * @author akshay Class for the client to access. Because Service runs in
 	 *         the same process
 	 *
@@ -634,7 +665,6 @@ public class MediaServiceContoller extends Service implements
 
 	@Override
 	public void onCompletion(MediaPlayer mp) {
-		// TODO Auto-generated method stub
 		isRepeat = preferences.getRepeat();
 		isShuffle = preferences.getShuffle();
 		if (isRepeat) {
@@ -650,7 +680,6 @@ public class MediaServiceContoller extends Service implements
 
 	@Override
 	public void onAudioFocusChange(int focusChange) {
-		// TODO Auto-generated method stub
 		switch (focusChange) {
 		case AudioManager.AUDIOFOCUS_GAIN:
 			if (mediaplayer != null) {
@@ -687,7 +716,7 @@ public class MediaServiceContoller extends Service implements
 
 	/**
 	 * Fetch the index of the tracks that belongs to path
-	 * 
+	 *
 	 * @param path
 	 */
 	public void playFromPath(String path) {
@@ -705,11 +734,15 @@ public class MediaServiceContoller extends Service implements
 				}
 			}
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 
+	/**
+	 * Apply the specific PresetReverb
+	 *
+	 * @param position
+	 */
 	public void applyReverb(int position) {
 
 		if (reverb != null) {
@@ -747,7 +780,7 @@ public class MediaServiceContoller extends Service implements
 
 	/**
 	 * Temporary fix for equalizer.More finetunning in next update
-	 * 
+	 *
 	 * @param pos
 	 */
 	public void applyEffect(int pos) {
@@ -849,6 +882,15 @@ public class MediaServiceContoller extends Service implements
 		equalizer.usePreset((short) preset);
 	}
 
+	/**
+	 * set band frequency for specific band
+	 *
+	 * @param band1
+	 * @param band2
+	 * @param band3
+	 * @param band4
+	 * @param band5
+	 */
 	private void applyPreset(int band1, int band2, int band3, int band4,
 			int band5) {
 		equalizer.setBandLevel((short) 0, (short) band1);
@@ -857,6 +899,13 @@ public class MediaServiceContoller extends Service implements
 		equalizer.setBandLevel((short) 3, (short) band4);
 		equalizer.setBandLevel((short) 4, (short) band5);
 	}
+
+	/**
+	 * Method to appy User defined Equalizer effects
+	 *
+	 * @param band
+	 * @param level
+	 */
 
 	public void setEqManual(int band, int level) {
 		if (equalizer != null) {
