@@ -12,15 +12,19 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
+import android.widget.RelativeLayout.LayoutParams;
 
 import com.akshay.protocol10.asplayer.R;
 import com.akshay.protocol10.asplayer.adapters.MyPagerAdapter;
 import com.akshay.protocol10.asplayer.callbacks.onItemSelected;
+import com.akshay.protocol10.asplayer.database.Preferences;
 import com.astuetz.PagerSlidingTabStrip;
 
 public class PageSliderFragment extends Fragment {
 
 	onItemSelected mcallBack;
+	RelativeLayout.LayoutParams layoutParams;
 
 	public PageSliderFragment() {
 		// Required empty public constructor
@@ -45,7 +49,12 @@ public class PageSliderFragment extends Fragment {
 		super.onViewCreated(view, savedInstanceState);
 		PagerSlidingTabStrip tab = (PagerSlidingTabStrip) view
 				.findViewById(com.akshay.protocol10.asplayer.R.id.tabs);
+		layoutParams = (LayoutParams) tab.getLayoutParams();
 		tab.setIndicatorColor(Color.parseColor("#0099cc"));
+
+		// work around to show tabs for ACTIONBAR_OVERLAY
+		layoutParams.topMargin = new Preferences(getActivity()).getHeight();
+		tab.setLayoutParams(layoutParams);
 		ViewPager pager = (ViewPager) view
 				.findViewById(com.akshay.protocol10.asplayer.R.id.view_pager);
 		MyPagerAdapter adapter = new MyPagerAdapter(getChildFragmentManager());

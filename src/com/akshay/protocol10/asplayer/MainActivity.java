@@ -6,7 +6,6 @@ package com.akshay.protocol10.asplayer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
 import com.akshay.protocol10.asplayer.adapters.DrawerAdapter;
 import com.akshay.protocol10.asplayer.callbacks.onItemSelected;
 import com.akshay.protocol10.asplayer.database.MediaManager;
@@ -22,13 +21,15 @@ import com.akshay.protocol10.asplayer.service.MediaServiceContoller;
 import com.akshay.protocol10.asplayer.service.MediaServiceContoller.MediaBinder;
 import com.akshay.protocol10.asplayer.utils.ASUtils;
 import com.akshay.protocol10.asplayer.widget.SlidingUpPanelLayout;
-
+import com.nineoldandroids.view.animation.AnimatorProxy;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
+import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -37,14 +38,19 @@ import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -81,15 +87,19 @@ public class MainActivity extends ActionBarActivity implements
 	LinearLayout nowPlaying, detailLayout;
 	TextView titleText, artistText, currentTime, totalTime;
 	ImageView albumArtImage;
-	ImageView previousBtn, nextBtn, playBtn, repeatBtn, shuffleBtn;
+	ImageButton previousBtn, nextBtn, playBtn, repeatBtn, shuffleBtn,
+			playBtnSht;
 	SeekBar slideSeekbar;
 	String path;
 
 	private static final String SEEKKEY = "seekpos";
 
+	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
+		getWindow().requestFeature(Window.FEATURE_ACTION_BAR_OVERLAY);
 		setContentView(R.layout.activity_main);
 		preferences = new Preferences(this);
 
@@ -105,20 +115,51 @@ public class MainActivity extends ActionBarActivity implements
 		totalTime = (TextView) findViewById(R.id.slide_totalduration);
 		albumArtImage = (ImageView) findViewById(R.id.slide_art);
 
-		playBtn = (ImageView) findViewById(R.id.slide_play);
-		nextBtn = (ImageView) findViewById(R.id.slide_next);
-		previousBtn = (ImageView) findViewById(R.id.slide_previous);
-		repeatBtn = (ImageView) findViewById(R.id.slide_repeat);
-		shuffleBtn = (ImageView) findViewById(R.id.slide_shuffle);
-
+		playBtn = (ImageButton) findViewById(R.id.slide_play);
+		nextBtn = (ImageButton) findViewById(R.id.slide_next);
+		previousBtn = (ImageButton) findViewById(R.id.slide_previous);
+		repeatBtn = (ImageButton) findViewById(R.id.slide_repeat);
+		shuffleBtn = (ImageButton) findViewById(R.id.slide_shuffle);
+		playBtnSht = (ImageButton) findViewById(R.id.slide_play_pause);
 		slideSeekbar = (SeekBar) findViewById(R.id.slide_progress);
 
+		preferences.setHeight(getActionBarHeight());
 		playBtn.setOnClickListener(this);
+		playBtnSht.setOnClickListener(this);
 		nextBtn.setOnClickListener(this);
 		previousBtn.setOnClickListener(this);
 		repeatBtn.setOnClickListener(this);
 		shuffleBtn.setOnClickListener(this);
 		slideSeekbar.setOnSeekBarChangeListener(this);
+		slidingUpPanelLayout
+				.setPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
+
+					@Override
+					public void onPanelSlide(View panel, float slideOffset) {
+						setActionBarTranslation(slidingUpPanelLayout
+								.getCurrentParalaxOffset());
+					}
+
+					@Override
+					public void onPanelHidden(View panel) {
+
+					}
+
+					@Override
+					public void onPanelExpanded(View panel) {
+
+					}
+
+					@Override
+					public void onPanelCollapsed(View panel) {
+
+					}
+
+					@Override
+					public void onPanelAnchored(View panel) {
+
+					}
+				});
 
 		if (!preferences.getNowPlaying()) {
 			slidingUpPanelLayout.hidePanel();
@@ -169,11 +210,10 @@ public class MainActivity extends ActionBarActivity implements
 					.replace(R.id.content, fragment, ASUtils.PAGE_SLIDER_TAG)
 					.commit();
 
-		} else {
-			titleText.setText(preferences.getTitle());
-			artistText.setText(preferences.getArtist());
-			updateAlbumArt();
 		}
+		titleText.setText(preferences.getTitle());
+		artistText.setText(preferences.getArtist());
+		updateAlbumArt();
 
 		// IntentFilter for BroadCastReceiver
 		filter = new IntentFilter();
@@ -657,6 +697,9 @@ public class MainActivity extends ActionBarActivity implements
 		case R.id.slide_play:
 			serviceController.pauseSong();
 			break;
+		case R.id.slide_play_pause:
+			serviceController.pauseSong();
+			break;
 		case R.id.slide_next:
 			serviceController.nextSong();
 			break;
@@ -730,6 +773,54 @@ public class MainActivity extends ActionBarActivity implements
 	@Override
 	public void onStopTrackingTouch(SeekBar seekBar) {
 
+	}
+
+	/**
+	 * Method to retrieve the ActionBarHeight
+	 *
+	 * @return
+	 */
+	public int getActionBarHeight() {
+		int actionBarHeight = 0;
+		TypedValue tv = new TypedValue();
+		if (getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true)) {
+			actionBarHeight = TypedValue.complexToDimensionPixelSize(tv.data,
+					getResources().getDisplayMetrics());
+
+		}
+		return actionBarHeight;
+	}
+
+	/**
+	 * Method to hide the action bar, if sliding panel is expanded.
+	 *
+	 * @param y
+	 */
+
+	@SuppressLint("NewApi")
+	public void setActionBarTranslation(float y) {
+		// Figure out the actionbar height
+		int actionBarHeight = getActionBarHeight();
+
+		// A hack to add the translation to the action bar
+		ViewGroup content = ((ViewGroup) findViewById(android.R.id.content)
+				.getParent());
+		int children = content.getChildCount();
+		for (int i = 0; i < children; i++) {
+			View child = content.getChildAt(i);
+			if (child.getId() != android.R.id.content) {
+				if (y <= -actionBarHeight) {
+					child.setVisibility(View.GONE);
+				} else {
+					child.setVisibility(View.VISIBLE);
+					if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+						child.setTranslationY(y);
+					} else {
+						AnimatorProxy.wrap(child).setTranslationY(y);
+					}
+				}
+			}
+		}
 	}
 
 }

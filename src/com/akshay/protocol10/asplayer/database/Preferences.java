@@ -203,4 +203,13 @@ public class Preferences {
 	public int getDuration() {
 		return settings.getInt("duration", 0);
 	}
+
+	public void setHeight(int height) {
+		editor.putInt("height", height);
+		editor.commit();
+	}
+
+	public int getHeight() {
+		return settings.getInt("height", 0);
+	}
 }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent" >
+    android:layout_height="match_parent" >
 
     <ImageView
         android:id="@+id/slide_art"
@@ -52,7 +52,7 @@
             android:layout_margin="4dp"
             android:orientation="horizontal" >
 
-            <ImageView
+            <ImageButton
                 android:id="@+id/slide_repeat"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -61,7 +61,7 @@
                 android:contentDescription="@string/image_description"
                 android:src="@drawable/ic_repeat" />
 
-            <ImageView
+            <ImageButton
                 android:id="@+id/slide_previous"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -70,7 +70,7 @@
                 android:contentDescription="@string/image_description"
                 android:src="@drawable/ic_back" />
 
-            <ImageView
+            <ImageButton
                 android:id="@+id/slide_play"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -79,7 +79,7 @@
                 android:contentDescription="@string/image_description"
                 android:src="@drawable/ic_pause" />
 
-            <ImageView
+            <ImageButton
                 android:id="@+id/slide_next"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -88,7 +88,7 @@
                 android:contentDescription="@string/image_description"
                 android:src="@drawable/ic_forward" />
 
-            <ImageView
+            <ImageButton
                 android:id="@+id/slide_shuffle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"

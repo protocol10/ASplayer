@@ -54,7 +54,7 @@
             android:layout_margin="8dp"
             android:orientation="horizontal" >
 
-            <ImageView
+            <ImageButton
                 android:id="@+id/slide_repeat"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -63,7 +63,7 @@
                 android:contentDescription="@string/image_description"
                 android:src="@drawable/ic_repeat" />
 
-            <ImageView
+            <ImageButton
                 android:id="@+id/slide_previous"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -72,7 +72,7 @@
                 android:contentDescription="@string/image_description"
                 android:src="@drawable/ic_back" />
 
-            <ImageView
+            <ImageButton
                 android:id="@+id/slide_play"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -81,7 +81,7 @@
                 android:contentDescription="@string/image_description"
                 android:src="@drawable/ic_play" />
 
-            <ImageView
+            <ImageButton
                 android:id="@+id/slide_next"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -90,7 +90,7 @@
                 android:contentDescription="@string/image_description"
                 android:src="@drawable/ic_forward" />
 
-            <ImageView
+            <ImageButton
                 android:id="@+id/slide_shuffle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
