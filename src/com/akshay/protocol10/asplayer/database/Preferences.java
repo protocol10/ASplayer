@@ -22,7 +22,6 @@ public class Preferences {
 	private static final String SHUFFLE = "isShuffle";
 
 	public Preferences(Context context) {
-		// TODO Auto-generated constructor stub
 		this.context = context;
 		settings = context.getSharedPreferences(PREF_NAME, 0);
 		editor = settings.edit();
@@ -74,7 +73,7 @@ public class Preferences {
 
 	/**
 	 * RETRIEVE THE ARTIST
-	 * 
+	 *
 	 * @return
 	 */
 	public String getArtist() {
@@ -87,14 +86,20 @@ public class Preferences {
 
 	/**
 	 * SET THE CONDITION FOR ENABLE/DISABLE NOW PLAYING WIDGET
-	 * 
+	 *
 	 * @param condition
 	 *            true/false
 	 */
 	public void updateWidget(boolean condition) {
 		editor.putBoolean(UPDATE_NOWPLAYING, condition).commit();
+		editor.commit();
 	}
 
+	/**
+	 * Method to check if media player is playing.
+	 *
+	 * @return
+	 */
 	public boolean getNowPlaying() {
 		return settings.getBoolean(UPDATE_NOWPLAYING, false);
 	}
@@ -117,22 +122,38 @@ public class Preferences {
 
 	/**
 	 * RETRIEVE THE PATH
-	 * 
+	 *
 	 * @return
 	 */
 	public String getPath() {
 		return settings.getString(PATH_KEY, "/");
 	}
 
+	/**
+	 * Method to store the album id.
+	 *
+	 * @param id
+	 */
 	public void setId(long id) {
 		editor.putLong(ALBUM_ID, id);
 		editor.commit();
 	}
 
+	/**
+	 * Method to retrieve the album id in order to fetch album art
+	 *
+	 * @return
+	 */
 	public long getId() {
 		return settings.getLong(ALBUM_ID, 0);
 	}
 
+	/**
+	 * 
+	 * Method to set the repeat property
+	 *
+	 * @param isRepeat
+	 */
 	public void setRepeat(boolean isRepeat) {
 		editor.putBoolean(REPEAT, isRepeat);
 		editor.commit();
@@ -144,7 +165,7 @@ public class Preferences {
 
 	/**
 	 * SET THE SHUFFLE PROPERTY
-	 * 
+	 *
 	 * @param isShuffle
 	 *            true
 	 */
@@ -166,7 +187,7 @@ public class Preferences {
 
 	/**
 	 * SET THE DURATION OF TRACK.
-	 * 
+	 *
 	 * @param duration
 	 */
 	public void setDuration(int duration) {
@@ -174,6 +195,11 @@ public class Preferences {
 		editor.commit();
 	}
 
+	/**
+	 * Method to fetch the current duration
+	 *
+	 * @return
+	 */
 	public int getDuration() {
 		return settings.getInt("duration", 0);
 	}

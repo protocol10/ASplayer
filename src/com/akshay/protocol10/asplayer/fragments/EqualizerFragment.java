@@ -6,6 +6,7 @@ package com.akshay.protocol10.asplayer.fragments;
 import com.akshay.protocol10.asplayer.R;
 import com.akshay.protocol10.asplayer.callbacks.onItemSelected;
 import com.akshay.protocol10.asplayer.utils.ASUtils;
+import com.akshay.protocol10.asplayer.widget.SlidingUpPanelLayout;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -16,7 +17,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
-import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.Spinner;
@@ -35,36 +35,30 @@ public class EqualizerFragment extends Fragment implements
 	onItemSelected mcallback;
 	String[] defaultReverbs;
 	int index = 15;
-	LinearLayout detailLayout;
+	SlidingUpPanelLayout panelLayout;
 
 	public EqualizerFragment() {
-		// TODO Auto-generated constructor stub
 		defaultPresets = ASUtils.DEFAULT_PRESETS;
 		defaultReverbs = ASUtils.PRESET_REVERBS;
 	}
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 	}
 
 	@Override
 	public void onSaveInstanceState(Bundle outState) {
-		// TODO Auto-generated method stub
 		super.onSaveInstanceState(outState);
 	}
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		// TODO Auto-generated method stub
+		panelLayout = (SlidingUpPanelLayout) getActivity().findViewById(
+				R.id.sliding_layout);
 		View view = inflater.inflate(R.layout.fragment_equalizer, container,
 				false);
-
-		detailLayout = (LinearLayout) getActivity().findViewById(
-				R.id.nowPlayingMain);
-		detailLayout.setVisibility(View.GONE);
 
 		presestSpinner = (Spinner) view.findViewById(R.id.equalizer_preset);
 		adapter = new ArrayAdapter<String>(getActivity(),
@@ -91,14 +85,12 @@ public class EqualizerFragment extends Fragment implements
 			@Override
 			public void onItemSelected(AdapterView<?> parent, View view,
 					int position, long id) {
-				// TODO Auto-generated method stub
 				selectPreset(position);
 				mcallback.selectPreset(position);
 			}
 
 			@Override
 			public void onNothingSelected(AdapterView<?> parent) {
-				// TODO Auto-generated method stub
 
 			}
 		});
@@ -107,13 +99,11 @@ public class EqualizerFragment extends Fragment implements
 			@Override
 			public void onItemSelected(AdapterView<?> parent, View view,
 					int position, long id) {
-				// TODO Auto-generated method stub
 				mcallback.setPresetReverb(position);
 			}
 
 			@Override
 			public void onNothingSelected(AdapterView<?> parent) {
-				// TODO Auto-generated method stub
 				mcallback.setPresetReverb(5);
 			}
 		});
@@ -122,13 +112,11 @@ public class EqualizerFragment extends Fragment implements
 
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
-		// TODO Auto-generated method stub
 		super.onActivityCreated(savedInstanceState);
 	}
 
 	@Override
 	public void onAttach(Activity activity) {
-		// TODO Auto-generated method stub
 		super.onAttach(activity);
 		mcallback = (onItemSelected) activity;
 	}
@@ -139,7 +127,7 @@ public class EqualizerFragment extends Fragment implements
 	 *            Temporary Fix. Change in method in next update
 	 */
 	private void selectPreset(int position) {
-		// TODO Auto-generated method stub
+
 		switch (position) {
 		case 0:
 			progressBand1 = 18;
@@ -239,7 +227,7 @@ public class EqualizerFragment extends Fragment implements
 
 	private void setBandProgress(int progressBand1, int progressBand2,
 			int progressBand3, int progressBand4, int progressBand5) {
-		// TODO Auto-generated method stub
+
 		frequency1.setProgress(progressBand1);
 		frequency2.setProgress(progressBand2);
 		frequency3.setProgress(progressBand3);
@@ -251,7 +239,7 @@ public class EqualizerFragment extends Fragment implements
 	@Override
 	public void onProgressChanged(SeekBar seekBar, int progress,
 			boolean fromUser) {
-		// TODO Auto-generated method stub
+
 		int value = 0;
 		if (fromUser) {
 			presestSpinner.setSelection(defaultPresets.length - 1);
@@ -284,7 +272,6 @@ public class EqualizerFragment extends Fragment implements
 
 	@Override
 	public void onStartTrackingTouch(SeekBar seekBar) {
-		// TODO Auto-generated method stub
 
 	}
 

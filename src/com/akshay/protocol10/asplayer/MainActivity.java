@@ -40,6 +40,7 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
+import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -65,6 +66,7 @@ public class MainActivity extends ActionBarActivity implements
 	DrawerLayout drawer_layout;
 	ListView list_view;
 	boolean isShuffle, isRepeat;
+
 	ActionBarDrawerToggle drawer_toggle;
 	SlidingUpPanelLayout slidingUpPanelLayout;
 	DrawerAdapter drawerAdapter;
@@ -117,6 +119,7 @@ public class MainActivity extends ActionBarActivity implements
 		repeatBtn.setOnClickListener(this);
 		shuffleBtn.setOnClickListener(this);
 		slideSeekbar.setOnSeekBarChangeListener(this);
+
 		if (!preferences.getNowPlaying()) {
 			slidingUpPanelLayout.hidePanel();
 		}
@@ -149,7 +152,6 @@ public class MainActivity extends ActionBarActivity implements
 			public void onDrawerClosed(View drawerView) {
 
 				super.onDrawerClosed(drawerView);
-				// invalidateOptionsMenu();
 			}
 		};
 		drawer_layout.setDrawerListener(drawer_toggle);
@@ -170,6 +172,7 @@ public class MainActivity extends ActionBarActivity implements
 		} else {
 			titleText.setText(preferences.getTitle());
 			artistText.setText(preferences.getArtist());
+			updateAlbumArt();
 		}
 
 		// IntentFilter for BroadCastReceiver
@@ -329,7 +332,7 @@ public class MainActivity extends ActionBarActivity implements
 	protected void onRestart() {
 		super.onRestart();
 		if (!preferences.getNowPlaying()) {
-			// nowPlaying.setVisibility(View.GONE);
+			slidingUpPanelLayout.hidePanel();
 		}
 	}
 
@@ -471,6 +474,9 @@ public class MainActivity extends ActionBarActivity implements
 
 	}
 
+	/**
+	 * Unbind service
+	 */
 	private void doUnbindService() {
 
 		// Detach our existing connection.
@@ -555,7 +561,9 @@ public class MainActivity extends ActionBarActivity implements
 
 				}
 			}
-
+			/**
+			 * Update the icon
+			 */
 			if (action.equals(MediaServiceContoller.CONTROL_PLAY)) {
 				boolean isPlaying = intent.getBooleanExtra(ASUtils.IS_PLAYING,
 						false);
@@ -567,35 +575,41 @@ public class MainActivity extends ActionBarActivity implements
 			}
 		}
 
-		private void updateSeekBar(int maxDuration, int progress) {
-			slideSeekbar.setMax(maxDuration);
-			slideSeekbar.setProgress(progress);
-			currentTime.setText(ASUtils.updateText(progress));
-			totalTime.setText(ASUtils.updateText(maxDuration));
-		}
-
-		/**
-		 * Update the Album Art in Sliding Pane Layout
-		 * 
-		 * @param id
-		 */
-		private void updateAlbumArt() {
-			new Handler().post(new Runnable() {
-
-				@Override
-				public void run() {
-					Bitmap bitmap = MediaManager.getAlbumArt(
-							preferences.getId(), getApplicationContext());
-					if (bitmap != null) {
-						albumArtImage.setImageBitmap(bitmap);
-					} else {
-						albumArtImage.setImageResource(R.drawable.ic_album_art);
-					}
-				}
-			});
-		}
-
 	};
+
+	/**
+	 * Method to update the SeekBar in SlidingPanelLayout
+	 *
+	 * @param maxDuration
+	 * @param progress
+	 */
+	private void updateSeekBar(int maxDuration, int progress) {
+		slideSeekbar.setMax(maxDuration);
+		slideSeekbar.setProgress(progress);
+		currentTime.setText(ASUtils.updateText(progress));
+		totalTime.setText(ASUtils.updateText(maxDuration));
+	}
+
+	/**
+	 * Update the Album Art in Sliding Pane Layout
+	 *
+	 * @param id
+	 */
+	private void updateAlbumArt() {
+		new Handler().post(new Runnable() {
+
+			@Override
+			public void run() {
+				Bitmap bitmap = MediaManager.getAlbumArt(preferences.getId(),
+						getApplicationContext());
+				if (bitmap != null) {
+					albumArtImage.setImageBitmap(bitmap);
+				} else {
+					albumArtImage.setImageResource(R.drawable.ic_album_art);
+				}
+			}
+		});
+	}
 
 	/**
 	 * Update the SlideUpPanel Widget
@@ -619,12 +633,21 @@ public class MainActivity extends ActionBarActivity implements
 	@Override
 	public void onBackPressed() {
 
-		super.onBackPressed();
+		if (slidingUpPanelLayout != null
+				&& slidingUpPanelLayout.isPanelExpanded()
+				|| slidingUpPanelLayout.isPanelAnchored()) {
+			slidingUpPanelLayout.collapsePanel();
+		} else if (drawer_layout.isDrawerOpen(Gravity.LEFT)) {
+			drawer_layout.closeDrawer(Gravity.LEFT);
+		} else {
+			super.onBackPressed();
+		}
 		if (preferences.getNowPlaying()) {
 			if (slidingUpPanelLayout.isPanelHidden()) {
 				slidingUpPanelLayout.showPanel();
 			}
 		}
+
 	}
 
 	@Override

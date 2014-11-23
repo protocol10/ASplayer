@@ -15,7 +15,7 @@ public class PhoneStateReceiver extends BroadcastReceiver {
 
 	@Override
 	public void onReceive(Context context, Intent intent) {
-		// TODO Auto-generated method stub
+
 		String state = intent.getStringExtra(TelephonyManager.EXTRA_STATE);
 
 		if (state.equals(TelephonyManager.EXTRA_STATE_RINGING)

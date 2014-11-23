@@ -15,13 +15,17 @@ import com.akshay.protocol10.asplayer.MainActivity;
 import com.akshay.protocol10.asplayer.R;
 import com.akshay.protocol10.asplayer.database.MediaManager;
 import com.akshay.protocol10.asplayer.database.Preferences;
+import com.akshay.protocol10.asplayer.receiver.RemoteClientReceiver;
 import com.akshay.protocol10.asplayer.utils.ASUtils;
 
+import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -29,11 +33,15 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.AudioManager;
 import android.media.AudioManager.OnAudioFocusChangeListener;
+import android.media.MediaMetadataRetriever;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
+import android.media.RemoteControlClient;
+import android.media.RemoteControlClient.MetadataEditor;
 import android.media.audiofx.Equalizer;
 import android.media.audiofx.PresetReverb;
 import android.os.Binder;
+import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
@@ -99,10 +107,13 @@ public class MediaServiceContoller extends Service implements
 	IntentFilter filter;
 	Preferences preferences;
 	Random random;
+	RemoteControlClient mRemoteControlClient;
+	ComponentName mediaEventReceiver;
 	PresetReverb reverb;
 	RemoteViews remoteViews;
 	NotificationManager notifiactioManager;
 	Notification notification;
+
 	boolean isForeground;
 	// mBinder object which is responsible for interacting with client.
 	private final IBinder mbinder = new MediaBinder();
@@ -112,18 +123,21 @@ public class MediaServiceContoller extends Service implements
 		return mbinder;
 	}
 
+	@SuppressLint("NewApi")
 	@Override
 	public void onCreate() {
 		super.onCreate();
+
 		media_list = new ArrayList<HashMap<String, Object>>();
 
 		preferences = new Preferences(getApplicationContext());
-
 		manager = new MediaManager();
 
 		media_list = manager.retriveContent(this);
 		random = new Random();
+
 		handler = new Handler();
+
 		// register intents for BroadCast Receivers
 		filter = new IntentFilter();
 		filter.addAction(SEEKBAR_ACTION);
@@ -144,17 +158,37 @@ public class MediaServiceContoller extends Service implements
 		filter.addAction(NOTIFY_NEXT);
 		filter.addAction(NOTIFY_BACK);
 		registerReceiver(receiver, filter);
+
 		remoteViews = new RemoteViews(getPackageName(),
 				R.layout.player_notification);
 		notification = new Notification();
+
+		mediaEventReceiver = new ComponentName(getPackageName(),
+				RemoteClientReceiver.class.getName());
+		audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+		audioManager.registerMediaButtonEventReceiver(mediaEventReceiver);
+		Intent mediaButtonIntent = new Intent(Intent.ACTION_MEDIA_BUTTON);
+		mediaButtonIntent.setComponent(mediaEventReceiver);
+		PendingIntent piIntent = PendingIntent.getBroadcast(
+				getApplicationContext(), 0, mediaButtonIntent, 0);
+
+		mRemoteControlClient = new RemoteControlClient(piIntent);
+
+		int flags = RemoteControlClient.FLAG_KEY_MEDIA_PAUSE
+				| RemoteControlClient.FLAG_KEY_MEDIA_PLAY
+				| RemoteControlClient.FLAG_KEY_MEDIA_NEXT
+				| RemoteControlClient.FLAG_KEY_MEDIA_PREVIOUS;
+		mRemoteControlClient.setTransportControlFlags(flags);
+		audioManager.registerRemoteControlClient(mRemoteControlClient);
 	}
 
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		/**
-		 * We want this service to continue until it is explicitly stopped.
+		 * If the process is killed with no remaining start commands then
+		 * service will be stopped instead of being restarted.
 		 */
-		return START_STICKY;
+		return START_NOT_STICKY;
 	}
 
 	/**
@@ -172,11 +206,7 @@ public class MediaServiceContoller extends Service implements
 			} else {
 				mediaplayer.reset();
 			}
-
-			// obtain the AudioFocus for our app
-			audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-			result = audioManager.requestAudioFocus(this,
-					AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
+			requestAudioFocus();
 			if (equalizer == null) {
 				equalizer = new Equalizer(1, mediaplayer.getAudioSessionId());
 			}
@@ -217,6 +247,14 @@ public class MediaServiceContoller extends Service implements
 
 	}
 
+	private void requestAudioFocus() {
+
+		// obtain the AudioFocus for our app
+		audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+		result = audioManager.requestAudioFocus(this,
+				AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
+	}
+
 	private void checkForDefault() {
 		if (getTag() != null && getTag().equals(ASUtils.TRACKS_TAGS)
 				&& !defaultLoaded) {
@@ -243,6 +281,7 @@ public class MediaServiceContoller extends Service implements
 				wasPlaying = true;
 				isPLaying = false;
 			} else {
+				requestAudioFocus();
 				mediaplayer.start();
 				isPLaying = true;
 				if (!preferences.getNowPlaying()) {
@@ -335,8 +374,28 @@ public class MediaServiceContoller extends Service implements
 		artist_text = media_list.get(playBackIndex).get(ARTIST_KEY).toString();
 		album_text = media_list.get(playBackIndex).get(ALBUM_KEY).toString();
 		album_id = (Long) media_list.get(playBackIndex).get(ASUtils.ALBUM_ART);
+		updateLockScreen(title_text, album_text, album_id);
 		sendBroadCastToView(title_text, album_text, artist_text, album_id);
 		preferences.setDuration(mediaplayer.getDuration());
+	}
+
+	@TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
+	private void updateLockScreen(String title_text, String album_text,
+			long album_id) {
+		if (mRemoteControlClient != null) {
+			mRemoteControlClient
+					.setPlaybackState(mediaplayer.isPlaying() ? RemoteControlClient.PLAYSTATE_PLAYING
+							: RemoteControlClient.PLAYSTATE_PAUSED);
+			RemoteControlClient.MetadataEditor meEditor = mRemoteControlClient
+					.editMetadata(true);
+			meEditor.putString(MediaMetadataRetriever.METADATA_KEY_ALBUM,
+					album_text);
+			meEditor.putString(MediaMetadataRetriever.METADATA_KEY_TITLE,
+					title_text);
+			meEditor.putBitmap(MetadataEditor.BITMAP_KEY_ARTWORK,
+					getCover(album_id));
+			meEditor.apply();
+		}
 	}
 
 	BroadcastReceiver receiver = new BroadcastReceiver() {
@@ -369,13 +428,11 @@ public class MediaServiceContoller extends Service implements
 
 			if (action.equals(APPWIDGET_PLAY)) {
 
-				// if (mediaplayer.isPlaying()) mediaplayer.pause(); else if
-				// (!mediaplayer.isPlaying()) {
-				// mediaplayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-				// mediaplayer.start();
-				// remoteViews.setImageViewResource(R.id.notify_pause, isPLaying
-				// ? R.drawable.ic_notifypause : R.drawable.ic_notifyplay); }
-
+				if (preferences.getNowPlaying()) {
+					pauseSong();
+				} else {
+					play(0);
+				}
 				pauseSong();
 
 			}
@@ -404,11 +461,12 @@ public class MediaServiceContoller extends Service implements
 				previousSong();
 			}
 			if (action.equals(NOTIFY_CLOSE)) {
+				preferences.updateWidget(false);
 				stopForeground(true);
 				isForeground = false;
 				if (mediaplayer.isPlaying()) {
 					pauseSong();
-					preferences.updateWidget(false);
+
 				}
 				NotificationManager notificationManager = (NotificationManager) getApplicationContext()
 						.getSystemService(NOTIFICATION_SERVICE);
@@ -438,7 +496,6 @@ public class MediaServiceContoller extends Service implements
 	 * @param context
 	 */
 	protected void updatewidget(Context context) {
-
 		updateWidgetText(context);
 		updateWidgetCover(context);
 	}
@@ -682,6 +739,7 @@ public class MediaServiceContoller extends Service implements
 	public void onAudioFocusChange(int focusChange) {
 		switch (focusChange) {
 		case AudioManager.AUDIOFOCUS_GAIN:
+
 			if (mediaplayer != null) {
 				mediaplayer.setVolume(1.0f, 1.0f);
 				mediaplayer.start();
@@ -689,14 +747,18 @@ public class MediaServiceContoller extends Service implements
 				mediaplayer = new MediaPlayer();
 			break;
 		case AudioManager.AUDIOFOCUS_LOSS:
-			if (mediaplayer != null)
-				mediaplayer.stop();
+
+			if (mediaplayer != null) {
+				pauseSong();
+			}
 			break;
 		case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
+
 			if (mediaplayer != null)
 				mediaplayer.pause();
 			break;
 		case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
+
 			if (mediaplayer.isPlaying())
 				mediaplayer.setVolume(0.1f, 0.1f);
 			break;
@@ -779,7 +841,7 @@ public class MediaServiceContoller extends Service implements
 	}
 
 	/**
-	 * Temporary fix for equalizer.More finetunning in next update
+	 * Temporary fix for equalizer.More fine tunning in next update
 	 *
 	 * @param pos
 	 */

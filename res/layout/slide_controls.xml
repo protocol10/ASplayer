@@ -9,6 +9,7 @@
         android:layout_height="match_parent"
         android:layout_above="@+id/controls_slide"
         android:contentDescription="@string/album_art"
+        android:scaleType="fitXY"
         android:src="@drawable/ic_album_art" />
 
     <LinearLayout
