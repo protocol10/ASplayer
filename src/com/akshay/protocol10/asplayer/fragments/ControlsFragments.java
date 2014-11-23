@@ -48,7 +48,7 @@ public class ControlsFragments extends Fragment implements OnClickListener,
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-		// TODO Auto-generated method stub
+
 		super.onCreate(savedInstanceState);
 		handler = new Handler();
 		preferences = new Preferences(getActivity());
@@ -57,7 +57,7 @@ public class ControlsFragments extends Fragment implements OnClickListener,
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		// TODO Auto-generated method stub
+
 		view = inflater.inflate(R.layout.controls_fragments, container, false);
 
 		play_button = (ImageButton) view.findViewById(R.id.play_button);
@@ -113,7 +113,7 @@ public class ControlsFragments extends Fragment implements OnClickListener,
 
 	@Override
 	public void onSaveInstanceState(Bundle outState) {
-		// TODO Auto-generated method stub
+
 		super.onSaveInstanceState(outState);
 		outState.putInt(ASUtils.POSITION_KEY, position);
 
@@ -121,13 +121,13 @@ public class ControlsFragments extends Fragment implements OnClickListener,
 
 	@Override
 	public void onStart() {
-		// TODO Auto-generated method stub
+
 		super.onStart();
 
 	}
 
 	private void setUpListeners() {
-		// TODO Auto-generated method stub
+
 		play_button.setOnClickListener(this);
 		next_button.setOnClickListener(this);
 		back_button.setOnClickListener(this);
@@ -138,20 +138,20 @@ public class ControlsFragments extends Fragment implements OnClickListener,
 
 	@Override
 	public void onAttach(Activity activity) {
-		// TODO Auto-generated method stub
+
 		super.onAttach(activity);
 		mCallBack = (onItemSelected) activity;
 	}
 
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
-		// TODO Auto-generated method stub
+
 		super.onActivityCreated(savedInstanceState);
 	}
 
 	@Override
 	public void onClick(View view) {
-		// TODO Auto-generated method stub
+
 		switch (view.getId()) {
 		case R.id.play_button:
 			mCallBack.pausePlayBack();
@@ -218,12 +218,12 @@ public class ControlsFragments extends Fragment implements OnClickListener,
 	}
 
 	private void updateAlbumArt() {
-		// TODO Auto-generated method stub
+
 		handler.post(new Runnable() {
 
 			@Override
 			public void run() {
-				// TODO Auto-generated method stub
+
 				Bitmap bitmap = MediaManager.getAlbumArt(preferences.getId(),
 						getActivity());
 
@@ -237,7 +237,6 @@ public class ControlsFragments extends Fragment implements OnClickListener,
 
 	@Override
 	public void onResume() {
-		// TODO Auto-generated method stub
 		super.onResume();
 	}
 
@@ -248,20 +247,17 @@ public class ControlsFragments extends Fragment implements OnClickListener,
 
 	@Override
 	public void onStop() {
-		// TODO Auto-generated method stub
 		super.onStop();
 	}
 
 	@Override
 	public void onDestroy() {
-		// TODO Auto-generated method stub
 		super.onDestroy();
 	}
 
 	@Override
 	public void onProgressChanged(SeekBar seekBar, int progress,
 			boolean fromUser) {
-		// TODO Auto-generated method stub
 		if (fromUser) {
 			int seekTo = seekBar.getProgress();
 			mCallBack.seekTo(seekTo);
@@ -270,7 +266,6 @@ public class ControlsFragments extends Fragment implements OnClickListener,
 
 	@Override
 	public void onStartTrackingTouch(SeekBar seekBar) {
-		// TODO Auto-generated method stub
 
 	}
 
@@ -335,7 +330,6 @@ public class ControlsFragments extends Fragment implements OnClickListener,
 
 	@Override
 	public void onDestroyView() {
-		// TODO Auto-generated method stub
 		super.onDestroyView();
 		preferences.updateWidget(preferences.getNowPlaying());
 	}

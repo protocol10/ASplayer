@@ -5,6 +5,7 @@ package com.akshay.protocol10.asplayer.fragments;
  */
 import com.akshay.protocol10.asplayer.R;
 import com.akshay.protocol10.asplayer.callbacks.onItemSelected;
+import com.akshay.protocol10.asplayer.database.Preferences;
 import com.akshay.protocol10.asplayer.utils.ASUtils;
 import com.akshay.protocol10.asplayer.widget.SlidingUpPanelLayout;
 
@@ -17,6 +18,9 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
+import android.widget.FrameLayout.LayoutParams;
+import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.Spinner;
@@ -28,7 +32,7 @@ public class EqualizerFragment extends Fragment implements
 
 	ArrayAdapter<String> adapter, reverbAdapter;
 	String[] defaultPresets;
-
+	LinearLayout layout;
 	SeekBar frequency1, frequency2, frequency3, frequency4, frequency5;
 	int progressBand1, progressBand2, progressBand3, progressBand4,
 			progressBand5;
@@ -36,6 +40,7 @@ public class EqualizerFragment extends Fragment implements
 	String[] defaultReverbs;
 	int index = 15;
 	SlidingUpPanelLayout panelLayout;
+	ScrollView.LayoutParams layoutParams;
 
 	public EqualizerFragment() {
 		defaultPresets = ASUtils.DEFAULT_PRESETS;
@@ -59,7 +64,10 @@ public class EqualizerFragment extends Fragment implements
 				R.id.sliding_layout);
 		View view = inflater.inflate(R.layout.fragment_equalizer, container,
 				false);
-
+		layout = (LinearLayout) view.findViewById(R.id.preset_layout);
+		layoutParams = (LayoutParams) layout.getLayoutParams();
+		layoutParams.topMargin = new Preferences(getActivity()).getHeight();
+		layout.setLayoutParams(layoutParams);
 		presestSpinner = (Spinner) view.findViewById(R.id.equalizer_preset);
 		adapter = new ArrayAdapter<String>(getActivity(),
 				android.R.layout.simple_list_item_1, defaultPresets);
@@ -277,7 +285,6 @@ public class EqualizerFragment extends Fragment implements
 
 	@Override
 	public void onStopTrackingTouch(SeekBar seekBar) {
-		// TODO Auto-generated method stub
 
 	}
 

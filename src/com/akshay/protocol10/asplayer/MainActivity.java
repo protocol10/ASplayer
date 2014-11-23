@@ -6,6 +6,7 @@ package com.akshay.protocol10.asplayer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
 import com.akshay.protocol10.asplayer.adapters.DrawerAdapter;
 import com.akshay.protocol10.asplayer.callbacks.onItemSelected;
 import com.akshay.protocol10.asplayer.database.MediaManager;
@@ -22,11 +23,13 @@ import com.akshay.protocol10.asplayer.service.MediaServiceContoller.MediaBinder;
 import com.akshay.protocol10.asplayer.utils.ASUtils;
 import com.akshay.protocol10.asplayer.widget.SlidingUpPanelLayout;
 import com.nineoldandroids.view.animation.AnimatorProxy;
+
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.DrawerLayout.LayoutParams;
 import android.support.v7.app.ActionBarActivity;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
@@ -63,7 +66,7 @@ public class MainActivity extends ActionBarActivity implements
 		OnItemClickListener, onItemSelected, OnClickListener,
 		OnSeekBarChangeListener {
 
-	boolean isBound, visible;
+	boolean isBound, visible, isPlaying;
 	String name, artist, album;
 	String[] drawer_options = {};
 	CharSequence title;
@@ -91,7 +94,7 @@ public class MainActivity extends ActionBarActivity implements
 			playBtnSht;
 	SeekBar slideSeekbar;
 	String path;
-
+	DrawerLayout.LayoutParams layoutParams;
 	private static final String SEEKKEY = "seekpos";
 
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
@@ -123,6 +126,9 @@ public class MainActivity extends ActionBarActivity implements
 		playBtnSht = (ImageButton) findViewById(R.id.slide_play_pause);
 		slideSeekbar = (SeekBar) findViewById(R.id.slide_progress);
 
+		layoutParams = (LayoutParams) list_view.getLayoutParams();
+		layoutParams.topMargin = preferences.getHeight();
+		list_view.setLayoutParams(layoutParams);
 		preferences.setHeight(getActionBarHeight());
 		playBtn.setOnClickListener(this);
 		playBtnSht.setOnClickListener(this);
@@ -214,7 +220,7 @@ public class MainActivity extends ActionBarActivity implements
 		titleText.setText(preferences.getTitle());
 		artistText.setText(preferences.getArtist());
 		updateAlbumArt();
-
+		updateIcon(isPlaying);
 		// IntentFilter for BroadCastReceiver
 		filter = new IntentFilter();
 		filter.addAction(MediaServiceContoller.BROADCAST_ACTION);
@@ -288,28 +294,26 @@ public class MainActivity extends ActionBarActivity implements
 
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
-
 		super.onSaveInstanceState(outState);
+		outState.putBoolean("isPlaying", isPlaying);
 	}
 
 	@Override
 	protected void onRestoreInstanceState(Bundle savedInstanceState) {
-
 		super.onRestoreInstanceState(savedInstanceState);
 		fragment = getSupportFragmentManager().getFragment(savedInstanceState,
 				"view");
+		updateIcon(savedInstanceState.getBoolean("isPlaying"));
 	}
 
 	@Override
 	protected void onPostCreate(Bundle savedInstanceState) {
-
 		super.onPostCreate(savedInstanceState);
 		drawer_toggle.syncState();
 	}
 
 	@Override
 	public void onConfigurationChanged(Configuration newConfig) {
-
 		super.onConfigurationChanged(newConfig);
 		drawer_toggle.onConfigurationChanged(newConfig);
 	}
@@ -665,8 +669,10 @@ public class MainActivity extends ActionBarActivity implements
 	}
 
 	protected void updateIcon(boolean isPlaying) {
-
+		this.isPlaying = isPlaying;
 		playBtn.setImageResource(isPlaying ? R.drawable.ic_pause
+				: R.drawable.ic_play);
+		playBtnSht.setImageResource(isPlaying ? R.drawable.ic_pause
 				: R.drawable.ic_play);
 	}
 
@@ -732,20 +738,6 @@ public class MainActivity extends ActionBarActivity implements
 			}
 			preferences.setRepeat(isRepeat);
 			preferences.setShuffle(isShuffle);
-			break;
-		case R.id.detail_layout:
-			controlsFragments = new ControlsFragments();
-			Bundle bundle = new Bundle();
-			bundle.putBoolean("NoPlay", true);
-			bundle.putString("title", preferences.getTitle());
-			bundle.putString("artist", preferences.getArtist());
-			bundle.putString("album", preferences.getArtist());
-			bundle.putLong(ASUtils.ALBUM_ID_KEY, preferences.getId());
-			controlsFragments.setArguments(bundle);
-			getSupportFragmentManager()
-					.beginTransaction()
-					.replace(R.id.content, controlsFragments,
-							ASUtils.CONTROL_TAG).addToBackStack(null).commit();
 			break;
 		default:
 			break;

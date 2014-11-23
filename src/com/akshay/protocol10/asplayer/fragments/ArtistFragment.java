@@ -75,7 +75,7 @@ public class ArtistFragment extends Fragment implements OnItemClickListener {
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position,
 			long id) {
-		// TODO Auto-generated method stub
+
 		long artist_id = (Long) artist_list.get(position).get("id");
 		mcallBack.selectArtist(artist_id);
 	}

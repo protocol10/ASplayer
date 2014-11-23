@@ -61,7 +61,7 @@
                 android:layout_height="wrap_content"
                 android:background="@null"
                 android:contentDescription="@string/play"
-                android:src="@drawable/ic_play" />
+                android:src="@drawable/ic_pause" />
         </LinearLayout>
     </LinearLayout>
 

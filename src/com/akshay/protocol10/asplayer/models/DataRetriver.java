@@ -4,6 +4,9 @@
  */
 package com.akshay.protocol10.asplayer.models;
 
+/**
+ * This class is not used anyway but if anyone can improve this code, it will be the best thing.
+ */
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
