@@ -17,12 +17,6 @@ Please fork this repository and contribute back using [pull request](https://git
 
 
 ##Version History
-***** v 1.01*****
-* Minor bug fixes
-* New Slide-up Panel for Player Controls
-* Lock Screen Widget
-* Fixed Auto-restart of media player.
-
 ***** v 1.0 *****
 * Release
 
