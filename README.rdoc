@@ -1,4 +1,0 @@
-This is a simple MediaPlayer project based on my graduation project. It provides the 
-support for Audio, Equalizer. If any one interested in contributing to the project 
-are welcome and any changes stated are always welcome.
-

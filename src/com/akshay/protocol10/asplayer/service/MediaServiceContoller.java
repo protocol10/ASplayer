@@ -442,10 +442,10 @@ public class MediaServiceContoller extends Service implements
 
 				if (mediaplayer != null && mediaplayer.isPlaying()
 						&& wasPlaying && state != 0) {
-					mediaplayer.start();
+					pauseSong();
 				} else if (state == 0) {
 					if (mediaplayer != null && mediaplayer.isPlaying())
-						mediaplayer.pause();
+						pauseSong();
 				}
 			}
 			if (action.equals(AudioManager.ACTION_AUDIO_BECOMING_NOISY)) {
