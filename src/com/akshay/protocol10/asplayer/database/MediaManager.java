@@ -78,14 +78,14 @@ public class MediaManager {
 	private static final String[] ARTIST_COLUMNS = { Artists._ID,
 			Artists.ARTIST, Artists.NUMBER_OF_ALBUMS };
 
-	private static final String[] GENRE_COLUMNGS = { Genres._ID, Genres.NAME, };
+	private static final String[] GENRE_COLUMNS = { Genres._ID, Genres.NAME, };
 
 	/**
 	 * Constructor
 	 */
 
 	public MediaManager() {
-		// TODO Auto-generated constructor stub
+
 		tracks_list = new ArrayList<HashMap<String, Object>>();
 		INTERNAL = MediaStore.Audio.Media.INTERNAL_CONTENT_URI;
 		EXTERNAL = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
@@ -227,6 +227,13 @@ public class MediaManager {
 		return artist_list;
 	}
 
+	/**
+	 * Retrieve tracks based on album name.
+	 * 
+	 * @param context
+	 * @param name
+	 * @return
+	 */
 	public List<HashMap<String, Object>> retriveContent(Context context,
 			String name) {
 
@@ -269,6 +276,13 @@ public class MediaManager {
 		return tracks_list;
 	}
 
+	/**
+	 * Retrieve albums based on artist
+	 * 
+	 * @param context
+	 * @param id_album
+	 * @return
+	 */
 	public List<HashMap<String, Object>> retriveArtistContent(Context context,
 			long id_album) {
 
@@ -309,6 +323,14 @@ public class MediaManager {
 		return album_list;
 	}
 
+	/**
+	 * Retrieve tracks based on album name and artist
+	 * 
+	 * @param context
+	 * @param name
+	 * @param id
+	 * @return
+	 */
 	public List<HashMap<String, Object>> retriveTracks(Context context,
 			String name, long id) {
 		List<HashMap<String, Object>> albumSongs = new ArrayList<HashMap<String, Object>>();
@@ -355,10 +377,16 @@ public class MediaManager {
 		return albumSongs;
 	}
 
+	/**
+	 * Retrieve all genre
+	 * 
+	 * @param context
+	 * @return
+	 */
 	public List<HashMap<String, Object>> retriveGenre(Context context) {
 
 		cursor = context.getContentResolver().query(
-				Genres.EXTERNAL_CONTENT_URI, GENRE_COLUMNGS, null, null,
+				Genres.EXTERNAL_CONTENT_URI, GENRE_COLUMNS, null, null,
 				Genres.DEFAULT_SORT_ORDER);
 		if (cursor == null) {
 
@@ -461,8 +489,6 @@ public class MediaManager {
 				bitmap = BitmapFactory.decodeFileDescriptor(fileDescriptor);
 			}
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
 		return bitmap;
 	}

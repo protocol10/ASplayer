@@ -42,7 +42,7 @@ public class TrackAdapters extends ArrayAdapter<HashMap<String, Object>> {
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-		// TODO Auto-generated method stub
+
 		View view = convertView;
 		ViewHolder holder = null;
 		if (view == null) {
@@ -78,15 +78,13 @@ public class TrackAdapters extends ArrayAdapter<HashMap<String, Object>> {
 				duration_text_view;
 
 		public ViewHolder(View view) {
-			// TODO Auto-generated constructor stub
 			title__text_view = (TextView) view
 					.findViewById(R.id.title_text_view);
 			duration_text_view = (TextView) view
 					.findViewById(R.id.duration_text_view);
 			album_text_view = (TextView) view
 					.findViewById(R.id.album_text_view);
-			artist__text_view = (TextView) view
-					.findViewById(R.id.artist_name);
+			artist__text_view = (TextView) view.findViewById(R.id.artist_name);
 		}
 	}
 

@@ -14,7 +14,6 @@ import com.akshay.protocol10.asplayer.database.Preferences;
 import com.akshay.protocol10.asplayer.fragments.AboutFragment;
 import com.akshay.protocol10.asplayer.fragments.AlbumSongsFragment;
 import com.akshay.protocol10.asplayer.fragments.ArtistAlbumFragments;
-import com.akshay.protocol10.asplayer.fragments.ControlsFragments;
 import com.akshay.protocol10.asplayer.fragments.EqualizerFragment;
 import com.akshay.protocol10.asplayer.fragments.GenreAlbumsFragment;
 import com.akshay.protocol10.asplayer.fragments.PageSliderFragment;
@@ -55,8 +54,8 @@ import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
@@ -86,8 +85,7 @@ public class MainActivity extends ActionBarActivity implements
 	IntentFilter filter;
 	Fragment fragment;
 	Preferences preferences;
-	ControlsFragments controlsFragments;
-	LinearLayout nowPlaying, detailLayout;
+
 	TextView titleText, artistText, currentTime, totalTime;
 	ImageView albumArtImage;
 	ImageButton previousBtn, nextBtn, playBtn, repeatBtn, shuffleBtn,
@@ -95,7 +93,10 @@ public class MainActivity extends ActionBarActivity implements
 	SeekBar slideSeekbar;
 	String path;
 	DrawerLayout.LayoutParams layoutParams;
+	int actionBarHeight;
 	private static final String SEEKKEY = "seekpos";
+	private static final String SAVED_STATE_ACTION_BAR_HIDDEN = "saved_state_action_bar_hidden";
+	boolean actionBarHidden;
 
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	@Override
@@ -126,10 +127,13 @@ public class MainActivity extends ActionBarActivity implements
 		playBtnSht = (ImageButton) findViewById(R.id.slide_play_pause);
 		slideSeekbar = (SeekBar) findViewById(R.id.slide_progress);
 
+		actionBarHeight = getActionBarHeight();
+
+		preferences.setHeight(actionBarHeight);
 		layoutParams = (LayoutParams) list_view.getLayoutParams();
 		layoutParams.topMargin = preferences.getHeight();
 		list_view.setLayoutParams(layoutParams);
-		preferences.setHeight(getActionBarHeight());
+
 		playBtn.setOnClickListener(this);
 		playBtnSht.setOnClickListener(this);
 		nextBtn.setOnClickListener(this);
@@ -171,10 +175,8 @@ public class MainActivity extends ActionBarActivity implements
 			slidingUpPanelLayout.hidePanel();
 		}
 
-		detailLayout = (LinearLayout) findViewById(R.id.detail_layout);
-
 		manager = new MediaManager();
-		controlsFragments = new ControlsFragments();
+
 		drawerAdapter = new DrawerAdapter(this, R.layout.drawer_list_row,
 				R.id.option_text, drawer_options);
 
@@ -208,6 +210,14 @@ public class MainActivity extends ActionBarActivity implements
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		getSupportActionBar().setHomeButtonEnabled(true);
 
+		actionBarHidden = savedInstanceState != null
+				&& savedInstanceState.getBoolean(SAVED_STATE_ACTION_BAR_HIDDEN,
+						false);
+		if (actionBarHidden) {
+			actionBarHeight = getActionBarHeight();
+			setActionBarTranslation(-actionBarHeight);// will hide the actionbar
+		}
+
 		if (savedInstanceState == null) {
 			fragment = new PageSliderFragment();
 			this.fragment.setRetainInstance(true);
@@ -228,11 +238,10 @@ public class MainActivity extends ActionBarActivity implements
 		filter.addAction(MediaServiceContoller.CONTROL_PLAY);
 
 		Intent intent = getIntent();
-		// bind service
 
 		if (intent != null) {
 			String action = intent.getAction();
-			// open file fnowPlayingrom file manager and action to check if
+			// open file from file manager and action to check if
 			// blank
 			if (action.equals("android.intent.action.VIEW") && action != null) {
 				path = intent.getData().getPath();
@@ -296,6 +305,8 @@ public class MainActivity extends ActionBarActivity implements
 	protected void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
 		outState.putBoolean("isPlaying", isPlaying);
+		outState.putBoolean(SAVED_STATE_ACTION_BAR_HIDDEN,
+				slidingUpPanelLayout.isPanelExpanded());
 	}
 
 	@Override
@@ -570,8 +581,6 @@ public class MainActivity extends ActionBarActivity implements
 		@Override
 		public void onReceive(Context context, Intent intent) {
 
-			controlsFragments = (ControlsFragments) getSupportFragmentManager()
-					.findFragmentByTag(ASUtils.CONTROL_TAG);
 			String action = intent.getAction();
 
 			if (action.equals(MediaServiceContoller.BROADCAST_ACTION)) {

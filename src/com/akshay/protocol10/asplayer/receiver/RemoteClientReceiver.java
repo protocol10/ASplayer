@@ -25,7 +25,7 @@ public class RemoteClientReceiver extends BroadcastReceiver {
 				return;
 			int keyCode = event.getKeyCode();
 			int keyAction = event.getAction();
-			long eventtime = event.getEventTime();
+
 			switch (keyCode) {
 			case KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE:
 				CMD = MediaServiceContoller.NOTIFY_PAUSE;

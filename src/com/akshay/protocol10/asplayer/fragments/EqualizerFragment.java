@@ -62,6 +62,7 @@ public class EqualizerFragment extends Fragment implements
 			Bundle savedInstanceState) {
 		panelLayout = (SlidingUpPanelLayout) getActivity().findViewById(
 				R.id.sliding_layout);
+		panelLayout.hidePanel();
 		View view = inflater.inflate(R.layout.fragment_equalizer, container,
 				false);
 		layout = (LinearLayout) view.findViewById(R.id.preset_layout);
