@@ -708,9 +708,10 @@ public class MediaServiceContoller extends Service implements
 		wasPlaying = false;
 		preferences.clearData();
 		// release resources
-		mediaplayer.stop();
-		mediaplayer.release();
-
+		if (mediaplayer != null) {
+			mediaplayer.stop();
+			mediaplayer.release();
+		}
 	}
 
 	/**
