@@ -55,7 +55,6 @@ import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
@@ -171,10 +170,6 @@ public class MainActivity extends ActionBarActivity implements
 					}
 				});
 
-		if (!preferences.getNowPlaying()) {
-			slidingUpPanelLayout.hidePanel();
-		}
-
 		manager = new MediaManager();
 
 		drawerAdapter = new DrawerAdapter(this, R.layout.drawer_list_row,
@@ -225,12 +220,18 @@ public class MainActivity extends ActionBarActivity implements
 			manager.beginTransaction()
 					.replace(R.id.content, fragment, ASUtils.PAGE_SLIDER_TAG)
 					.commit();
+			if (!preferences.getNowPlaying()) {
+				slidingUpPanelLayout.hidePanel();
+			}
 
 		}
-		titleText.setText(preferences.getTitle());
-		artistText.setText(preferences.getArtist());
-		updateAlbumArt();
-		updateIcon(isPlaying);
+		if (!slidingUpPanelLayout.isPanelHidden()) {
+			titleText.setText(preferences.getTitle());
+			artistText.setText(preferences.getArtist());
+			totalTime.setText(ASUtils.updateText(preferences.getDuration()));
+			updateAlbumArt();
+			updateIcon(preferences.getNowPlaying());
+		}
 		// IntentFilter for BroadCastReceiver
 		filter = new IntentFilter();
 		filter.addAction(MediaServiceContoller.BROADCAST_ACTION);

@@ -163,6 +163,9 @@ public class MediaServiceContoller extends Service implements
 				R.layout.player_notification);
 		notification = new Notification();
 
+		/**
+		 * RemoteControl for LockScreen Widget
+		 */
 		mediaEventReceiver = new ComponentName(getPackageName(),
 				RemoteClientReceiver.class.getName());
 		audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
@@ -442,7 +445,7 @@ public class MediaServiceContoller extends Service implements
 
 				if (mediaplayer != null && mediaplayer.isPlaying()
 						&& wasPlaying && state != 0) {
-					pauseSong();
+					mediaplayer.start();
 				} else if (state == 0) {
 					if (mediaplayer != null && mediaplayer.isPlaying())
 						pauseSong();
@@ -704,6 +707,9 @@ public class MediaServiceContoller extends Service implements
 		unregisterReceiver(receiver);
 		wasPlaying = false;
 		preferences.clearData();
+		// release resources
+		mediaplayer.stop();
+		mediaplayer.release();
 
 	}
 

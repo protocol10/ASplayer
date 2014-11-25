@@ -31,7 +31,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="start"
-                android:text="@string/current_duration" />
+                android:text="" />
 
             <TextView
                 android:id="@+id/slide_totalduration"
@@ -39,7 +39,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="end"
-                android:text="@string/total_duration" />
+                android:text="" />
         </LinearLayout>
 
         <SeekBar
