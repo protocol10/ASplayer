@@ -60,7 +60,7 @@ public class MediaManager {
 
 	private static final String[] TRACKS_COLUMNS = {
 			MediaStore.Audio.Media._ID, MediaStore.Audio.Media.DATA,
-			MediaStore.Audio.Media.DISPLAY_NAME, MediaStore.Audio.Media.ARTIST,
+			MediaStore.Audio.Media.TITLE, MediaStore.Audio.Media.ARTIST,
 			MediaStore.Audio.Media.ALBUM, MediaStore.Audio.Media.DURATION,
 			MediaStore.Audio.Media.ALBUM_ID, MediaStore.Audio.Media.ARTIST_ID };
 	/**
@@ -105,7 +105,7 @@ public class MediaManager {
 
 		resolver = context.getContentResolver();
 		cursor = resolver.query(EXTERNAL, TRACKS_COLUMNS, selection,
-				selectionArgs, MediaStore.Audio.Media.DISPLAY_NAME);
+				selectionArgs, MediaStore.Audio.Media.TITLE + " asc");
 
 		if (cursor == null)
 			Toast.makeText(context, UNABLE_TAG, Toast.LENGTH_SHORT).show();
@@ -115,14 +115,20 @@ public class MediaManager {
 		} else {
 
 			do {
-				String id = cursor.getString(0); // ID
-				String path = cursor.getString(1);// DATA
-				String title = cursor.getString(2);// TITLE
+				String id = cursor.getString(cursor.getColumnIndex(Media._ID)); // ID
+				String path = cursor.getString(cursor
+						.getColumnIndex(Media.DATA));// DATA
+				String title = cursor.getString(cursor
+						.getColumnIndex(Media.TITLE));// TITLE
 
-				String artist = cursor.getString(3);// ARTIST
-				String album = cursor.getString(4);// ALBUM
-				String duration = cursor.getString(5);// DURATION
-				long album_id = cursor.getLong(6);// ALBUM_ART
+				String artist = cursor.getString(cursor
+						.getColumnIndex(Media.ARTIST));// ARTIST
+				String album = cursor.getString(cursor
+						.getColumnIndex(Media.ALBUM));// ALBUM
+				String duration = cursor.getString(cursor
+						.getColumnIndex(Media.DURATION));// DURATION
+				long album_id = cursor.getLong(cursor
+						.getColumnIndex(Media.ALBUM_ID));// ALBUM_ART
 
 				songs_map = new HashMap<String, Object>();
 				songs_map.put(ID_KEY, id);
@@ -159,7 +165,7 @@ public class MediaManager {
 		resolver = context.getContentResolver();
 
 		cursor = resolver.query(Albums.EXTERNAL_CONTENT_URI, ALBUM_COLUMNS,
-				selection, selectionArgs, null);
+				selection, selectionArgs, Albums.ALBUM + " asc");
 
 		if (cursor == null) {
 			Toast.makeText(context, UNABLE_TAG, Toast.LENGTH_SHORT).show();
@@ -169,9 +175,12 @@ public class MediaManager {
 		} else {
 
 			do {
-				String album_name = cursor.getString(0); // album
-				String id = cursor.getString(1); // id
-				String artist = cursor.getString(2); // artist
+				String album_name = cursor.getString(cursor
+						.getColumnIndex(Albums.ALBUM)); // album
+				String id = cursor.getString(cursor
+						.getColumnIndex(Albums.ALBUM)); // id
+				String artist = cursor.getString(cursor
+						.getColumnIndex(Albums.ARTIST)); // artist
 				String album_art = cursor.getString(cursor
 						.getColumnIndex(Audio.Albums.ALBUM_ART));
 				album = new HashMap<String, Object>();
@@ -201,7 +210,7 @@ public class MediaManager {
 
 		resolver = context.getContentResolver();
 		cursor = resolver.query(Artists.EXTERNAL_CONTENT_URI, ARTIST_COLUMNS,
-				selection, selectionArgs, null);
+				selection, selectionArgs, Artists.ARTIST + " asc");
 
 		if (cursor == null) {
 			Toast.makeText(context, UNABLE_TAG, Toast.LENGTH_SHORT).show();
@@ -211,9 +220,12 @@ public class MediaManager {
 		} else {
 
 			do {
-				long artist_id = cursor.getLong(0); // ARTIST._ID
-				String artist = cursor.getString(1); // Artist.ARTIST
-				String album_count = cursor.getString(2);// Artist.NUMBER_OF_ALBUMS
+				long artist_id = cursor.getLong(cursor
+						.getColumnIndex(Artists._ID)); // ARTIST._ID
+				String artist = cursor.getString(cursor
+						.getColumnIndex(Artists.ARTIST)); // Artist.ARTIST
+				String album_count = cursor.getString(cursor
+						.getColumnIndex(Artists.NUMBER_OF_ALBUMS));// Artist.NUMBER_OF_ALBUMS
 
 				artist_map = new HashMap<String, Object>();
 				artist_map.put(ID_KEY, artist_id);
@@ -242,7 +254,7 @@ public class MediaManager {
 
 		String selectionArgs[] = { name };
 		cursor = resolver.query(EXTERNAL, TRACKS_COLUMNS, selection,
-				selectionArgs, null);
+				selectionArgs, Media.TITLE + " asc");
 
 		if (cursor == null)
 			Toast.makeText(context, UNABLE_TAG, Toast.LENGTH_SHORT).show();
@@ -250,14 +262,20 @@ public class MediaManager {
 			Toast.makeText(context, NOMEDIA_TAG, Toast.LENGTH_SHORT).show();
 		else {
 			do {
-				String id = cursor.getString(0); // ID
-				String path = cursor.getString(1);// DATA
-				String title = cursor.getString(2);// TITLE
+				String id = cursor.getString(cursor.getColumnIndex(Media._ID)); // ID
+				String path = cursor.getString(cursor
+						.getColumnIndex(Media.DATA));// DATA
+				String title = cursor.getString(cursor
+						.getColumnIndex(Media.TITLE));// TITLE
 
-				String artist = cursor.getString(3);// ARTIST
-				String album = cursor.getString(4);// ALBUMV
-				String duration = cursor.getString(5);// DURATION
-				long album_id = cursor.getLong(6);
+				String artist = cursor.getString(cursor
+						.getColumnIndex(Media.ARTIST));// ARTIST
+				String album = cursor.getString(cursor
+						.getColumnIndex(Media.ALBUM));// ALBUMV
+				String duration = cursor.getString(cursor
+						.getColumnIndex(Media.DURATION));// DURATION
+				long album_id = cursor.getLong(cursor
+						.getColumnIndex(Media.ALBUM_ID));
 
 				songs_map = new HashMap<String, Object>();
 				songs_map.put(ID_KEY, id);
@@ -296,7 +314,8 @@ public class MediaManager {
 		 * done. REF: Google Media Frameworks
 		 */
 		cursor = resolver.query(MediaStore.Audio.Artists.Albums.getContentUri(
-				"external", id_album), ALBUM_COLUMNS, null, null, null);
+				"external", id_album), ALBUM_COLUMNS, null, null, Albums.ALBUM
+				+ " asc");
 
 		if (cursor == null)
 			Toast.makeText(context, UNABLE_TAG, Toast.LENGTH_SHORT).show();
@@ -304,12 +323,15 @@ public class MediaManager {
 			Toast.makeText(context, NOMEDIA_TAG, Toast.LENGTH_SHORT).show();
 		else {
 			do {
-				String album_name = cursor.getString(0); // album
+				String album_name = cursor.getString(cursor
+						.getColumnIndex(Albums.ALBUM)); // album
 
-				String id = cursor.getString(1); // id
-				String artist = cursor.getString(2); // artist
+				String id = cursor.getString(cursor.getColumnIndex(Albums._ID)); // id
+				String artist = cursor.getString(cursor
+						.getColumnIndex(Albums.ARTIST)); // artist
 
-				String album_art = cursor.getString(3); // album-art
+				String album_art = cursor.getString(cursor
+						.getColumnIndex(Albums.ALBUM_ART)); // album-art
 
 				songs_map = new HashMap<String, Object>();
 				songs_map.put(ALBUM_KEY, album_name);
@@ -340,7 +362,7 @@ public class MediaManager {
 		String[] selectArgs = new String[] { name, String.valueOf(id) };
 
 		cursor = context.getContentResolver().query(EXTERNAL, TRACKS_COLUMNS,
-				selection, selectArgs, null);
+				selection, selectArgs, Media.TITLE + " asc");
 
 		if (cursor == null) {
 
@@ -352,7 +374,7 @@ public class MediaManager {
 				String path = cursor.getString(cursor
 						.getColumnIndex(Media.DATA));
 				String title = cursor.getString(cursor
-						.getColumnIndex(Media.DISPLAY_NAME));
+						.getColumnIndex(Media.TITLE));
 				String artist = cursor.getString(cursor
 						.getColumnIndex(Media.ARTIST));
 				String album = cursor.getString(cursor
@@ -387,7 +409,7 @@ public class MediaManager {
 
 		cursor = context.getContentResolver().query(
 				Genres.EXTERNAL_CONTENT_URI, GENRE_COLUMNS, null, null,
-				Genres.DEFAULT_SORT_ORDER);
+				Genres.NAME + " asc");
 		if (cursor == null) {
 
 		} else if (!cursor.moveToFirst()) {
@@ -420,7 +442,7 @@ public class MediaManager {
 
 		cursor = context.getContentResolver().query(
 				Genres.Members.getContentUri("external", id), projection, null,
-				null, null);
+				null, Albums.ALBUM + " asc");
 
 		if (cursor == null) {
 
