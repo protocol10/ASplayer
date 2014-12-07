@@ -1,7 +1,12 @@
 package com.akshay.protocol10.asplayer.fragments;
 
 /**
+ * This class is deprecated and is not used due to the inclusion of Sliding
+ * Panel. This class acts as a reference implementation for any control UI
+ * changes
+ * 
  * @author akshay
+ *
  */
 import com.akshay.protocol10.asplayer.R;
 import com.akshay.protocol10.asplayer.callbacks.onItemSelected;

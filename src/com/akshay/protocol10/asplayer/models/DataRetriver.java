@@ -6,6 +6,9 @@ package com.akshay.protocol10.asplayer.models;
 
 /**
  * This class is not used anyway but if anyone can improve this code, it will be the best thing.
+ * I was unable to optimize it, the biggest advantage of the below code is that it can retrieve the data from system directory.
+ * Because the MediaStore do not try to fetch the data from system folders eg. Android, some application download the stuff in its system folder
+ * 
  */
 import java.io.File;
 import java.util.ArrayList;

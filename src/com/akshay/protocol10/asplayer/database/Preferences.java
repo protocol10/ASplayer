@@ -20,6 +20,9 @@ public class Preferences {
 	private static final String ALBUM_ID = "album_art";
 	private static final String REPEAT = "isRepeat";
 	private static final String SHUFFLE = "isShuffle";
+	private static final String DATASOURCE = "dataSource";
+	private static final String CURRENRPOSITION = "currentPosition";
+	private static final String HEIGHT = "height";
 
 	public Preferences(Context context) {
 		this.context = context;
@@ -204,12 +207,39 @@ public class Preferences {
 		return settings.getInt("duration", 0);
 	}
 
+	/**
+	 * 
+	 * @param height
+	 */
 	public void setHeight(int height) {
-		editor.putInt("height", height);
+		editor.putInt(HEIGHT, height);
 		editor.commit();
 	}
 
 	public int getHeight() {
-		return settings.getInt("height", 0);
+		return settings.getInt(HEIGHT, 0);
+	}
+
+	/**
+	 * Save the last playing file if the lock widget screen stops to function
+	 * 
+	 * @param path
+	 */
+	public void setDataSource(String path) {
+		editor.putString(DATASOURCE, path);
+		editor.commit();
+	}
+
+	public String getDataSource() {
+		return settings.getString(DATASOURCE, "");
+	}
+
+	public void setCurrentPosition(int currentPos) {
+		editor.putInt(CURRENRPOSITION, currentPos);
+		editor.commit();
+	}
+
+	public int getCurrentPosition() {
+		return settings.getInt(CURRENRPOSITION, 0);
 	}
 }

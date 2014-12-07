@@ -69,13 +69,6 @@ public class MediaServiceContoller extends Service implements
 	public static final String SEEKBAR_ACTION = "com.akshay.protocol10.asplayer.UPDATE_SEEKBAR";
 	public static final String SEEKTO_ACTION = "com.akshay.protocol10.asplayer.SEEK_TO";
 
-	public final static String APPWIDGET_INIT = "com.akshay.protocol10.widget.INIT";
-	public final static String APPWIDGET_UPDATE_TEXT = "com.akshay.protocol10.widget.UPDATETXT";
-	public final static String APPWIDGET_UPDATE_COVER = "com.akshay.protocol10.widget.UPDATECOVER";
-	public final static String APPWIDGET_PLAY = "com.akshay.protocol10.widget.PLAY";
-	public final static String APPWIDGET_BACK = "com.akshay.protocol10.widget.PREVIOUS";
-	public final static String APPWIDGET_NEXT = "com.akshay.protocol10.widget.NEXT";
-
 	public final static String CONTROL_PLAY = "com.akshay.protocol10.control.PLAY";
 	public final static String NOWPLAYING_PLAY = "com.akshay.protocol10.nowplaying.PLAY";
 	public final static String NOTIFY_PAUSE = "com.akshay.protocol10.notify.PLAYPAUSE";
@@ -99,7 +92,7 @@ public class MediaServiceContoller extends Service implements
 	int result;
 	String tag;
 	static MediaPlayer mediaplayer;
-	MediaManager manager;
+
 	AudioManager audioManager;
 	Equalizer equalizer;
 	Handler handler;
@@ -117,6 +110,7 @@ public class MediaServiceContoller extends Service implements
 	boolean isForeground;
 	// mBinder object which is responsible for interacting with client.
 	private final IBinder mbinder = new MediaBinder();
+	MediaManager manager;
 
 	@Override
 	public IBinder onBind(Intent intent) {
@@ -131,8 +125,8 @@ public class MediaServiceContoller extends Service implements
 		media_list = new ArrayList<HashMap<String, Object>>();
 
 		preferences = new Preferences(getApplicationContext());
-		manager = new MediaManager();
 
+		manager = new MediaManager();
 		media_list = manager.retriveContent(this);
 		random = new Random();
 
@@ -144,12 +138,7 @@ public class MediaServiceContoller extends Service implements
 		filter.addAction(SEEKTO_ACTION);
 		filter.addAction(ASPlayer.INCOMING_CALL_INTENT);
 		filter.addAction(ASPlayer.CALL_ENDED_INTENT);
-		filter.addAction(APPWIDGET_INIT);
-		filter.addAction(APPWIDGET_UPDATE_TEXT);
-		filter.addAction(APPWIDGET_UPDATE_COVER);
-		filter.addAction(APPWIDGET_BACK);
-		filter.addAction(APPWIDGET_PLAY);
-		filter.addAction(APPWIDGET_NEXT);
+
 		filter.addAction(Intent.ACTION_HEADSET_PLUG);
 		filter.addAction(CONTROL_PLAY);
 		filter.addAction(NOWPLAYING_PLAY);
@@ -214,10 +203,10 @@ public class MediaServiceContoller extends Service implements
 				equalizer = new Equalizer(1, mediaplayer.getAudioSessionId());
 			}
 			equalizer.setEnabled(true);
-
+			String path = media_list.get(playBackIndex).get(PATH_KEY)
+					.toString();
 			mediaplayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-			mediaplayer.setDataSource(media_list.get(playBackIndex)
-					.get(PATH_KEY).toString());
+			mediaplayer.setDataSource(path);
 
 			/* Apply presetReverb */
 			if (reverb != null) {
@@ -230,10 +219,9 @@ public class MediaServiceContoller extends Service implements
 			mediaplayer.setOnCompletionListener(this);
 			mediaplayer.start();
 			preferences.updateWidget(true);
-			updatewidget(this);
 			setUpHandlers();
 			updateView();
-
+			preferences.setDataSource(path);
 			intent = new Intent(CONTROL_PLAY);
 			intent.putExtra(ASUtils.IS_PLAYING, mediaplayer.isPlaying());
 			sendBroadcast(intent);
@@ -290,13 +278,41 @@ public class MediaServiceContoller extends Service implements
 				if (!preferences.getNowPlaying()) {
 					preferences.updateWidget(true);
 					startForeground(ASUtils.NOTIFICATION_ID, notification);
-				} else {
 				}
 			}
 			controlBroadCast();
 			widgetBroadCast();
-
 			updateNotification();
+		} else {
+			if (preferences.getNowPlaying()) {
+				mediaplayer = new MediaPlayer();
+				String path = preferences.getDataSource();
+				try {
+					mediaplayer.setDataSource(path);
+					mediaplayer.prepare();
+					mediaplayer.start();
+					mediaplayer.seekTo(preferences.getCurrentPosition());
+					setUpHandlers();
+					title_text = preferences.getTitle();
+					artist_text = preferences.getArtist();
+					album_text = preferences.getAlbum();
+					album_id = preferences.getId();
+					updateLockScreen(title_text, album_text, album_id);
+					sendBroadCastToView(title_text, album_text, artist_text,
+							album_id);
+					intent = new Intent(CONTROL_PLAY);
+					intent.putExtra(ASUtils.IS_PLAYING, mediaplayer.isPlaying());
+					sendBroadcast(intent);
+				} catch (IllegalArgumentException e) {
+					e.printStackTrace();
+				} catch (SecurityException e) {
+					e.printStackTrace();
+				} catch (IllegalStateException e) {
+					e.printStackTrace();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
 		}
 	}
 
@@ -425,20 +441,7 @@ public class MediaServiceContoller extends Service implements
 				}
 
 			}
-			if (action.equals(APPWIDGET_INIT)) {
-				updatewidget(context);
-			}
 
-			if (action.equals(APPWIDGET_PLAY)) {
-
-				if (preferences.getNowPlaying()) {
-					pauseSong();
-				} else {
-					play(0);
-				}
-				pauseSong();
-
-			}
 			if (action.equals(Intent.ACTION_HEADSET_PLUG)) {
 
 				int state = intent.getIntExtra("state", 0);
@@ -457,10 +460,10 @@ public class MediaServiceContoller extends Service implements
 					mediaplayer.pause();
 				}
 			}
-			if (action.equals(APPWIDGET_NEXT) || action.equals(NOTIFY_NEXT)) {
+			if (action.equals(NOTIFY_NEXT)) {
 				nextSong();
 			}
-			if (action.equals(APPWIDGET_BACK) || action.equals(NOTIFY_BACK)) {
+			if (action.equals(NOTIFY_BACK)) {
 				previousSong();
 			}
 			if (action.equals(NOTIFY_CLOSE)) {
@@ -493,63 +496,6 @@ public class MediaServiceContoller extends Service implements
 
 	}
 
-	/**
-	 * Method to upadte the ASPlayer widget
-	 *
-	 * @param context
-	 */
-	protected void updatewidget(Context context) {
-		updateWidgetText(context);
-		updateWidgetCover(context);
-	}
-
-	/**
-	 * Method to update the widgetCover
-	 *
-	 * @param context
-	 */
-	private void updateWidgetCover(Context context) {
-		intent = new Intent();
-		intent.setClassName(PACKAGE_NAME, CLASS_NAME);
-		intent.setAction(APPWIDGET_UPDATE_COVER);
-		if (mediaplayer != null) {
-			intent.putExtra(ALBUM_ID, album_id());
-		} else {
-
-		}
-		sendBroadcast(intent);
-	}
-
-	/**
-	 * Method to update the shortcut widget
-	 *
-	 * @param context
-	 */
-	private void updateWidgetText(Context context) {
-
-		intent = new Intent();
-		intent.setClassName(PACKAGE_NAME, CLASS_NAME);
-		intent.setAction(APPWIDGET_UPDATE_TEXT);
-		if (mediaplayer != null) {
-			if (mediaplayer.isPlaying()) {
-				intent.putExtra(TITLE_KEY, getTitle());
-				intent.putExtra(ASUtils.IS_PLAYING, mediaplayer.isPlaying());
-			}
-		} else {
-			intent.putExtra(TITLE_KEY, context.getString(R.string.title));
-		}
-		sendBroadcast(intent);
-	}
-
-	/**
-	 * method to retrieve the album art id
-	 *
-	 * @return
-	 */
-	private long album_id() {
-		return (Long) media_list.get(playBackIndex).get(ASUtils.ALBUM_ART);
-	}
-
 	private Runnable sendUpdatesToUI = new Runnable() {
 
 		@Override
@@ -560,15 +506,6 @@ public class MediaServiceContoller extends Service implements
 	};
 
 	/**
-	 * fetch the title of current playing track1 1 *
-	 *
-	 * @return
-	 */
-	private String getTitle() {
-		return media_list.get(playBackIndex).get(TITLE_KEY).toString();
-	}
-
-	/**
 	 * Method to send progress of the current playing track using broadcast
 	 * event
 	 */
@@ -576,10 +513,12 @@ public class MediaServiceContoller extends Service implements
 		if (mediaplayer.isPlaying()) {
 			int currentPosition = mediaplayer.getCurrentPosition();
 			int totalduration = mediaplayer.getDuration();
+			preferences.setCurrentPosition(currentPosition);
 			intent = new Intent(SEEKBAR_ACTION);
 			intent.putExtra(ASUtils.CURRENT_POSITION, currentPosition);
 			intent.putExtra(ASUtils.MAX_DURATION, totalduration);
 			sendBroadcast(intent);
+
 		} else if (!mediaplayer.isPlaying())
 			handler.removeCallbacks(sendUpdatesToUI);
 	}
@@ -790,7 +729,7 @@ public class MediaServiceContoller extends Service implements
 	 */
 	public void playFromPath(String path) {
 		media_list.clear();
-		media_list = manager.retriveContent(this);
+		media_list = manager.retriveContent(getApplicationContext());
 		try {
 			for (Map<String, Object> map : media_list) {
 
@@ -983,5 +922,4 @@ public class MediaServiceContoller extends Service implements
 			equalizer.setBandLevel((short) band, (short) level);
 		}
 	}
-
 }

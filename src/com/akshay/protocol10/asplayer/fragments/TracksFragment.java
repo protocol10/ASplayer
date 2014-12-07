@@ -14,6 +14,7 @@ import com.akshay.protocol10.asplayer.database.MediaManager;
 import com.akshay.protocol10.asplayer.utils.ASUtils;
 
 import android.app.Activity;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -85,6 +86,5 @@ public class TracksFragment extends Fragment implements OnItemClickListener {
 				ASUtils.ALBUM_ART);
 		mcallback.setTag(ASUtils.TRACKS_TAGS);
 		mcallback.updateView(title, artist, album, index, album_id);
-
 	}
 }

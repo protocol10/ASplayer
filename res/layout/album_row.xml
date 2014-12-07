@@ -10,11 +10,11 @@
         android:id="@+id/album_cover"
         android:layout_width="wrap_content"
         android:layout_height="144dp"
+        android:layout_gravity="center_horizontal"
         android:contentDescription="@string/album_art"
         android:ellipsize="end"
         android:padding="4dip"
         android:scaleType="fitXY"
-        android:layout_gravity="center_horizontal"
         android:src="@drawable/ic_album_art" />
 
     <TextView

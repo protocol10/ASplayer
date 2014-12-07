@@ -370,6 +370,10 @@ public class MainActivity extends ActionBarActivity implements
 		super.onDestroy();
 		doUnbindService();
 		unregisterReceiver(broadcastReceiver);
+		if (!preferences.getNowPlaying()) {
+			serviceController.stopService(new Intent(this,
+					MediaServiceContoller.class));
+		}
 	}
 
 	@Override
@@ -390,6 +394,16 @@ public class MainActivity extends ActionBarActivity implements
 		if (!preferences.getNowPlaying()) {
 			slidingUpPanelLayout.hidePanel();
 		}
+	}
+
+	@Override
+	protected void onPause() {
+		super.onPause();
+	}
+
+	@Override
+	protected void onStop() {
+		super.onStop();
 	}
 
 	/**
@@ -824,5 +838,4 @@ public class MainActivity extends ActionBarActivity implements
 			}
 		}
 	}
-
 }
