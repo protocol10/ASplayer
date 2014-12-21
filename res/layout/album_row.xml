@@ -2,45 +2,45 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="8dp"
     android:orientation="vertical"
-    android:padding="4dip" >
+    android:paddingBottom="12dp"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    android:paddingTop="12dp" >
 
     <ImageView
         android:id="@+id/album_cover"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="144dp"
         android:layout_gravity="center_horizontal"
         android:contentDescription="@string/album_art"
         android:ellipsize="end"
-        android:padding="4dip"
         android:scaleType="fitXY"
         android:src="@drawable/ic_album_art" />
 
     <TextView
         android:id="@+id/album_name_text_view"
-        android:layout_width="144dip"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="4dp"
         android:ellipsize="end"
-        android:gravity="center"
         android:maxLines="1"
-        android:padding="4dip"
         android:singleLine="true"
         android:text="@string/album"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:textSize="16sp" />
+        android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <TextView
         android:id="@+id/album_artist_text_view"
-        android:layout_width="144dip"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="4dp"
         android:ellipsize="end"
-        android:gravity="center"
         android:maxLines="1"
-        android:padding="4dip"
         android:singleLine="true"
         android:text="@string/artist"
         android:textAppearance="?android:attr/textAppearanceSmall"
-        android:textSize="14sp" />
+        android:textColor="#A8A6A6" />
 
 </LinearLayout>

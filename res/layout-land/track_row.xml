@@ -2,75 +2,76 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/padding_mediumlow"
+    android:paddingLeft="@dimen/padding_medium"
+    android:paddingRight="@dimen/padding_medium"
+    android:paddingTop="@dimen/padding_mediumlow" >
 
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="4dp"
-        android:orientation="horizontal"
-        android:paddingBottom="4dp"
-        android:paddingTop="4dp" >
+        android:orientation="horizontal" >
 
         <TextView
             android:id="@+id/title_text_view"
             android:layout_width="0dip"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_weight="2"
             android:ellipsize="end"
             android:paddingLeft="3dip"
             android:paddingRight="3dip"
             android:singleLine="true"
             android:text="@string/title"
-            android:textSize="16sp" />
+            android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <TextView
             android:id="@+id/duration_text_view"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
             android:ellipsize="end"
-            android:gravity="right"
+            android:gravity="end"
             android:paddingLeft="3dip"
             android:paddingRight="3dip"
             android:text="@string/album"
-            android:textSize="12sp" />
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textColor="#AAAAAA" />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="4dp"
-        android:orientation="horizontal"
-        android:paddingBottom="4dp"
-        android:paddingTop="4dp" >
+        android:layout_marginTop="4dp"
+        android:orientation="horizontal" >
 
         <TextView
             android:id="@+id/artist_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_weight="2"
             android:ellipsize="end"
             android:paddingLeft="3dip"
             android:paddingRight="3dip"
             android:singleLine="true"
             android:text="@string/artist"
-            android:textSize="14sp" />
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textColor="#A8A6A6" />
 
         <TextView
             android:id="@+id/album_text_view"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:ellipsize="end"
+            android:gravity="end"
             android:paddingLeft="3dip"
             android:paddingRight="3dip"
             android:singleLine="true"
             android:text="@string/album"
-            android:textSize="14sp" />
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textColor="#A8A6A6" />
     </LinearLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@android:color/darker_gray" />
 
 </LinearLayout>

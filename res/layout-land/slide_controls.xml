@@ -7,6 +7,7 @@
         android:id="@+id/slide_art"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:adjustViewBounds="true"
         android:contentDescription="@string/album_art"
         android:scaleType="fitXY"
         android:src="@drawable/ic_album_art" />
@@ -49,7 +50,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="4dp"
+            android:layout_margin="@dimen/margin_micro"
             android:orientation="horizontal" >
 
             <ImageButton

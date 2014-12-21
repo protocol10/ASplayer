@@ -9,9 +9,7 @@
     <ListView
         android:id="@+id/tracks_view"
         android:layout_width="match_parent"
-        android:layout_height="fill_parent"
-        android:layout_margin="4dp"
-        android:padding="5dp" >
+        android:layout_height="fill_parent" >
     </ListView>
 
 </FrameLayout>
