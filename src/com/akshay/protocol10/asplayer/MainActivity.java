@@ -30,7 +30,6 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.DrawerLayout.LayoutParams;
 import android.support.v7.app.ActionBarActivity;
-import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -813,7 +812,7 @@ public class MainActivity extends ActionBarActivity implements
 	 * @param y
 	 */
 
-	@SuppressLint("NewApi")
+	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	public void setActionBarTranslation(float y) {
 		// Figure out the actionbar height
 		int actionBarHeight = getActionBarHeight();

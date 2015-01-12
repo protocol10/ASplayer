@@ -163,15 +163,17 @@ public class MediaServiceContoller extends Service implements
 		mediaButtonIntent.setComponent(mediaEventReceiver);
 		PendingIntent piIntent = PendingIntent.getBroadcast(
 				getApplicationContext(), 0, mediaButtonIntent, 0);
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+			mRemoteControlClient = new RemoteControlClient(piIntent);
 
-		mRemoteControlClient = new RemoteControlClient(piIntent);
+			int flags = RemoteControlClient.FLAG_KEY_MEDIA_PAUSE
+					| RemoteControlClient.FLAG_KEY_MEDIA_PLAY
+					| RemoteControlClient.FLAG_KEY_MEDIA_NEXT
+					| RemoteControlClient.FLAG_KEY_MEDIA_PREVIOUS;
+			mRemoteControlClient.setTransportControlFlags(flags);
+			audioManager.registerRemoteControlClient(mRemoteControlClient);
+		}
 
-		int flags = RemoteControlClient.FLAG_KEY_MEDIA_PAUSE
-				| RemoteControlClient.FLAG_KEY_MEDIA_PLAY
-				| RemoteControlClient.FLAG_KEY_MEDIA_NEXT
-				| RemoteControlClient.FLAG_KEY_MEDIA_PREVIOUS;
-		mRemoteControlClient.setTransportControlFlags(flags);
-		audioManager.registerRemoteControlClient(mRemoteControlClient);
 	}
 
 	@Override
